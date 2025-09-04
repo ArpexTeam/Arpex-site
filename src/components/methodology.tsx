@@ -79,12 +79,10 @@ export default function Methodology() {
           ref={wrapRef}
           className="relative"
           data-animate={animate ? "true" : "false"}
-          style={
-            {
-              ["--line-dur" as any]: `${LINE_DURATION}s`,
-              ["--line-delay" as any]: `${LINE_DELAY}s`,
-            } as React.CSSProperties
-          }
+       style={{
+          "--line-dur": `${LINE_DURATION}s`,
+          "--line-delay": `${LINE_DELAY}s`,
+        }}
           aria-label="Etapas da metodologia"
           role="list"
         >
@@ -111,7 +109,7 @@ export default function Methodology() {
                 <li
                   key={s.title}
                   className="text-left relative md:static grid md:block grid-cols-[56px,1fr] items-start gap-4"
-                  style={{ ["--dot-delay" as any]: `${dotDelay}s` } as React.CSSProperties}
+                  style={{ "--dot-delay": `${dotDelay}s`} as React.CSSProperties}
                   role="listitem"
                 >
                   {/* conector curto entre os itens no mobile (acima do dot) */}
