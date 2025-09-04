@@ -4,11 +4,15 @@ import { useState } from "react";
 import Section from "@/components/ui/section";
 import { H2 } from "@/components/ui/heading";
 import Image from "next/image";
-import bigLogo from "@/images/LOGOPNG 5.svg"
-
+import bigLogo from "@/images/LOGOPNG 5.svg";
 
 const field =
   "h-10 w-full rounded-sm border-0 border-b border-b-white/40 bg-[#161616] px-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand/70";
+
+// CONFIG — ajuste se precisar
+const WA_NUMBER_E164 = "5519989812774"; // sem +, sem espaços
+const MAIL_TO = "contatoarpextech@gmail.com.br";
+const MAIL_SUBJECT = "Novo contato do site";
 
 export default function ContatoPage() {
   const [loading, setLoading] = useState(false);
@@ -20,18 +24,34 @@ export default function ContatoPage() {
     setOk(null);
 
     const fd = new FormData(e.currentTarget);
-    const payload = Object.fromEntries(fd.entries());
+    const get = (k: string) => String(fd.get(k) ?? "");
+
+    const texto =
+      `Olá! Vim pelo site e gostaria de um orçamento.\n\n` +
+      `Nome: ${get("nome")} ${get("sobrenome")}\n` +
+      `E-mail: ${get("email")}\n` +
+      `Telefone: ${get("telefone")}\n` +
+      `Necessidade: ${get("necessidade")}\n` +
+      `Observações: ${get("observacoes")}`;
+
+    const waUrl = `https://wa.me/${WA_NUMBER_E164}?text=${encodeURIComponent(texto)}`;
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      setOk(res.ok);
-      if (res.ok) (e.target as HTMLFormElement).reset();
+      // tenta abrir em nova aba
+      const opened = window.open(waUrl, "_blank", "noopener,noreferrer");
+      // se bloqueado, abre na mesma aba
+      if (!opened) window.location.href = waUrl;
+
+      setOk(true);
+      (e.currentTarget as HTMLFormElement).reset();
     } catch {
-      setOk(false);
+      // fallback: mailto
+      const mailto =
+        `mailto:${MAIL_TO}` +
+        `?subject=${encodeURIComponent(MAIL_SUBJECT)}` +
+        `&body=${encodeURIComponent(texto)}`;
+      window.location.href = mailto;
+      setOk(true);
     } finally {
       setLoading(false);
     }
@@ -39,8 +59,7 @@ export default function ContatoPage() {
 
   return (
     <main className="relative min-h-dvh bg-gradient-to-r from-[#1A1A1A] to-black pt-12 overflow-hidden">
-
-        <Image src={bigLogo} alt="Arpex BigLogo" className="absolute max-w-[1000px]"/>
+      <Image src={bigLogo} alt="Arpex BigLogo" className="absolute max-w-[1000px]" />
       <Section className="relative py-16">
         <div className="mx-auto w-full max-w-[900px] px-4">
           <div className="text-center mb-6">
@@ -103,13 +122,17 @@ export default function ContatoPage() {
                   disabled={loading}
                   className="inline-flex h-10 items-center justify-center bg-brand text-sm text-white hover:opacity-90 disabled:opacity-60 px-12 font-semibold rounded-sm"
                 >
-                  {loading ? "Enviando..." : "Enviar"}
+                  {loading ? "Enviando..." : "Enviar via WhatsApp"}
                 </button>
               </div>
 
               {/* feedback */}
               <div className="md:col-span-2 text-center text-sm" aria-live="polite">
-                {ok === true && <span className="text-emerald-400">Recebemos seus dados. Em breve entraremos em contato!</span>}
+                {ok === true && (
+                  <span className="text-emerald-400">
+                    Abrimos sua mensagem no WhatsApp (ou e-mail). Obrigado!
+                  </span>
+                )}
                 {ok === false && <span className="text-red-400">Não foi possível enviar agora. Tente novamente.</span>}
               </div>
             </form>
