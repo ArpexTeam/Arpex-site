@@ -14,36 +14,44 @@ const styles = {
 type BaseProps = {
   children: React.ReactNode;
   variant?: keyof typeof styles;
-  className?: string; // <- permite estilos personalizados
+  className?: string;
 };
 
 // Botão real
 type ButtonAsButton = BaseProps &
-  React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    href?: undefined;
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children"> & {
+    href?: undefined; // não permite href neste ramo
   };
 
 // Link estilizado como botão
 type ButtonAsLink = BaseProps &
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "className" | "children"> & {
     href: string;
   };
 
-export function Button(props: ButtonAsButton | ButtonAsLink) {
-  const { children, variant = "primary", className, ...rest } = props as any;
+type ButtonProps = ButtonAsButton | ButtonAsLink;
+
+export function Button(props: ButtonAsButton): JSX.Element;
+export function Button(props: ButtonAsLink): JSX.Element;
+export function Button(props: ButtonProps): JSX.Element {
+  const { children, variant = "primary", className } = props;
   const cls = cn(base, styles[variant], className);
 
-  if ("href" in props && props.href) {
-    // Link do Next (aceita className e a maioria dos attrs de <a>)
+  // Link (tem href:string)
+  if (typeof (props as ButtonAsLink).href === "string") {
+    const { href, ...restLinkAll } = props as ButtonAsLink;
+    const { /* remove internos */ variant: _v, className: _c, children: _ch, ...anchorProps } = restLinkAll;
     return (
-      <Link href={props.href} className={cls} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
+      <Link href={href} className={cls} {...anchorProps}>
         {children}
       </Link>
     );
   }
 
+  // Botão (sem href)
+  const { variant: _v, className: _c, children: _ch, ...buttonProps } = props as ButtonAsButton;
   return (
-    <button className={cls} {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}>
+    <button className={cls} {...buttonProps}>
       {children}
     </button>
   );
