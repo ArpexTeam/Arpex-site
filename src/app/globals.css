@@ -1,4 +1,29 @@
 @import "tailwindcss";
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* src/app/globals.css */
+
+@theme {
+  --color-brand: #00CF77;
+  --color-bg: #04150E;
+  --color-surface: #002415;
+}
+
+/* Oculta a barra de rolagem nativa (mantém o scroll) */
+.no-scrollbar {
+  -ms-overflow-style: none;   /* IE e Edge antigo */
+  scrollbar-width: none;      /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari, Opera, Edge (Chromium) */
+}
+
+
+:root { --radius: 16px; }
+
 
 :root {
   --background: #ffffff;
