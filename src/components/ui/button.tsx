@@ -31,9 +31,8 @@ type ButtonAsLink = BaseProps &
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
-export function Button(props: ButtonAsButton): JSX.Element;
-export function Button(props: ButtonAsLink): JSX.Element;
-export function Button(props: ButtonProps): JSX.Element {
+
+export function Button(props: ButtonProps): React.ReactElement {
   const { children, variant = "primary", className } = props;
   const cls = cn(base, styles[variant], className);
 
