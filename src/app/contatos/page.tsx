@@ -10,7 +10,7 @@ const field =
   "h-10 w-full rounded-sm border-0 border-b border-b-white/40 bg-[#161616] px-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand/70";
 
 // CONFIG — ajuste se precisar
-const WA_NUMBER_E164 = "5519989812774"; // sem +, sem espaços
+const WA_NUMBER_E164 = "5519988935849"; // sem +, sem espaços
 const MAIL_TO = "contatoarpextech@gmail.com.br";
 const MAIL_SUBJECT = "Novo contato do site";
 

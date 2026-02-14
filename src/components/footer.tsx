@@ -6,13 +6,12 @@ import logo from "@/images/logo-oficial.png";
 import email from "@/images/email.svg";
 import instagram from "@/images/instagram.svg";
 // import telefone from "@/images/telefone.svg"; // não usado
-import linkedin from "@/images/linkedin.png";
 
 
 export default function Footer() {
   // WhatsApp
-  const waDisplay = "(19) 98981-2774";
-  const waNumberE164 = "5519989812774";
+  const waDisplay = "(19) 98893-5849";
+  const waNumberE164 = "5519988935849";
   const waText = encodeURIComponent("Olá! Vim pelo site e gostaria de um orçamento.");
   const waLink = `https://wa.me/${waNumberE164}?text=${waText}`;
 
@@ -76,15 +75,7 @@ export default function Footer() {
 
             {/* Sociais */}
             <div className="mt-10 flex justify-center md:justify-start gap-3">
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="inline-flex h-6 w-6 items-center justify-center rounded-md transition-transform hover:rotate-z-12"
-              >
-                <Image src={linkedin} alt="" aria-hidden width={28} height={28} className="object-contain" />
-              </a>
+        
               <a
                 href="https://instagram.com/arpextechnology/"
                 target="_blank"

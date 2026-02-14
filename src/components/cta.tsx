@@ -40,7 +40,7 @@ export default function CTA() {
             </p>
             <div className="mt-4 md:ml-auto w-fit md:w-auto mx-auto md:mx-0">
          <Button
-  href={`https://wa.me/5519989812774?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de um orçamento.')}`}
+  href={`https://wa.me/5519988935849?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de um orçamento.')}`}
   className="px-8 font-semibold rounded-sm"
   target="_blank"
 >

@@ -33,8 +33,8 @@ export default function NavMenu() {
   }, [open]);
 
   // Número exibido e número E.164 (usado no wa.me) — ambos alinhados
-  const waDisplay = "(19) 98981-2774";
-  const waNumberE164 = "5519989812774";
+  const waDisplay = "(19) 98893-5849";
+  const waNumberE164 = "5519988935849";
   const waText = encodeURIComponent("Olá! Vim pelo site e gostaria de um orçamento.");
   const waLink = `https://wa.me/${waNumberE164}?text=${waText}`;
 
