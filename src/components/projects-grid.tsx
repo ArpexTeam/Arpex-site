@@ -2,9 +2,54 @@
 import Section from "@/components/ui/section";
 import { H2, Sub } from "@/components/ui/heading";
 import Link from "next/link";
-import { projects } from "@/content/projects"; // os 6 itens (id/title) que você já tem
+import type { StaticImageData } from "next/image";
+
+import ProjectCard from "@/components/projects/card";
+
+// ✅ IMPORT DAS IMAGENS (coloque os arquivos em /public/projects/)
+
+import honorattoImg from "@/images/2026-02-14_12h19_46.png";
+import florImg from "@/images/2026-02-14_12h20_01.png";
+// adicione mais imports aqui...
+
+type Project = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  href: string;
+  external?: boolean;
+  imageSrc?: StaticImageData;
+  imageAlt?: string;
+};
+
+const PROJECTS: Project[] = [
+  {
+    id: "honoratto",
+    title: "Honoratto Tattoo",
+    subtitle: "Portfólio",
+    href: "https://honoratto.vercel.app",
+    external: true,
+    imageSrc: honorattoImg,
+    imageAlt: "Preview do projeto Honoratto",
+  },
+  {
+    id: "flor-de-maria",
+    title: "Flor de Maria VIP",
+    subtitle: "Landing + conversão",
+    href: "https://flordemariavip.com.br",
+    external: true,
+    imageSrc: florImg,
+    imageAlt: "Preview do projeto Flor de Maria VIP",
+  },
+  // adicione os seus aqui...
+];
+
+// Quantidade alvo de cards na grade (completa com placeholders)
+const TARGET_CARDS = 6;
 
 export default function ProjectsGrid() {
+  const placeholders = Math.max(0, TARGET_CARDS - PROJECTS.length);
+
   return (
     <Section className="relative overflow-hidden bg-[#101010] py-32">
       {/* faixa escura da seção */}
@@ -30,12 +75,23 @@ export default function ProjectsGrid() {
 
         {/* grid 3x2 */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
-            <div
+          {/* projetos reais */}
+          {PROJECTS.map((p) => (
+            <ProjectCard
               key={p.id}
-              className="aspect-[4/3] rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/[0.08] transition"
-              aria-label={p.title}
+              title={p.title}
+              subtitle={p.subtitle}
+              href={p.href}
+              external={p.external}
+              imageSrc={p.imageSrc}
+              imageAlt={p.imageAlt}
+              ariaLabel={p.title ? `Abrir ${p.title}` : "Abrir projeto"}
             />
+          ))}
+
+          {/* placeholders (quadrados vazios) */}
+          {Array.from({ length: placeholders }).map((_, i) => (
+            <ProjectCard key={`ph-${i}`} />
           ))}
         </div>
       </div>
