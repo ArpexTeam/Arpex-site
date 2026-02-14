@@ -6,6 +6,10 @@ import StickyCta from "@/components/projects/sticky-cta";
 import ProjectCard from "@/components/projects/card";
 import honorattoImg from "@/images/2026-02-14_12h19_46.png";
 import florImg from "@/images/2026-02-14_12h20_01.png";
+import type { StaticImageData } from "next/image";
+
+
+type ImageSrc = string | StaticImageData;
 
 
 type Project = {
@@ -14,7 +18,7 @@ type Project = {
   subtitle?: string;
   href: string;
   external?: boolean;
-  imageSrc?: any; // "/projects/x.jpg" (public) ou URL externa
+  imageSrc?: ImageSrc; // "/projects/x.jpg" (public) ou URL externa
   imageAlt?: string;
 };
 

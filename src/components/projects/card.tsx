@@ -1,5 +1,10 @@
 // components/projects/card.tsx
 import Link from "next/link";
+import type { StaticImageData } from "next/image";
+
+
+type ImageSrc = string | StaticImageData;
+
 
 
 type ProjectCardProps = {
@@ -10,7 +15,7 @@ type ProjectCardProps = {
   title?: string;
   subtitle?: string;
 
-  imageSrc?: any; // pode ser "/imgs/x.jpg" ou URL externa
+  imageSrc?: ImageSrc; // pode ser "/imgs/x.jpg" ou URL externa
   imageAlt?: string;
 
   ariaLabel?: string;
@@ -27,6 +32,10 @@ export default function ProjectCard({
   ariaLabel,
   className = "",
 }: ProjectCardProps) {
+
+    const resolvedSrc =
+    typeof imageSrc === "string" ? imageSrc : imageSrc?.src;
+
   const isClickable = !!href;
   const label = ariaLabel ?? (title ? `Abrir ${title}` : "Abrir projeto");
 
@@ -44,7 +53,7 @@ export default function ProjectCard({
       {/* Imagem de fundo (se existir) */}
       {imageSrc ? (
         <img
-          src={imageSrc.src}
+          src={resolvedSrc}
           alt={imageAlt ?? title ?? ""}
           className="absolute inset-0 h-full w-full object-cover opacity-80"
           loading="lazy"
