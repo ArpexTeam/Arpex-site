@@ -7,16 +7,13 @@ import Services from "@/components/services";
 import ResponsiveShowcase from "@/components/responsive-showcase";
 import CtaBand from "@/components/cta-band";
 
-
-
 export default function Page() {
   return (
     <>
       <Hero />
       <Services />
-      {/* Crie também a seção "Desenvolvimento de sites" e "Design Responsivo" depois */}
       <Methodology />
-      <ResponsiveShowcase/>
+      <ResponsiveShowcase />
       <CtaBand />
       <ProjectsGrid />
       <FAQ />

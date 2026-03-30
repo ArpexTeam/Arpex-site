@@ -1,4 +1,3 @@
-// components/faq.tsx
 "use client";
 
 import { useState } from "react";
@@ -7,21 +6,24 @@ import { H2 } from "@/components/ui/heading";
 import { faq } from "@/content/faq";
 
 export default function FAQ() {
-  // deixe abertos por padrão os que você quiser (0 e 3 como no mock)
   const [open, setOpen] = useState<Set<number>>(new Set([0, 3]));
+
   const toggle = (i: number) =>
     setOpen((s) => {
       const ns = new Set(s);
-      ns.has(i) ? ns.delete(i) : ns.add(i);
+      if (ns.has(i)) {
+        ns.delete(i);
+      } else {
+        ns.add(i);
+      }
       return ns;
     });
 
   return (
     <Section className="relative overflow-hidden bg-bg py-18 md:py-32">
-      {/* faixa escura */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--color-surface)] to-[color:var(--color-bg)]" />
       <div className="mx-auto w-full max-w-[1200px] px-4">
-        <H2 className="mb-6 text-white">Dúvidas frequentes</H2>
+        <H2 className="mb-6 text-white">Duvidas frequentes</H2>
 
         <div className="rounded-2xl">
           {faq.map((f, i) => {
@@ -29,19 +31,17 @@ export default function FAQ() {
             const contentId = `faq-content-${i}`;
 
             return (
-              <div key={i} className="px-5 py-4">
-                {/* Cabeçalho: pergunta + ícone à direita */}
+              <div key={f.q} className="px-5 py-4">
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   aria-controls={contentId}
                   onClick={() => toggle(i)}
-                  className="w-full select-none cursor-pointer"
+                  className="w-full cursor-pointer select-none"
                 >
                   <div className="flex items-center justify-between gap-6">
-                    <span className="cursor-pointer font-semibold text-white text-left">{f.q}</span>
+                    <span className="cursor-pointer text-left font-semibold text-white">{f.q}</span>
 
-                    {/* Ícone: um único “+” que rotaciona 45° (vira “x”) e muda de cor suavemente */}
                     <span
                       aria-hidden
                       className={`inline-block text-3xl leading-none transition-all duration-300 ${
@@ -53,14 +53,12 @@ export default function FAQ() {
                   </div>
                 </button>
 
-                {/* Linha com cor suave: usa currentColor + transition-colors; evita passar sob o ícone com mr-14 */}
                 <div
                   className={`mt-2 -ml-5 mr-14 h-px bg-[linear-gradient(to_right,currentColor,transparent)] transition-colors duration-300 ${
                     isOpen ? "text-brand" : "text-white/70"
                   }`}
                 />
 
-                {/* Resposta com abertura suave (grid-rows trick) */}
                 <div
                   id={contentId}
                   role="region"

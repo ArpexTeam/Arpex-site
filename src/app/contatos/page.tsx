@@ -9,10 +9,9 @@ import bigLogo from "@/images/LOGOPNG 5.svg";
 const field =
   "h-10 w-full rounded-sm border-0 border-b border-b-white/40 bg-[#161616] px-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand/70";
 
-// CONFIG — ajuste se precisar
-const WA_NUMBER_E164 = "5519988935849"; // sem +, sem espaços
+const WA_NUMBER_E164 = "5519988935849";
 const MAIL_TO = "contatoarpextech@gmail.com.br";
-const MAIL_SUBJECT = "Novo contato do site";
+const MAIL_SUBJECT = "Novo contato ArpeX";
 
 export default function ContatoPage() {
   const [loading, setLoading] = useState(false);
@@ -24,10 +23,10 @@ export default function ContatoPage() {
     setOk(null);
 
     const fd = new FormData(e.currentTarget);
-    const get = (k: string) => String(fd.get(k) ?? "");
+    const get = (key: string) => String(fd.get(key) ?? "");
 
     const texto =
-      `Olá! Vim pelo site e gostaria de um orçamento.\n\n` +
+      `Olá! Vim pelo site e quero entender qual solução faz mais sentido para o meu negócio.\n\n` +
       `Nome: ${get("nome")} ${get("sobrenome")}\n` +
       `E-mail: ${get("email")}\n` +
       `Telefone: ${get("telefone")}\n` +
@@ -37,42 +36,43 @@ export default function ContatoPage() {
     const waUrl = `https://wa.me/${WA_NUMBER_E164}?text=${encodeURIComponent(texto)}`;
 
     try {
-      // tenta abrir em nova aba
       const opened = window.open(waUrl, "_blank", "noopener,noreferrer");
-      // se bloqueado, abre na mesma aba
-      if (!opened) window.location.href = waUrl;
+      if (!opened) {
+        window.location.href = waUrl;
+      }
 
       setOk(true);
-      (e.currentTarget as HTMLFormElement).reset();
+      e.currentTarget.reset();
     } catch {
-      // fallback: mailto
-      const mailto =
-        `mailto:${MAIL_TO}` +
-        `?subject=${encodeURIComponent(MAIL_SUBJECT)}` +
-        `&body=${encodeURIComponent(texto)}`;
-      window.location.href = mailto;
-      setOk(true);
+      try {
+        const mailto =
+          `mailto:${MAIL_TO}` +
+          `?subject=${encodeURIComponent(MAIL_SUBJECT)}` +
+          `&body=${encodeURIComponent(texto)}`;
+        window.location.href = mailto;
+        setOk(true);
+      } catch {
+        setOk(false);
+      }
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="relative min-h-dvh bg-gradient-to-r from-[#1A1A1A] to-black pt-12 overflow-hidden">
+    <main className="relative min-h-dvh overflow-hidden bg-gradient-to-r from-[#1A1A1A] to-black pt-12">
       <Image src={bigLogo} alt="Arpex BigLogo" className="absolute max-w-[1000px]" />
       <Section className="relative py-16">
         <div className="mx-auto w-full max-w-[900px] px-4">
-          <div className="text-center mb-6">
+          <div className="mb-6 text-center">
             <H2 className="text-white">
-              Preencha seus dados, que
-              <br /> retornaremos em breve!
+              Conte o momento do seu negócio,
+              <br /> e estruturamos a conversa certa.
             </H2>
           </div>
 
-          {/* CARD */}
-          <div className="rounded-xl bg-black/60 py-14 px-10 mt-18 shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
-            <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {/* Nome / Sobrenome */}
+          <div className="mt-18 rounded-xl bg-black/60 px-10 py-14 shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
+            <form onSubmit={onSubmit} className="grid grid-cols-1 gap-10 md:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs text-white/70">Nome</label>
                 <input name="nome" required placeholder="Seu nome" className={field} />
@@ -82,7 +82,6 @@ export default function ContatoPage() {
                 <input name="sobrenome" required placeholder="Seu sobrenome" className={field} />
               </div>
 
-              {/* Email / Telefone */}
               <div>
                 <label className="mb-1 block text-xs text-white/70">E-mail</label>
                 <input type="email" name="email" required placeholder="voce@empresa.com" className={field} />
@@ -92,17 +91,18 @@ export default function ContatoPage() {
                 <input name="telefone" placeholder="(11) 90000-0000" className={field} />
               </div>
 
-              {/* Select / Observações */}
               <div className="relative">
                 <label className="mb-1 block text-xs text-white/70">Você precisa de...</label>
                 <select name="necessidade" className={`${field} appearance-none pr-8`} defaultValue="">
                   <option value="" disabled>
                     Selecionar
                   </option>
-                  <option value="website">Website institucional</option>
-                  <option value="loja">Loja virtual</option>
-                  <option value="landing">Landing page</option>
-                  <option value="plataforma">Plataforma / sistema</option>
+                  <option value="diagnostico">Diagnóstico de operação</option>
+                  <option value="automacao">Automação de processos</option>
+                  <option value="sistema">Sistema sob medida</option>
+                  <option value="app">Aplicativo ou portal</option>
+                  <option value="financeiro">Solução financeira</option>
+                  <option value="site">Site ou experiência digital</option>
                   <option value="outro">Outro</option>
                 </select>
                 <span
@@ -112,36 +112,35 @@ export default function ContatoPage() {
               </div>
               <div>
                 <label className="mb-1 block text-xs text-white/70">Observações</label>
-                <input name="observacoes" placeholder="Conte um pouco do seu projeto" className={field} />
+                <input name="observacoes" placeholder="Descreva dores, metas ou contexto" className={field} />
               </div>
 
-              {/* Botão */}
-              <div className="md:col-span-2 mt-2 flex justify-center">
+              <div className="mt-2 flex justify-center md:col-span-2">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex h-10 items-center justify-center bg-brand text-sm text-white hover:opacity-90 disabled:opacity-60 px-12 font-semibold rounded-sm"
+                  className="inline-flex h-10 items-center justify-center rounded-sm bg-brand px-12 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
                 >
                   {loading ? "Enviando..." : "Enviar via WhatsApp"}
                 </button>
               </div>
 
-              {/* feedback */}
-              <div className="md:col-span-2 text-center text-sm" aria-live="polite">
+              <div className="text-center text-sm md:col-span-2" aria-live="polite">
                 {ok === true && (
                   <span className="text-emerald-400">
-                    Abrimos sua mensagem no WhatsApp (ou e-mail). Obrigado!
+                    Abrimos sua mensagem no WhatsApp ou no e-mail. Obrigado.
                   </span>
                 )}
-                {ok === false && <span className="text-red-400">Não foi possível enviar agora. Tente novamente.</span>}
+                {ok === false && (
+                  <span className="text-red-400">Não foi possível enviar agora. Tente novamente.</span>
+                )}
               </div>
             </form>
           </div>
 
-          {/* Rodapé da seção */}
-          <div className="mt-18 mb-18 text-center text-white text-xl">
-            <p className="font-semibold">Tudo pronto para começar?</p>
-            <p className="font-semibold">Seu projeto está prestes a ganhar forma!</p>
+          <div className="mb-18 mt-18 text-center text-xl text-white">
+            <p className="font-semibold">Diagnóstico claro, escopo objetivo e execução forte.</p>
+            <p className="font-semibold">Esse é o começo de um projeto com padrão ArpeX.</p>
           </div>
         </div>
       </Section>

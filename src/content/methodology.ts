@@ -1,39 +1,38 @@
-// src/content/methodology.ts
 export const steps = [
   {
     key: "plan",
-    title: "Planejamento Estratégico",
+    title: "Diagnóstico",
     desc:
-      "Entendimento completo do seu negócio e objetivos do site para alinhar expectativas e direcionar o projeto.",
+      "Entendemos o contexto do negócio, as dores atuais e os objetivos para definir a direção correta.",
   },
   {
     key: "content",
-    title: "Estruturação do Conteúdo",
+    title: "Escopo e proposta",
     desc:
-      "Organização lógica e clara das informações para facilitar a navegação e maximizar o impacto da mensagem.",
+      "Transformamos o diagnóstico em um plano claro, com prioridades, entregas, prazos e definição de valor.",
   },
   {
     key: "fe",
-    title: "Front-end",
+    title: "Protótipo e validação",
     desc:
-      "Desenvolvimento de um layout atraente e alinhado com a identidade da sua marca para engajar o usuário.",
+      "Quando faz sentido, validamos fluxos, telas e estrutura antes do desenvolvimento para reduzir risco e retrabalho.",
   },
   {
     key: "dev",
-    title: "Desenvolvimento Interativo",
+    title: "Desenvolvimento",
     desc:
-      "Implementação de funcionalidades que trazem dinamismo e usabilidade ao site.",
+      "Construímos a solução com foco em robustez, clareza operacional, experiência de uso e evolução futura.",
   },
   {
     key: "qa",
-    title: "Validação e Testes",
+    title: "Lançamento",
     desc:
-      "Testes minuciosos para assegurar que todas as funcionalidades estejam perfeitas em diferentes dispositivos.",
+      "Publicamos a entrega com validações finais, ajustes de qualidade e preparação do ambiente para uso real.",
   },
   {
     key: "ship",
-    title: "Publicação e Suporte",
+    title: "Ajustes e evolução",
     desc:
-      "Lançamento do site com todo o suporte necessário, monitoramento e melhoria contínua ao longo do tempo.",
+      "Acompanhamos os primeiros ciclos de uso e refinamos o que for necessário para consolidar o resultado.",
   },
 ] as const;

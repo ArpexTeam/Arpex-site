@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Section from "@/components/ui/section";
 import { H2, Sub } from "@/components/ui/heading";
 import { steps } from "@/content/methodology";
-// import NetworkBg from "@/components/decor/networkbg"; // se quiser usar, mantenha como antes
 
 function GlowIcon({ name }: { name: (typeof steps)[number]["key"] }) {
   const icon = {
@@ -19,16 +18,25 @@ function GlowIcon({ name }: { name: (typeof steps)[number]["key"] }) {
   }[name];
 
   return (
-    <div className="relative h-14 w-14 glow-dot">
-      {/* brilho */}
+    <div className="glow-dot relative h-14 w-14">
       <div className="absolute inset-0 rounded-full bg-brand/25 blur-[18px]" aria-hidden />
-      {/* anel base existente */}
-      <div className="absolute inset-0 rounded-full ring-2 bg-[color:var(--color-bg)]" aria-hidden />
-      {/* anel animado por cima */}
-      <svg viewBox="0 0 56 56" className="absolute inset-0 glow-stroke text-brand z-10" aria-hidden focusable="false">
-        <circle cx="28" cy="28" r="25" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+      <div className="absolute inset-0 rounded-full bg-[color:var(--color-bg)] ring-2" aria-hidden />
+      <svg
+        viewBox="0 0 56 56"
+        className="glow-stroke absolute inset-0 z-10 text-brand"
+        aria-hidden
+        focusable="false"
+      >
+        <circle
+          cx="28"
+          cy="28"
+          r="25"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
-      {/* ícone */}
       <svg viewBox="0 0 24 24" className="absolute inset-0 m-auto h-7 w-7 text-brand" aria-hidden>
         {icon}
       </svg>
@@ -47,31 +55,33 @@ export default function Methodology() {
       ([entry]) => {
         if (entry.isIntersecting) {
           setAnimate(true);
-          io.unobserve(el); // só 1x
+          io.unobserve(el);
         }
       },
       { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0.25 }
     );
+
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
-  const LINE_DURATION = 1.2; // s
-  const LINE_DELAY = 0.1; // s
+  const lineDuration = 1.2;
+  const lineDelay = 0.1;
 
   return (
     <Section
-      className="relative overflow-hidden py-28 bg-bg"
-      classNameContainer="md:mr-0 md:ml-auto mx-0 max-w-[88%]" // mantém seu baseline
+      id="metodologia"
+      className="relative overflow-hidden bg-bg py-28"
+      classNameContainer="mx-0 max-w-[88%] md:ml-auto md:mr-0"
     >
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[color:var(--color-surface)]/60 to-[color:var(--color-bg)]" />
 
       <div className="mx-auto w-full px-4">
-        <div className="text-center mb-24">
-          <H2 className="text-brand text-3xl md:text-4xl">Metodologia</H2>
+        <div className="mb-24 text-center">
+          <H2 className="text-3xl text-brand md:text-4xl">Como a ArpeX conduz cada solução</H2>
           <Sub className="mt-2 text-white/80">
-            Entenda nossa metodologia de criação e veja como cada etapa é
-            <br /> pensada para desenvolver seu site com excelência.
+            Do diagnóstico ao lançamento, cada etapa existe para reduzir risco,
+            <br /> dar clareza ao escopo e entregar uma solução com valor real.
           </Sub>
         </div>
 
@@ -79,22 +89,22 @@ export default function Methodology() {
           ref={wrapRef}
           className="relative"
           data-animate={animate ? "true" : "false"}
-       style={{
-          "--line-dur": `${LINE_DURATION}s`,
-          "--line-delay": `${LINE_DELAY}s`,
-        }}
+          style={
+            {
+              "--line-dur": `${lineDuration}s`,
+              "--line-delay": `${lineDelay}s`,
+            } as React.CSSProperties
+          }
           aria-label="Etapas da metodologia"
           role="list"
         >
-          {/* ===== Desktop/Tablet: linha horizontal (mantida 100% como antes) ===== */}
           <div className="pointer-events-none absolute left-0 right-0 top-[28px] hidden h-px bg-white/15 md:block" />
-          <div className="pointer-events-none absolute left-0 right-0 top-[28px] hidden h-px md:block overflow-hidden">
+          <div className="pointer-events-none absolute left-0 right-0 top-[28px] hidden h-px overflow-hidden md:block">
             <div className="methodology-line-progress h-px bg-white/40" />
           </div>
 
-          {/* ===== Mobile: trilho vertical + progresso ===== */}
           <div
-            className="md:hidden pointer-events-none absolute left-[28px] top-[28px] bottom-[28px] w-px overflow-hidden"
+            className="pointer-events-none absolute bottom-[28px] left-[28px] top-[28px] w-px overflow-hidden md:hidden"
             aria-hidden
           >
             <div className="methodology-vert-base absolute inset-0 bg-white/15" />
@@ -102,24 +112,23 @@ export default function Methodology() {
           </div>
 
           <ul className="grid gap-10 md:grid-cols-6">
-            {steps.map((s, i) => {
-              const t = i / Math.max(steps.length - 1, 1); // 0..1
-              const dotDelay = LINE_DELAY + LINE_DURATION * t;
+            {steps.map((step, index) => {
+              const progress = index / Math.max(steps.length - 1, 1);
+              const dotDelay = lineDelay + lineDuration * progress;
+
               return (
                 <li
-                  key={s.title}
-                  className="text-left relative md:static grid md:block grid-cols-[56px,1fr] items-start gap-4"
-                  style={{ "--dot-delay": `${dotDelay}s`} as React.CSSProperties}
+                  key={step.title}
+                  className="relative grid grid-cols-[56px,1fr] items-start gap-4 text-left md:block md:static"
+                  style={{ "--dot-delay": `${dotDelay}s` } as React.CSSProperties}
                   role="listitem"
                 >
-                  {/* conector curto entre os itens no mobile (acima do dot) */}
-              
                   <div className="col-[1]">
-                    <GlowIcon name={s.key} />
+                    <GlowIcon name={step.key} />
                   </div>
                   <div className="col-[2]">
-                    <h3 className="mt-2 md:mt-8 font-light text-lg text-white">{s.title}</h3>
-                    <p className="mt-2 md:mt-4 text-sm leading-relaxed text-white/70">{s.desc}</p>
+                    <h3 className="mt-2 text-lg font-light text-white md:mt-8">{step.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-white/70 md:mt-4">{step.desc}</p>
                   </div>
                 </li>
               );
@@ -128,12 +137,10 @@ export default function Methodology() {
         </div>
       </div>
 
-      {/* 1) estilos LOCAIS (linhas) */}
       <style jsx>{`
-        /* horizontal */
         .methodology-line-progress {
-          transform-origin: left;
           transform: scaleX(0);
+          transform-origin: left;
         }
         [data-animate="true"] .methodology-line-progress {
           animation: line-draw var(--line-dur) ease-out var(--line-delay) forwards;
@@ -144,10 +151,9 @@ export default function Methodology() {
           }
         }
 
-        /* vertical (mobile) */
         .methodology-vert-progress {
-          transform-origin: top;
           transform: scaleY(0);
+          transform-origin: top;
         }
         [data-animate="true"] .methodology-vert-progress {
           animation: line-draw-y var(--line-dur) ease-out var(--line-delay) forwards;
@@ -158,7 +164,6 @@ export default function Methodology() {
           }
         }
 
-        /* acessibilidade: reduzir movimento */
         @media (prefers-reduced-motion: reduce) {
           .methodology-line-progress,
           .methodology-vert-progress {
@@ -168,9 +173,7 @@ export default function Methodology() {
         }
       `}</style>
 
-      {/* 2) estilos GLOBAIS (atingem GlowIcon) */}
       <style jsx global>{`
-        /* bolinhas pop (md+) */
         @media (min-width: 768px) {
           .glow-dot {
             opacity: 0;
@@ -181,7 +184,7 @@ export default function Methodology() {
             animation: dot-pop 0.42s ease-out var(--dot-delay) forwards;
           }
         }
-        /* bolinhas pop (mobile) — mesma animação, só que sem esconder se reduzir movimento */
+
         @media (max-width: 767px) {
           .glow-dot {
             opacity: 0;
@@ -192,34 +195,49 @@ export default function Methodology() {
             animation: dot-pop 0.42s ease-out var(--dot-delay) forwards;
           }
         }
+
         @keyframes dot-pop {
-          0% { opacity: 0; transform: scale(0.75); }
-          60% { opacity: 1; transform: scale(1.08); }
-          100% { opacity: 1; transform: scale(1); }
+          0% {
+            opacity: 0;
+            transform: scale(0.75);
+          }
+          60% {
+            opacity: 1;
+            transform: scale(1.08);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
         }
 
-        /* traço do anel (stroke-dash) */
         .glow-stroke circle {
-          stroke-dasharray: 160; /* ~ 2πr (r≈25) */
+          stroke-dasharray: 160;
           stroke-dashoffset: 160;
         }
         [data-animate="true"] li .glow-stroke circle {
           animation: ring-dash 0.5s ease-out var(--dot-delay) forwards;
         }
         @keyframes ring-dash {
-          to { stroke-dashoffset: 0; }
+          to {
+            stroke-dashoffset: 0;
+          }
         }
 
-        /* mostrar anel base após o traço animado (md+) */
         @media (min-width: 768px) {
-          [data-animate="false"] .glow-dot > :nth-child(2) { opacity: 0; } /* 2º filho = anel base */
+          [data-animate="false"] .glow-dot > :nth-child(2) {
+            opacity: 0;
+          }
           [data-animate="true"] li .glow-dot > :nth-child(2) {
             animation: ring-base-in 1ms linear calc(var(--dot-delay) + 0.5s) forwards;
           }
-          @keyframes ring-base-in { to { opacity: 1; } }
+          @keyframes ring-base-in {
+            to {
+              opacity: 1;
+            }
+          }
         }
 
-        /* reduzir movimento: deixar tudo visível sem animação */
         @media (prefers-reduced-motion: reduce) {
           .glow-dot,
           .glow-stroke circle,

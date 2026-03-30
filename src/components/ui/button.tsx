@@ -1,4 +1,3 @@
-// components/ui/button.tsx
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
@@ -17,13 +16,11 @@ type BaseProps = {
   className?: string;
 };
 
-// Botão real
 type ButtonAsButton = BaseProps &
   Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children"> & {
-    href?: undefined; // não permite href neste ramo
+    href?: undefined;
   };
 
-// Link estilizado como botão
 type ButtonAsLink = BaseProps &
   Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "className" | "children"> & {
     href: string;
@@ -31,15 +28,23 @@ type ButtonAsLink = BaseProps &
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
-
 export function Button(props: ButtonProps): React.ReactElement {
   const { children, variant = "primary", className } = props;
   const cls = cn(base, styles[variant], className);
 
-  // Link (tem href:string)
   if (typeof (props as ButtonAsLink).href === "string") {
-    const { href, ...restLinkAll } = props as ButtonAsLink;
-    const { /* remove internos */ variant: _v, className: _c, children: _ch, ...anchorProps } = restLinkAll;
+    const {
+      href,
+      variant: linkVariant,
+      className: linkClassName,
+      children: linkChildren,
+      ...anchorProps
+    } = props as ButtonAsLink;
+
+    void linkVariant;
+    void linkClassName;
+    void linkChildren;
+
     return (
       <Link href={href} className={cls} {...anchorProps}>
         {children}
@@ -47,8 +52,17 @@ export function Button(props: ButtonProps): React.ReactElement {
     );
   }
 
-  // Botão (sem href)
-  const { variant: _v, className: _c, children: _ch, ...buttonProps } = props as ButtonAsButton;
+  const {
+    variant: buttonVariant,
+    className: buttonClassName,
+    children: buttonChildren,
+    ...buttonProps
+  } = props as ButtonAsButton;
+
+  void buttonVariant;
+  void buttonClassName;
+  void buttonChildren;
+
   return (
     <button className={cls} {...buttonProps}>
       {children}

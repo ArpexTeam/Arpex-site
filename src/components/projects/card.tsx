@@ -1,23 +1,15 @@
-// components/projects/card.tsx
 import Link from "next/link";
 import type { StaticImageData } from "next/image";
 
-
 type ImageSrc = string | StaticImageData;
 
-
-
 type ProjectCardProps = {
-  // quando não houver href, vira placeholder (não clicável)
   href?: string;
   external?: boolean;
-
   title?: string;
   subtitle?: string;
-
-  imageSrc?: ImageSrc; // pode ser "/imgs/x.jpg" ou URL externa
+  imageSrc?: ImageSrc;
   imageAlt?: string;
-
   ariaLabel?: string;
   className?: string;
 };
@@ -32,15 +24,12 @@ export default function ProjectCard({
   ariaLabel,
   className = "",
 }: ProjectCardProps) {
-
-    const resolvedSrc =
-    typeof imageSrc === "string" ? imageSrc : imageSrc?.src;
-
+  const resolvedSrc = typeof imageSrc === "string" ? imageSrc : imageSrc?.src;
   const isClickable = !!href;
   const label = ariaLabel ?? (title ? `Abrir ${title}` : "Abrir projeto");
 
   const root =
-    "group relative aspect-[4/3] rounded-xl border border-white/10 bg-white/[0.06] overflow-hidden " +
+    "group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-white/[0.06] " +
     "transition hover:border-white/20 focus-within:border-white/20 " +
     className;
 
@@ -48,9 +37,8 @@ export default function ProjectCard({
     "absolute inset-0 z-10 rounded-xl focus:outline-none focus-visible:ring-2 " +
     "focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#101010]";
 
-  const Content = (
+  const content = (
     <>
-      {/* Imagem de fundo (se existir) */}
       {imageSrc ? (
         <img
           src={resolvedSrc}
@@ -60,25 +48,17 @@ export default function ProjectCard({
         />
       ) : null}
 
-      {/* highlight sutil (por cima da imagem) */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent" />
+      <div className="absolute inset-0 bg-white/[0.03] opacity-0 transition group-hover:opacity-100" />
 
-      {/* hover leve */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-white/[0.03]" />
-
-      {/* Legenda (opcional) */}
-      {(title || subtitle) ? (
+      {title || subtitle ? (
         <div className="absolute inset-x-0 bottom-0 z-[5] p-4">
-          <div className="rounded-lg bg-black/35  border border-white/10 p-3">
-            {title ? (
-              <h3 className="text-white font-medium leading-tight">{title}</h3>
-            ) : null}
-            {subtitle ? (
-              <p className="mt-1 text-sm text-white/70">{subtitle}</p>
-            ) : null}
+          <div className="rounded-lg border border-white/10 bg-black/35 p-3">
+            {title ? <h3 className="font-medium leading-tight text-white">{title}</h3> : null}
+            {subtitle ? <p className="mt-1 text-sm text-white/70">{subtitle}</p> : null}
             {isClickable ? (
-              <p className="mt-3 text-sm text-white/70 group-hover:text-white transition">
-                Ver projeto →
+              <p className="mt-3 text-sm text-white/70 transition group-hover:text-white">
+                Ver projeto -&gt;
               </p>
             ) : (
               <p className="mt-3 text-sm text-white/50">Em breve</p>
@@ -87,7 +67,6 @@ export default function ProjectCard({
         </div>
       ) : null}
 
-      {/* Placeholder visual (se não tiver imagem) */}
       {!imageSrc ? (
         <div className="absolute inset-0 opacity-60">
           <div className="absolute left-4 top-4 h-2 w-24 rounded bg-white/10" />
@@ -97,24 +76,16 @@ export default function ProjectCard({
     </>
   );
 
-  // Placeholder (não clicável)
   if (!isClickable) {
-    return <div className={root}>{Content}</div>;
+    return <div className={root}>{content}</div>;
   }
 
-  // Clicável (interno/externo)
   return (
     <div className={root}>
-      {Content}
+      {content}
 
       {external ? (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={label}
-          className={overlay}
-        />
+        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={overlay} />
       ) : (
         <Link href={href} aria-label={label} className={overlay} />
       )}
