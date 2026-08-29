@@ -2,12 +2,14 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 
 const base =
-  "inline-flex items-center justify-center px-5 py-3 text-sm font-medium transition " +
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 disabled:opacity-60 disabled:pointer-events-none";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-7 py-3 text-[15px] font-semibold " +
+  "transition duration-200 focus-ring disabled:opacity-60 disabled:pointer-events-none";
 
 const styles = {
-  primary: "bg-brand text-black hover:opacity-90",
-  ghost: "border border-white/20 text-white/80 hover:text-white hover:bg-white/5",
+  primary: "bg-system text-black hover:brightness-110 active:translate-y-px",
+  ghost:
+    "border border-champagne/40 text-ivory hover:border-system/60 hover:text-system",
+  line: "px-0 py-0 min-h-0 text-ivory hover:text-system",
 } as const;
 
 type BaseProps = {
@@ -45,10 +47,13 @@ export function Button(props: ButtonProps): React.ReactElement {
     void linkClassName;
     void linkChildren;
 
+    const isInternal = href.startsWith("/");
+    const Wrapper = isInternal ? Link : "a";
+
     return (
-      <Link href={href} className={cls} {...anchorProps}>
+      <Wrapper href={href} className={cls} {...anchorProps}>
         {children}
-      </Link>
+      </Wrapper>
     );
   }
 

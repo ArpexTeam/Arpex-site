@@ -10,12 +10,7 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        brand: "#00CF77",
-        bg: "#04150E",
-        surface: "#002415",
-      },
-      container: { center: true, padding: "1rem", screens: { "2xl": "1280px" } },
+      container: { center: true, padding: "1rem", screens: { "2xl": "1320px" } },
     },
   },
   plugins: [],

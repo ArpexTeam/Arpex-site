@@ -1,51 +1,29 @@
 @import "tailwindcss";
-/* app/globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* src/app/globals.css */
-
-@theme {
-  --color-brand: #00CF77;
-  --color-bg: #04150E;
-  --color-surface: #002415;
-}
-
-/* Oculta a barra de rolagem nativa (mantém o scroll) */
-.no-scrollbar {
-  -ms-overflow-style: none;   /* IE e Edge antigo */
-  scrollbar-width: none;      /* Firefox */
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;              /* Chrome, Safari, Opera, Edge (Chromium) */
-}
-
-
-:root { --radius: 16px; }
-
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "../styles/tokens.css";
+@import "../styles/motion.css";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-system) 30%, transparent);
+  color: var(--color-ivory);
 }

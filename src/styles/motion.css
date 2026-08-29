@@ -1,0 +1,77 @@
+/* Controlador global de motion — durações, easings e regras de reduced motion.
+   Fase 1: apenas tokens e utilitários estáticos. As timelines GSAP/WebGL das
+   fases seguintes devem ler estas variáveis em vez de repetir valores. */
+
+:root {
+  --ease-arpex: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-arpex-in: cubic-bezier(0.5, 0, 0.75, 0);
+  --duration-fast: 200ms;
+  --duration-base: 320ms;
+  --duration-slow: 700ms;
+  --duration-peel: 800ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 1ms;
+    --duration-base: 1ms;
+    --duration-slow: 1ms;
+    --duration-peel: 1ms;
+  }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-system);
+  outline-offset: 3px;
+}
+
+/* Máscara de linha para revelação de texto (usada nas fases de motion) */
+.line-mask {
+  overflow: hidden;
+  display: block;
+}
+
+/* Cursor contextual "Abrir case": some o cursor nativo só quando o pill
+   customizado está ativo (desktop com hover real, sem reduced-motion). */
+html.has-case-cursor [data-cursor="open-case"] {
+  cursor: none;
+}
+
+/* View Transitions entre arquivo de projetos e página do case */
+::view-transition-group(*) {
+  animation-duration: var(--duration-slow);
+}
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-arpex);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
