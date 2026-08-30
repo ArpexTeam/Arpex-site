@@ -75,3 +75,73 @@ html.has-case-cursor [data-cursor="open-case"] {
     scroll-behavior: auto !important;
   }
 }
+
+/* Cena "Fragment Flow" (Mapa Operacional) — sticky real via CSS, não
+   GSAP pin. A altura estendida e o sticky só existem quando a experiência
+   completa vai rodar (desktop + sem reduced-motion); do contrário a seção
+   fica em fluxo normal, sem espaços vazios. O JS espelha exatamente esta
+   mesma condição via gsap.matchMedia() para decidir qual timeline montar. */
+.fragment-flow-section {
+  position: relative;
+}
+.fragment-flow-stage {
+  position: static;
+  height: auto;
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .fragment-flow-section {
+    height: 210svh;
+  }
+  .fragment-flow-stage {
+    position: sticky;
+    top: 72px;
+    height: calc(100svh - 72px);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Nós do mapa: quadrantes absolutos só na versão sticky; em fluxo normal
+   (mobile/tablet/reduced-motion) empilham como itens normais da lista. */
+.fragment-node {
+  position: static;
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .fragment-node {
+    position: absolute;
+    width: min(46%, 260px);
+  }
+}
+
+/* Conector em loop (SVG) só existe na versão espacial de desktop — no
+   fluxo mobile a conexão é comunicada pela linha vertical simples. */
+.fragment-flow-connector {
+  display: none;
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .fragment-flow-connector {
+    display: block;
+  }
+}
+
+/* Linha vertical simples — só no fluxo mobile/tablet (inverso da anterior). */
+.fragment-flow-mobile-line {
+  display: block;
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .fragment-flow-mobile-line {
+    display: none;
+  }
+}
+
+/* Espaço para a linha mobile não ficar sob o texto dos cards; some no
+   palco espacial de desktop, onde os fragmentos ocupam a área inteira. */
+.fragment-flow-list {
+  padding-left: 22px;
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .fragment-flow-list {
+    padding-left: 0;
+  }
+}
