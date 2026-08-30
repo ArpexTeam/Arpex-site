@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Container from "@/components/ui/container";
 import { H1, Label, Sub } from "@/components/ui/heading";
 import ProjectArchive from "@/components/projects/project-archive";
+import ScrollRail from "@/components/projects/scroll-rail";
+import ScrollRailMobile from "@/components/projects/scroll-rail-mobile";
 
 export const metadata: Metadata = {
   title: "Projetos",
@@ -27,7 +29,17 @@ export default function ProjetosPage() {
 
       <section className="pb-28 md:pb-36">
         <Container>
-          <ProjectArchive />
+          <div className="relative">
+            <ScrollRail targetId="projects-scroller" easing={1.8} />
+            <ScrollRailMobile targetId="projects-scroller" easing={1.8} />
+
+            <div
+              id="projects-scroller"
+              className="no-scrollbar relative pl-4 md:h-[70vh] md:overflow-y-auto md:overscroll-contain md:pl-0 md:pr-4"
+            >
+              <ProjectArchive />
+            </div>
+          </div>
         </Container>
       </section>
     </main>

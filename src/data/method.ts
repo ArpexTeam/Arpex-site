@@ -1,5 +1,8 @@
+export type MethodStepIcon = "plan" | "content" | "fe" | "dev" | "qa" | "ship";
+
 export type MethodStep = {
   index: string;
+  icon: MethodStepIcon;
   title: string;
   description: string;
 };
@@ -7,25 +10,43 @@ export type MethodStep = {
 export const methodSteps: MethodStep[] = [
   {
     index: "01",
-    title: "Mapear",
+    icon: "plan",
+    title: "Diagnóstico",
     description:
-      "Entendemos o contexto do negócio, os gargalos e os objetivos antes de propor qualquer tecnologia.",
+      "Entendemos o contexto do negócio, as dores atuais e os objetivos para definir a direção correta.",
   },
   {
     index: "02",
-    title: "Desenhar",
+    icon: "content",
+    title: "Escopo e proposta",
     description:
-      "Transformamos o diagnóstico em plano claro: prioridades, escopo, prazos e arquitetura da solução.",
+      "Transformamos o diagnóstico em um plano claro, com prioridades, entregas, prazos e definição de valor.",
   },
   {
     index: "03",
-    title: "Construir",
+    icon: "fe",
+    title: "Protótipo e validação",
     description:
-      "Desenvolvemos com foco em robustez, clareza operacional e experiência de uso real.",
+      "Quando faz sentido, validamos fluxos, telas e estrutura antes do desenvolvimento para reduzir risco e retrabalho.",
   },
   {
     index: "04",
-    title: "Evoluir",
+    icon: "dev",
+    title: "Desenvolvimento",
+    description:
+      "Construímos a solução com foco em robustez, clareza operacional, experiência de uso e evolução futura.",
+  },
+  {
+    index: "05",
+    icon: "qa",
+    title: "Lançamento",
+    description:
+      "Publicamos a entrega com validações finais, ajustes de qualidade e preparação do ambiente para uso real.",
+  },
+  {
+    index: "06",
+    icon: "ship",
+    title: "Ajustes e evolução",
     description:
       "Acompanhamos os primeiros ciclos de uso e refinamos o que for necessário para consolidar o resultado.",
   },
