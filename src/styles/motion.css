@@ -170,3 +170,61 @@ html.has-case-cursor [data-cursor="open-case"] {
     width: min(100%, 560px, calc(100svh - var(--header-height) - (var(--frag-pad, 80px) * 2) - 40px));
   }
 }
+
+/* Cena "Pipeline Vivo" (ArpeX CRM) — mesmo princípio do Fragment Flow acima:
+   sticky real via CSS, ativado pela MESMA condição que o gsap.matchMedia()
+   de crm-showcase.tsx (isFull). Nunca edite uma sem editar a outra. */
+.crm-story-section {
+  position: relative;
+}
+.crm-story-stage {
+  position: static;
+  height: auto;
+}
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .crm-story-section {
+    height: 190svh;
+  }
+  .crm-story-stage {
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100svh - var(--header-height));
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    --crm-pad: clamp(20px, 5svh, 80px);
+  }
+  .crm-story-pad {
+    padding-block: var(--crm-pad, 64px);
+  }
+  .crm-story-visual {
+    max-height: calc(100svh - var(--header-height) - (var(--crm-pad, 64px) * 2) - 40px);
+  }
+}
+
+/* Chips e rotas de convergência: só existem na cena espacial de desktop —
+   no fluxo mobile a entrada dos dados é comunicada pelo próprio reveal do
+   quadro, sem os fragmentos flutuantes. */
+.crm-story-chip,
+.crm-story-routes {
+  display: none;
+}
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .crm-story-chip,
+  .crm-story-routes {
+    display: block;
+  }
+}
+
+/* Colunas do pipeline: empilhadas (fluxo vertical compacto) fora do modo
+   completo; grade de 4 colunas apenas quando a experiência sticky roda —
+   a mesma condição exata do JS decide entre "top" (vertical) e "left"
+   (horizontal) para mover a oportunidade entre as etapas. */
+.crm-board-columns {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .crm-board-columns {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

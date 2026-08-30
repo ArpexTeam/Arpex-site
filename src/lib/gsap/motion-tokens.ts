@@ -31,3 +31,23 @@ export const FRAGMENT_FLOW_TIMELINE = {
   integrated: 8.6,
   end: 10,
 } as const;
+
+/**
+ * Timeline da cena "Pipeline Vivo" (ArpeX CRM) — mesma lógica de unidades
+ * arbitrárias (total = 10) mapeadas 1:1 ao progresso do scroll (0–100%)
+ * via scrub. Os seis estados narrativos do briefing (dispersão →
+ * convergência → entrada → acompanhamento → fechamento → quadro final)
+ * ficam nos limites abaixo; trackingA/trackingB dividem o estado 4 nas
+ * duas transições do pipeline (Leads→Qualificação, Qualificação→Proposta).
+ */
+export const CRM_STORY_TIMELINE = {
+  total: 10,
+  dispersion: 0,
+  convergence: 1.8,
+  entry: 3.8,
+  trackingA: 5.7,
+  trackingB: 6.8,
+  closing: 7.9,
+  final: 9.2,
+  end: 10,
+} as const;
