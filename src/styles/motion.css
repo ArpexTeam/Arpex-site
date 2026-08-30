@@ -78,9 +78,10 @@ html.has-case-cursor [data-cursor="open-case"] {
 
 /* Cena "Fragment Flow" (Mapa Operacional) — sticky real via CSS, não
    GSAP pin. A altura estendida e o sticky só existem quando a experiência
-   completa vai rodar (desktop + sem reduced-motion); do contrário a seção
-   fica em fluxo normal, sem espaços vazios. O JS espelha exatamente esta
-   mesma condição via gsap.matchMedia() para decidir qual timeline montar. */
+   completa vai rodar. Esta condição precisa ser IDÊNTICA, termo a termo, à
+   query "isFull" registrada em operational-map.tsx (gsap.matchMedia) — se
+   uma mudar sem a outra, a seção pode ficar sticky/alta sem a timeline
+   completa (ou vice-versa). Nunca edite uma sem editar a outra. */
 .fragment-flow-section {
   position: relative;
 }
@@ -88,17 +89,22 @@ html.has-case-cursor [data-cursor="open-case"] {
   position: static;
   height: auto;
 }
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .fragment-flow-section {
     height: 210svh;
   }
   .fragment-flow-stage {
     position: sticky;
-    top: 72px;
-    height: calc(100svh - 72px);
+    top: var(--header-height);
+    height: calc(100svh - var(--header-height));
     overflow: hidden;
     display: flex;
     align-items: center;
+    /* Padding vertical do conteúdo interno, compartilhado com
+       .fragment-flow-pad e .fragment-flow-visual abaixo — encolhe em
+       viewports baixos (1366×768, 1024×768) para que a composição caiba
+       sem cortar (o palco usa overflow: hidden). */
+    --frag-pad: clamp(20px, 5svh, 96px);
   }
 }
 
@@ -107,7 +113,7 @@ html.has-case-cursor [data-cursor="open-case"] {
 .fragment-node {
   position: static;
 }
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .fragment-node {
     position: absolute;
     width: min(46%, 260px);
@@ -119,7 +125,7 @@ html.has-case-cursor [data-cursor="open-case"] {
 .fragment-flow-connector {
   display: none;
 }
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .fragment-flow-connector {
     display: block;
   }
@@ -129,7 +135,7 @@ html.has-case-cursor [data-cursor="open-case"] {
 .fragment-flow-mobile-line {
   display: block;
 }
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .fragment-flow-mobile-line {
     display: none;
   }
@@ -140,8 +146,27 @@ html.has-case-cursor [data-cursor="open-case"] {
 .fragment-flow-list {
   padding-left: 22px;
 }
-@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .fragment-flow-list {
     padding-left: 0;
+  }
+}
+
+/* Padding vertical do conteúdo dentro do palco sticky — substitui o py-20
+   md:py-24 fixo do Tailwind apenas no modo completo, para caber em telas
+   baixas (ver .fragment-flow-stage acima). Fora dessa condição o padding
+   do Tailwind permanece intacto (fluxo normal não sofre corte). */
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .fragment-flow-pad {
+    padding-block: var(--frag-pad, 80px);
+  }
+}
+
+/* Quadro visual (fragmentos + conector): quadrado que responde tanto à
+   largura da coluna quanto à altura útil do palco, para nunca ultrapassar
+   a viewport (o palco corta com overflow: hidden). */
+@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .fragment-flow-visual {
+    width: min(100%, 560px, calc(100svh - var(--header-height) - (var(--frag-pad, 80px) * 2) - 40px));
   }
 }

@@ -186,8 +186,19 @@ export default function OperationalMap() {
           .to([frame, glow], { scale: 1.03, duration: T.integrated - T.connection }, "connection");
 
         tl.addLabel("integrated", T.integrated);
-        // 86%–100%: rótulo final some, glow se estabiliza, cena segura o estado por um instante.
-        tl.to(result, { opacity: 1, y: 0, duration: (T.end - T.integrated) * 0.7, ease: "power2.out" }, "integrated");
+        // 86%–100%: rótulo final aparece, glow se estabiliza — e a partir daí a cena
+        // segura o estado (spacer sem tween) até o fim real da timeline (T.end),
+        // garantindo um hold verdadeiro no sistema integrado.
+        const revealDuration = (T.end - T.integrated) * 0.7;
+        tl.to(result, { opacity: 1, y: 0, duration: revealDuration, ease: "power2.out" }, "integrated");
+        tl.to({}, { duration: T.end - T.integrated - revealDuration });
+
+        if (process.env.NODE_ENV !== "production") {
+          console.assert(
+            Math.abs(tl.duration() - T.end) < 0.001,
+            `Fragment Flow timeline duration (${tl.duration()}) não corresponde ao planejado (${T.end}) — o hold final vai ficar deslocado.`
+          );
+        }
 
         return tl;
       }
@@ -228,13 +239,19 @@ export default function OperationalMap() {
 
       const mm = gsap.matchMedia(sectionRef.current ?? undefined);
 
+      // isFull/isCompact são mutuamente exclusivos e cobrem 100% dos casos
+      // (isCompact é literalmente "not isFull"), então os dois caminhos do
+      // branch abaixo são sempre alcançáveis — nunca há um estado em que
+      // nenhum dos dois corre. isFull precisa casar, termo a termo, com a
+      // media query de .fragment-flow-stage em motion.css (o reduced-motion
+      // já foi tratado acima, antes do matchMedia).
       mm.add(
         {
-          isDesktop: "(min-width: 900px) and (prefers-reduced-motion: no-preference) and (pointer: fine)",
+          isFull: "(min-width: 900px) and (pointer: fine)",
+          isCompact: "(max-width: 899.98px), (pointer: coarse)",
         },
         (context) => {
-          const lowPower = (navigator.hardwareConcurrency ?? 8) <= 4;
-          const useFull = Boolean(context.conditions?.isDesktop) && !lowPower;
+          const useFull = Boolean(context.conditions?.isFull);
 
           const tl = useFull ? buildFullTimeline() : buildCompactTimeline();
           let cleanupMouse = () => {};
@@ -276,7 +293,7 @@ export default function OperationalMap() {
   return (
     <section ref={sectionRef} data-scene="fragment-flow" className="fragment-flow-section bg-ink">
       <div ref={stageRef} className="fragment-flow-stage w-full">
-        <Container className="w-full py-20 md:py-24">
+        <Container className="fragment-flow-pad w-full py-20 md:py-24">
           <div className="grid grid-cols-1 items-center gap-14 md:grid-cols-[0.85fr_1.15fr] md:gap-10">
             <div ref={copyRef} className="max-w-[46ch]">
               <Label>Mapa operacional</Label>
@@ -298,7 +315,7 @@ export default function OperationalMap() {
               </div>
             </div>
 
-            <div className="relative mx-auto aspect-square w-full max-w-[560px] overflow-hidden">
+            <div className="fragment-flow-visual relative mx-auto aspect-square w-full max-w-[560px] overflow-hidden">
               <div ref={backgroundRef} aria-hidden className="pointer-events-none absolute inset-[-12%] -z-10">
                 <div
                   className="absolute inset-0 rounded-full blur-3xl"

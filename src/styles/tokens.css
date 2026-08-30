@@ -29,6 +29,12 @@
   --container-max: 1200px;
 }
 
+:root {
+  /* Altura real do header fixo (ver src/components/layout/header.tsx: h-[72px]) —
+     usada por cenas sticky para calcular a altura útil do palco. */
+  --header-height: 72px;
+}
+
 @media (min-width: 768px) {
   :root {
     --text-display: 3.5rem; /* ~56px desktop */
