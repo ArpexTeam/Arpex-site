@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap/gsap";
 import { CRM_STORY_TIMELINE as T } from "@/lib/gsap/motion-tokens";
 import { Button } from "@/components/ui/button";
 import { Label, H2 } from "@/components/ui/heading";
@@ -19,9 +19,10 @@ const pipelineColumns = [
 /**
  * Fragmentos de dados dispersos (mesmo material narrativo do Hero e do Mapa
  * Operacional) que convergem para a entrada do pipeline. Coordenadas em %
- * dentro de .crm-story-visual — usadas tanto para posicionar os chips via
- * CSS (top/left) quanto como coordenadas do SVG de rotas (viewBox 0 0 100
- * 100 com preserveAspectRatio="none", para casar 1:1 com as porcentagens).
+ * dentro de .crm-story-visual — posição CSS estática (nunca animada; ver
+ * useGSAP abaixo, que move os chips por x/y a partir daqui) e, ao mesmo
+ * tempo, coordenadas do SVG de rotas (viewBox 0 0 100 100 com
+ * preserveAspectRatio="none", para casar 1:1 com as porcentagens).
  */
 const dataChips = [
   { label: "Planilha", top: 6, left: -4, rotate: -6 },
@@ -30,14 +31,9 @@ const dataChips = [
   { label: "E-mail", top: 88, left: 64, rotate: 4 },
 ] as const;
 
-/** Ponto de entrada comum (borda da coluna "Leads") para onde os chips convergem. */
+/** Ponto de entrada comum (borda da coluna "Leads"), posição CSS estática —
+ * ver #entryMarker, usado só como referência de medição para os chips. */
 const ENTRY = { top: 46, left: 6 };
-
-/** Posições (% dentro de .crm-board-columns) por onde a oportunidade passa. */
-const OPP_POSITION = {
-  full: { left: [4, 29, 54, 79], top: 64 },
-  compact: { left: 8, top: [4, 29, 54, 79] },
-} as const;
 
 const stateTexts = [
   "Informação dispersa.",
@@ -47,11 +43,27 @@ const stateTexts = [
   "Pipeline, cadência e follow-up em um único fluxo.",
 ];
 
+/** Centro (em px) da caixa de layout de um elemento, relativo ao seu
+ * offsetParent — deliberadamente offsetLeft/offsetTop (não
+ * getBoundingClientRect): são imunes a transform, então continuam
+ * corretos mesmo com o elemento já deslocado por um x/y de GSAP no meio
+ * do scrub, sem acumular erro entre uma medição e a próxima. */
+function centerOf(el: HTMLElement) {
+  return { x: el.offsetLeft + el.offsetWidth / 2, y: el.offsetTop + el.offsetHeight / 2 };
+}
+
+function deltaCenter(fromEl: HTMLElement, toEl: HTMLElement) {
+  const a = centerOf(fromEl);
+  const b = centerOf(toEl);
+  return { dx: b.x - a.x, dy: b.y - a.y };
+}
+
 export default function CrmShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
+  const entryMarkerRef = useRef<HTMLSpanElement>(null);
   const chipRefs = useRef<Array<HTMLDivElement | null>>([]);
   const routeRefs = useRef<Array<SVGPathElement | null>>([]);
   const boardRef = useRef<HTMLDivElement>(null);
@@ -65,7 +77,6 @@ export default function CrmShowcase() {
 
   useGSAP(
     () => {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const chips = chipRefs.current.filter(Boolean) as HTMLDivElement[];
       const routes = routeRefs.current.filter(Boolean) as SVGPathElement[];
       const columns = columnRefs.current.filter(Boolean) as HTMLDivElement[];
@@ -76,46 +87,81 @@ export default function CrmShowcase() {
       const opportunity = opportunityRef.current;
       const nextStep = nextStepRef.current;
       const continuity = continuityRef.current;
+      const entryMarker = entryMarkerRef.current;
 
       function neutralizeColumns() {
         gsap.set(columns, { borderColor: "var(--color-smoke)", backgroundColor: "rgba(255,255,255,0)" });
         gsap.set(accents, { scaleX: 0 });
       }
 
+      /** Origem estática da oportunidade: centralizada em "Leads" (columns[0]).
+       * left/top são setados uma única vez, como o CANTO superior esquerdo
+       * (centro de columns[0] menos a metade das próprias dimensões da
+       * oportunidade) — não usamos xPercent/yPercent para centralizar
+       * porque isso deslocaria o centro visual sem mover offsetLeft/Top,
+       * e centerOf() (usada tanto para a oportunidade quanto para as
+       * colunas) assume que left/top já é o canto, não o centro. Todo
+       * deslocamento entre colunas a partir daqui usa x/y (transform). */
+      function positionOpportunityAtOrigin() {
+        if (!opportunity || !columns[0]) return;
+        const origin = centerOf(columns[0]);
+        gsap.set(opportunity, {
+          left: origin.x - opportunity.offsetWidth / 2,
+          top: origin.y - opportunity.offsetHeight / 2,
+          x: 0,
+          y: 0,
+        });
+      }
+
+      /** Aplica instantaneamente (sem tween) o deslocamento até a coluna
+       * `index`, a partir da origem em Leads. Usado no estado final com
+       * reduced motion e como base do reveal mobile/tablet. */
+      function setOpportunityAtColumn(index: number) {
+        if (!opportunity || !columns[index]) return;
+        positionOpportunityAtOrigin();
+        if (index === 0) return;
+        const d = deltaCenter(opportunity, columns[index]);
+        gsap.set(opportunity, { x: d.dx, y: d.dy });
+      }
+
       function setFinalStateInstantly() {
-        gsap.set(chips, { opacity: 0 });
+        gsap.set(chips, { opacity: 0, x: 0, y: 0 });
         gsap.set(routes, { strokeDashoffset: 0 });
         gsap.set(board, { opacity: 1, scale: 1 });
         gsap.set(bg, { yPercent: 0 });
         neutralizeColumns();
         gsap.set(columns[3], { borderColor: "var(--color-system)", backgroundColor: "rgba(0,207,119,0.08)" });
         gsap.set(accents[3], { scaleX: 1 });
-        gsap.set(opportunity, {
-          opacity: 1,
-          left: `${OPP_POSITION.full.left[3]}%`,
-          top: `${OPP_POSITION.full.top}%`,
-        });
+        // Independente do layout real renderizado pelo CSS (colunas em
+        // linha no desktop, empilhadas em reduced motion/mobile — ver
+        // .crm-board-columns em motion.css), a medição por offsetLeft/Top
+        // acerta o centro de "Fechado" nos dois casos sem precisar saber
+        // qual orientação está ativa.
+        setOpportunityAtColumn(3);
+        gsap.set(opportunity, { opacity: 1 });
         gsap.set(nextStep, { opacity: 0 });
         gsap.set(continuity, { opacity: 1 });
         gsap.set(stateTextEls, { opacity: 0 });
         gsap.set(stateTextEls[stateTextEls.length - 1], { opacity: 1 });
       }
 
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       if (reduce) {
         setFinalStateInstantly();
-        return;
+        // Instantâneo, mas ainda depende da caixa real das colunas — se a
+        // janela for redimensionada/rotacionada, refaz a medição.
+        window.addEventListener("resize", setFinalStateInstantly);
+        return () => {
+          window.removeEventListener("resize", setFinalStateInstantly);
+        };
       }
 
       /** Timeline completa, ligada ao scroll (scrub), para o palco sticky de desktop. */
       function buildFullTimeline() {
-        if (!board || !opportunity) return null;
+        if (!board || !opportunity || !entryMarker) return null;
 
-        gsap.set(chips, {
-          opacity: 1,
-          top: (i: number) => `${dataChips[i].top}%`,
-          left: (i: number) => `${dataChips[i].left}%`,
-          rotate: (i: number) => dataChips[i].rotate,
-        });
+        gsap.set(chips, { opacity: 1, x: 0, y: 0, rotate: (i: number) => dataChips[i].rotate, scale: 1 });
         routes.forEach((path) => {
           const len = path.getTotalLength();
           gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
@@ -123,7 +169,8 @@ export default function CrmShowcase() {
         gsap.set(board, { opacity: 0.55, scale: 0.97 });
         gsap.set(bg, { yPercent: -1.5 });
         neutralizeColumns();
-        gsap.set(opportunity, { opacity: 0, left: `${OPP_POSITION.full.left[0]}%`, top: `${OPP_POSITION.full.top}%` });
+        positionOpportunityAtOrigin();
+        gsap.set(opportunity, { opacity: 0 });
         gsap.set(nextStep, { opacity: 0 });
         gsap.set(continuity, { opacity: 0 });
         gsap.set(stateTextEls, { opacity: 0, y: 6 });
@@ -162,16 +209,17 @@ export default function CrmShowcase() {
         tl.addLabel("dispersion", T.dispersion);
         tl.to(bg, { yPercent: 0.5, duration: T.convergence - T.dispersion }, "dispersion");
 
-        // Estado 2 — Convergência (18–38%): chips viajam até a entrada comum,
-        // as rotas desenham por trás deles (stroke-dashoffset).
+        // Estado 2 — Convergência (18–38%): chips viajam por x/y até a
+        // entrada comum (função recalculável — ver invalidateOnRefresh
+        // acima), as rotas desenham por trás deles (stroke-dashoffset).
         tl.addLabel("convergence", T.convergence);
         swapState(1, "convergence");
         chips.forEach((chip, i) => {
           tl.to(
             chip,
             {
-              top: `${ENTRY.top}%`,
-              left: `${ENTRY.left}%`,
+              x: () => deltaCenter(chip, entryMarker).dx,
+              y: () => deltaCenter(chip, entryMarker).dy,
               rotate: 0,
               scale: 0.9,
               duration: (T.entry - T.convergence) * 0.85,
@@ -196,28 +244,61 @@ export default function CrmShowcase() {
         tl.to(nextStep, { opacity: 1, duration: 0.3 }, "entry+=0.4");
 
         // Estado 4 — Acompanhamento (57–79%): a oportunidade percorre
-        // Leads → Qualificação → Proposta, coluna ativa muda a cada chegada.
+        // Leads → Qualificação → Proposta por x/y (origem fixa em Leads,
+        // deslocamento recalculável a partir dela — ver deltaCenter),
+        // coluna ativa muda a cada chegada.
         tl.addLabel("trackingA", T.trackingA);
         swapState(3, "trackingA");
-        tl.to(opportunity, { left: `${OPP_POSITION.full.left[1]}%`, duration: T.trackingB - T.trackingA, ease: "power2.inOut" }, "trackingA");
+        tl.to(
+          opportunity,
+          {
+            x: () => deltaCenter(opportunity, columns[1]).dx,
+            y: () => deltaCenter(opportunity, columns[1]).dy,
+            duration: T.trackingB - T.trackingA,
+            ease: "power2.inOut",
+          },
+          "trackingA"
+        );
         activateColumn(1, "trackingA+=" + (T.trackingB - T.trackingA) * 0.7);
 
         tl.addLabel("trackingB", T.trackingB);
-        tl.to(opportunity, { left: `${OPP_POSITION.full.left[2]}%`, duration: T.closing - T.trackingB, ease: "power2.inOut" }, "trackingB");
+        tl.to(
+          opportunity,
+          {
+            x: () => deltaCenter(opportunity, columns[2]).dx,
+            y: () => deltaCenter(opportunity, columns[2]).dy,
+            duration: T.closing - T.trackingB,
+            ease: "power2.inOut",
+          },
+          "trackingB"
+        );
         activateColumn(2, "trackingB+=" + (T.closing - T.trackingB) * 0.7);
 
         // Estado 5 — Fechamento e continuidade (79–92%): chega a "Fechado",
         // indicador de continuidade aparece — o processo não termina na venda.
         tl.addLabel("closing", T.closing);
         swapState(4, "closing");
-        tl.to(opportunity, { left: `${OPP_POSITION.full.left[3]}%`, duration: (T.final - T.closing) * 0.75, ease: "power2.inOut" }, "closing");
+        tl.to(
+          opportunity,
+          {
+            x: () => deltaCenter(opportunity, columns[3]).dx,
+            y: () => deltaCenter(opportunity, columns[3]).dy,
+            duration: (T.final - T.closing) * 0.75,
+            ease: "power2.inOut",
+          },
+          "closing"
+        );
         activateColumn(3, "closing+=" + (T.final - T.closing) * 0.55);
         tl.to(nextStep, { opacity: 0, duration: 0.25 }, "closing+=" + (T.final - T.closing) * 0.55);
         tl.to(continuity, { opacity: 1, duration: 0.35, ease: "power2.out" }, "closing+=" + (T.final - T.closing) * 0.7);
 
         // Estado 6 — Quadro final (92–100%): hold real, nada mais se move.
+        // Posição explícita ("final", não sequencial): sem ela, o spacer
+        // encadeia depois do fade da continuidade (que termina em ~9.16,
+        // antes do label) em vez de a partir de T.final — encurtando o
+        // hold e fazendo tl.duration() fechar em 9.96 em vez de 10.
         tl.addLabel("final", T.final);
-        tl.to({}, { duration: T.end - T.final });
+        tl.to({}, { duration: T.end - T.final }, "final");
 
         if (process.env.NODE_ENV !== "production") {
           console.assert(
@@ -226,23 +307,36 @@ export default function CrmShowcase() {
           );
         }
 
-        return tl;
+        // Refaz a origem (columns[0]) antes de cada recálculo de scroll —
+        // os x/y das tweens acima já são funções e se recalculam sozinhos,
+        // mas o ponto de partida (left/top estático da oportunidade)
+        // também precisa acompanhar um reflow real do grid no resize.
+        const onRefresh = () => positionOpportunityAtOrigin();
+        ScrollTrigger.addEventListener("refresh", onRefresh);
+
+        return { tl, onRefresh };
       }
 
       /**
        * Mobile/tablet: sem sticky, sem scrub. Um reveal curto (uma vez) e a
        * oportunidade avança uma única vez pelas quatro etapas empilhadas
-       * verticalmente (ver .crm-board-columns em motion.css).
+       * verticalmente (ver .crm-board-columns em motion.css). A posição de
+       * cada etapa é medida (centerOf/deltaCenter), não um percentual fixo —
+       * as colunas empilhadas têm alturas diferentes por causa da
+       * quantidade de ghost cards.
        */
       function buildCompactTimeline() {
-        gsap.set(chips, { opacity: 0 });
+        gsap.set(chips, { opacity: 0, x: 0, y: 0 });
         gsap.set(board, { opacity: 0, y: 16 });
         neutralizeColumns();
-        gsap.set(opportunity, { opacity: 0, left: `${OPP_POSITION.compact.left}%`, top: `${OPP_POSITION.compact.top[0]}%` });
+        positionOpportunityAtOrigin();
+        gsap.set(opportunity, { opacity: 0 });
         gsap.set(nextStep, { opacity: 0 });
         gsap.set(continuity, { opacity: 0 });
         gsap.set(stateTextEls, { opacity: 0 });
         gsap.set(stateTextEls[0], { opacity: 1 });
+
+        let activeIndex = 0;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -256,17 +350,35 @@ export default function CrmShowcase() {
         tl.to(board, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" })
           .to(opportunity, { opacity: 1, duration: 0.35 }, "-=0.2")
           .to(stateTextEls[0], { opacity: 0, duration: 0.2 }, "+=0.15")
-          .to(stateTextEls[stateTextEls.length - 1], { opacity: 1, duration: 0.2 }, "<");
+          .to(stateTextEls[stateTextEls.length - 1], { opacity: 1, duration: 0.2 }, "<")
+          .to(columns[0], { borderColor: "var(--color-system)", backgroundColor: "rgba(0,207,119,0.08)", duration: 0.25 }, "<");
 
         [1, 2, 3].forEach((i) => {
           tl.to(columns[i - 1], { borderColor: "var(--color-smoke)", backgroundColor: "rgba(255,255,255,0)", duration: 0.25 })
             .to(columns[i], { borderColor: "var(--color-system)", backgroundColor: "rgba(0,207,119,0.08)", duration: 0.25 }, "<")
-            .to(opportunity, { top: `${OPP_POSITION.compact.top[i]}%`, duration: 0.4, ease: "power2.inOut" }, "<");
+            .to(
+              opportunity,
+              {
+                x: () => (opportunity ? deltaCenter(opportunity, columns[i]).dx : 0),
+                y: () => (opportunity ? deltaCenter(opportunity, columns[i]).dy : 0),
+                duration: 0.4,
+                ease: "power2.inOut",
+                onStart: () => {
+                  activeIndex = i;
+                },
+              },
+              "<"
+            );
         });
-        tl.to(columns[0], { borderColor: "var(--color-system)", backgroundColor: "rgba(0,207,119,0.08)", duration: 0.25 }, 0);
         tl.to(continuity, { opacity: 1, duration: 0.3 });
 
-        return tl;
+        // Timeline não-scrub, sem ScrollTrigger contínuo depois de tocar —
+        // um resize/orientação depois disso deixaria a posição obsoleta,
+        // então reaplica a etapa ativa instantaneamente (sem animação).
+        const onResize = () => setOpportunityAtColumn(activeIndex);
+        window.addEventListener("resize", onResize);
+
+        return { tl, onResize };
       }
 
       const mm = gsap.matchMedia(sectionRef.current ?? undefined);
@@ -282,8 +394,19 @@ export default function CrmShowcase() {
         },
         (context) => {
           const useFull = Boolean(context.conditions?.isFull);
-          const tl = useFull ? buildFullTimeline() : buildCompactTimeline();
+          const built = useFull ? buildFullTimeline() : buildCompactTimeline();
           let cleanupMouse = () => {};
+          let cleanupResize = () => {};
+
+          if (built) {
+            if ("onRefresh" in built) {
+              cleanupResize = () => ScrollTrigger.removeEventListener("refresh", built.onRefresh);
+            } else if ("onResize" in built) {
+              cleanupResize = () => window.removeEventListener("resize", built.onResize);
+            }
+          }
+
+          const tl = built?.tl ?? null;
 
           if (useFull && tl && visualRef.current) {
             const el = visualRef.current;
@@ -310,6 +433,7 @@ export default function CrmShowcase() {
 
           return () => {
             cleanupMouse();
+            cleanupResize();
           };
         }
       );
@@ -331,7 +455,12 @@ export default function CrmShowcase() {
             <p className="mt-3 text-[length:var(--text-body-lg)] text-system">{arpexCrm.tagline}</p>
             <p className="mt-5 leading-relaxed text-muted">{arpexCrm.description}</p>
 
-            <div className="relative mt-8 min-h-[3.25rem]" aria-live="polite">
+            {/* Puramente visual — opacity não remove conteúdo da árvore de
+                acessibilidade, então o cross-fade fica oculto de leitores de
+                tela (aria-hidden) e uma única descrição estática abaixo
+                cobre a narrativa inteira, sem anunciar 5 frases durante o
+                scroll. */}
+            <div className="relative mt-8 min-h-[5.75rem] sm:min-h-[4.5rem] md:min-h-[3.5rem]" aria-hidden="true">
               {stateTexts.map((text, i) => (
                 <p
                   key={text}
@@ -345,6 +474,11 @@ export default function CrmShowcase() {
                 </p>
               ))}
             </div>
+            <p className="sr-only">
+              O ArpeX CRM leva a operação comercial da informação dispersa a um pipeline único: cada
+              oportunidade entra organizada, é acompanhada de Leads a Proposta e chega ao fechamento com
+              cadência e follow-up conectados no mesmo fluxo.
+            </p>
 
             <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3">
               {arpexCrm.features.map((f) => (
@@ -400,6 +534,15 @@ export default function CrmShowcase() {
                   />
                 ))}
               </svg>
+
+              {/* Marcador de medição (0×0, invisível) na entrada do pipeline —
+                  alvo de x/y dos chips via deltaCenter(chip, entryMarker). */}
+              <span
+                ref={entryMarkerRef}
+                aria-hidden
+                className="pointer-events-none absolute h-0 w-0"
+                style={{ top: `${ENTRY.top}%`, left: `${ENTRY.left}%` }}
+              />
 
               {dataChips.map((chip, i) => (
                 <div
