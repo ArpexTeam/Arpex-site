@@ -272,8 +272,8 @@ export default function Hero() {
               ))}
             </h1>
             <p data-hero-reveal className="mt-6 max-w-[34em] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg/85 lg:max-w-[min(34em,var(--hero-copy-max))]">
-              Organizamos sua presença digital, seu atendimento e seus processos com sites, automações e sistemas
-              desenvolvidos para a sua realidade.
+              Sites, automações e sistemas sob medida para organizar a presença, o atendimento e a operação da sua
+              empresa.
             </p>
             <div data-hero-reveal className="mt-8 flex flex-wrap items-center gap-3">
               <Button href={contactHref("entender")} arrow>

@@ -26,7 +26,7 @@ export const H1 = ({ children, className, id }: Props) => (
 );
 
 export const H2 = ({ children, className, id }: Props) => (
-  <h2 id={id} className={cn("font-display text-balance text-[length:var(--text-h2)] text-fg", className)}>
+  <h2 id={id} className={cn("font-title text-balance text-[length:var(--text-h2)] text-fg", className)}>
     {children}
   </h2>
 );

@@ -24,8 +24,4 @@ export const faq: FaqItem[] = [
     q: "O que recebo na entrega?",
     a: "A solução publicada, as informações de acesso e do que foi configurado, e o suporte definido na proposta para ajustes.",
   },
-  {
-    q: "A placa publica uma avaliação sozinha?",
-    a: "Não. A placa só abre a página de avaliação. O cliente escolhe a nota, escreve e decide se envia.",
-  },
 ];

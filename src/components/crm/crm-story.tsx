@@ -101,22 +101,13 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
         <div className="mx-auto grid h-full w-full max-w-[1440px] items-center gap-12 px-[var(--gutter)] py-24 lg:grid-cols-12 lg:gap-x-10 lg:py-0 lg:pt-[var(--header-height)]">
           <div className="lg:col-span-4">
             <p className="font-kicker text-signal">Atendimento · ArpeX CRM</p>
-            <Title id="crm-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
+            <Title id="crm-title" className="font-title mt-4 text-balance text-[length:var(--text-h2)] text-fg">
               A próxima ação sempre à vista.
             </Title>
             <p className="mt-5 max-w-[44ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg lg:text-[length:var(--text-body)] scene-short:hidden">
-              Contatos, oportunidades e acompanhamento comercial organizados em um só lugar. Um produto próprio da ArpeX.
+              Para empresas que atendem e vendem pelo WhatsApp: contatos, oportunidades e retornos organizados em um só
+              lugar.
             </p>
-            <dl className="mt-5 flex flex-wrap gap-2 text-[13px] scene-short:hidden">
-              <div className="rounded-full border border-rule px-3 py-1.5">
-                <dt className="sr-only">Situação</dt>
-                <dd className="text-fg">Publicado · acesso com login</dd>
-              </div>
-              <div className="rounded-full border border-rule px-3 py-1.5">
-                <dt className="sr-only">Telas</dt>
-                <dd className="text-fg-muted">Telas reais · dados de demonstração</dd>
-              </div>
-            </dl>
 
             <ol className="mt-6 hidden lg:block">
               {crmStory.map((s, i) => {
@@ -156,6 +147,8 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
 
           {/* Modo completo: pilha em perspectiva. Fluxo normal: sequência vertical. */}
           <div className="relative lg:col-span-8">
+            {/* identificação discreta, junto das telas (uma vez por página) */}
+            <p className="only-flow mb-8 text-[length:var(--text-small)] text-fg-muted">Telas reais do ArpeX CRM, com dados de demonstração.</p>
             <div className="only-full relative aspect-[16/10] w-full [transform-style:preserve-3d]">
               {crmStory.map((s) => (
                 <div key={s.key} data-crm-screen className="frame absolute inset-0 will-change-transform">
@@ -175,6 +168,7 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
                 </div>
               ))}
             </div>
+            <p className="only-full mt-6 text-[length:var(--text-small)] text-fg-muted">Telas reais do ArpeX CRM, com dados de demonstração.</p>
 
             <ol className="only-flow space-y-14">
               {crmStory.map((s, i) => (

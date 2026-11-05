@@ -26,17 +26,17 @@ export const plaqueSteps = [
   {
     key: "aproxime",
     title: "Aproxime ou escaneie.",
-    text: "O cliente encosta o celular na placa (NFC) ou aponta a câmera para o QR Code.",
+    text: "Encostando o celular (NFC) ou com a câmera (QR Code).",
   },
   {
     key: "acesse",
-    title: "Acesse a página.",
-    text: "Abre a página de avaliação da sua empresa, sem aplicativo e sem cadastro na placa.",
+    title: "Abra a página.",
+    text: "A página de avaliação da sua empresa abre no navegador, sem aplicativo.",
   },
   {
     key: "avalie",
-    title: "Deixe sua avaliação.",
-    text: "O cliente escolhe a nota, escreve e decide se envia. Abrir o link não publica nada.",
+    title: "O cliente avalia.",
+    text: "Ele escolhe a nota, escreve e decide se publica. Abrir o link não publica nada.",
   },
 ] as const;
 
@@ -49,8 +49,7 @@ export const plaqueUses = [
 
 export const plaqueCustomization = [
   "A identidade da sua empresa: logotipo, cores e frase de chamada.",
-  "O destino do link: a página de avaliação da sua empresa ou outro endereço que você aprovar.",
-  "QR Code e NFC apontando para o mesmo lugar, para quem não tem NFC no celular.",
+  "O destino do link, definido com você antes da produção: normalmente a página de avaliação da sua empresa.",
 ];
 
 /** Itens a confirmar antes de publicar especificações comerciais. */

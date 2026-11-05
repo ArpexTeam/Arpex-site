@@ -12,22 +12,21 @@ import luxConfig from "@/assets/projects/lux-bar/monte-seu-bar.webp";
 export default function Backstage({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
   const Title = headingLevel === 2 ? "h2" : "h3";
   return (
-    <section aria-labelledby="bastidores-title" className="surface-mineral py-24 md:py-36">
+    <section aria-labelledby="bastidores-title" className="surface-mineral py-20 md:py-28">
       <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
         <div className="grid gap-6 md:grid-cols-12 md:gap-x-6">
           <div className="md:col-span-8">
             <p className="font-kicker text-accent">Bastidores</p>
-            <Title id="bastidores-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
+            <Title id="bastidores-title" className="font-title mt-3 text-balance text-[length:var(--text-h2)] text-fg">
               O trabalho por trás de cada entrega.
             </Title>
-            <p className="mt-6 max-w-[60ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">
-              Não mostramos só a tela final. Estes são materiais reais do processo: o que é entregue junto, o que é
-              renderizado e o que é testado antes de publicar.
+            <p className="mt-4 max-w-[56ch] text-pretty text-[length:var(--text-lead)] leading-[1.5] text-fg-muted">
+              Materiais reais do processo: o que vai junto da entrega, o que é renderizado e o que é testado.
             </p>
           </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-12 gap-x-4 gap-y-12 md:mt-24 md:gap-x-6">
+        <div className="mt-10 grid grid-cols-12 gap-x-4 gap-y-12 md:mt-14 md:gap-x-6">
           <figure className="col-span-12 sm:col-span-6 md:col-span-4">
             <div className="frame relative aspect-[3/4] bg-white">
               <Image src={cartaoQr} alt="Cartão com QR Code criado para o Chef Bruno Sushi" fill sizes="(min-width: 768px) 30vw, 92vw" className="object-cover" />

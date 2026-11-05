@@ -9,21 +9,15 @@ type Props = {
   className?: string;
 };
 
-/** Abertura das páginas internas: título grande à esquerda, apoio à direita. */
+/** Abertura das páginas internas: título da página e, logo abaixo, um apoio curto. */
 export default function PageIntro({ eyebrow, title, lead, surface = "surface-ink", children, className }: Props) {
   return (
-    <section className={cn(surface, "pt-[calc(var(--header-height)+72px)] pb-16 md:pt-[calc(var(--header-height)+112px)] md:pb-24", className)}>
-      <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
-        <div className="md:col-span-8">
-          <p className="font-kicker text-accent">{eyebrow}</p>
-          <h1 className="font-display mt-4 text-balance text-[length:var(--text-display)] text-fg">{title}</h1>
-        </div>
-        {(lead || children) && (
-          <div className="md:col-span-4 md:self-end">
-            {lead && <p className="max-w-[60ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">{lead}</p>}
-            {children}
-          </div>
-        )}
+    <section className={cn(surface, "pt-[calc(var(--header-height)+56px)] pb-12 md:pt-[calc(var(--header-height)+88px)] md:pb-16", className)}>
+      <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
+        <p className="font-kicker text-accent">{eyebrow}</p>
+        <h1 className="font-display mt-4 max-w-[18ch] text-balance text-[length:var(--text-display)] text-fg">{title}</h1>
+        {lead && <p className="mt-5 max-w-[56ch] text-pretty text-[length:var(--text-lead)] leading-[1.5] text-fg-muted">{lead}</p>}
+        {children}
       </div>
     </section>
   );

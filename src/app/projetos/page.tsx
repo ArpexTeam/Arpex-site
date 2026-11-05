@@ -19,16 +19,16 @@ export default function ProjetosPage() {
       <PageIntro
         eyebrow="Projetos"
         title="O que construímos e o que isso resolveu."
-        lead="Sites, sistemas, uma carta digital em 3D e o nosso próprio CRM. Em cada trabalho, o que o cliente precisava resolver e o que foi entregue. As imagens são capturas das entregas publicadas."
+        lead="Sites, sistemas, uma carta digital em 3D e o nosso próprio CRM. As imagens são capturas das entregas; o detalhe de cada uma está no case."
       />
 
-      <section aria-label="Arquivo de projetos" className="surface-ink pb-24 md:pb-36">
+      <section aria-label="Arquivo de projetos" className="surface-ink pb-20 md:pb-28">
         <ol className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
           {listedProjects.map((p, i) => (
             <li key={p.slug} className="border-t border-rule last:border-b">
               <TransitionLink
                 href={`/projetos/${p.slug}`}
-                className="focus-ring group/row relative grid grid-cols-12 items-center gap-x-6 gap-y-6 py-10 md:py-12"
+                className="focus-ring group/row relative grid grid-cols-12 items-center gap-x-6 gap-y-5 py-8 md:py-10"
               >
                 {/* cor do projeto entra discretamente no hover/foco */}
                 <span
@@ -38,22 +38,12 @@ export default function ProjetosPage() {
                 />
                 <span className="font-label relative col-span-12 text-fg-muted md:col-span-1">{String(i + 1).padStart(2, "0")}</span>
                 <div className="relative col-span-12 md:col-span-5">
-                  <h2 className="font-display text-[length:var(--text-h2)] text-fg">{p.title}</h2>
-                  <p className="mt-3 text-[length:var(--text-small)] text-fg-muted">
-                    {p.client !== p.title ? `${p.client} · ` : ""}
-                    {p.categories.join(" · ")}
-                  </p>
-                  {p.problem && (
-                    <p className="mt-5 max-w-[52ch] text-pretty leading-relaxed text-fg">
-                      <span className="font-kicker block text-signal">O que precisava resolver</span>
-                      {p.problem}
-                    </p>
-                  )}
-                  <p className="mt-4 max-w-[52ch] text-pretty leading-relaxed text-fg-muted">
-                    <span className="font-kicker block text-fg">O que construímos</span>
-                    {p.summary}
-                  </p>
-                  <p className="mt-5 inline-flex items-center gap-2 text-[length:var(--text-small)] text-fg">
+                  {/* lista para comparar: nome, tipo, síntese, situação; o resto fica no case */}
+                  <p className="font-kicker text-signal">{p.type}</p>
+                  <h2 className="font-title mt-2 text-[length:var(--text-h2)] text-fg">{p.title}</h2>
+                  {p.client !== p.title && <p className="mt-1 text-fg-muted">{p.client}</p>}
+                  <p className="mt-4 max-w-[48ch] text-pretty leading-relaxed text-fg-muted">{p.summary}</p>
+                  <p className="mt-4 inline-flex items-center gap-2 text-[length:var(--text-small)] text-fg">
                     <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: p.palette.accent === "#121212" ? "#00cf77" : p.palette.accent }} />
                     {p.status.label}
                   </p>
@@ -85,7 +75,7 @@ export default function ProjetosPage() {
         </ol>
 
         <div className="mx-auto mt-16 flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-6 px-[var(--gutter)]">
-          <p className="max-w-[52ch] text-pretty text-fg">Tem uma necessidade parecida? Conte o que está acontecendo na sua empresa.</p>
+          <p className="max-w-[52ch] text-pretty text-fg">Tem uma necessidade parecida? Conte o que está acontecendo.</p>
           <Button href={contactHref("entender")} arrow>
             Conversar sobre meu negócio
           </Button>

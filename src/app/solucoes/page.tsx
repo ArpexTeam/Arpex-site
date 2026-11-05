@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import PageIntro from "@/components/layout/page-intro";
-import Method from "@/components/method/method";
 import SolutionDemoView from "@/components/solutions/solution-demos";
 import { Arrow, Button } from "@/components/ui/button";
 import { solutions } from "@/data/solutions";
@@ -54,7 +53,7 @@ export default function SolucoesPage() {
       <PageIntro
         eyebrow="Soluções"
         title="Presença, atendimento e operação."
-        lead="A ArpeX entende a realidade da sua empresa e indica a solução adequada: um site, o Perfil da Empresa no Google, uma placa, uma automação, um aplicativo ou um sistema sob medida. Você começa pelo que pesa mais hoje."
+        lead="Você não precisa contratar tudo. Veja a necessidade que cada frente atende, o que entregamos e como começar."
       />
 
       <nav aria-label="Frentes" className="surface-ink border-y border-rule">
@@ -77,7 +76,7 @@ export default function SolucoesPage() {
             key={s.slug}
             id={s.slug}
             aria-labelledby={`${s.slug}-title`}
-            className={`${light ? "surface-mineral" : "surface-ink"} relative scroll-mt-[var(--header-height)] py-20 md:py-32`}
+            className={`${light ? "surface-mineral" : "surface-ink"} relative scroll-mt-[var(--header-height)] py-20 md:py-28`}
           >
             {/* endereços da versão com quatro frentes continuam chegando aqui */}
             {s.legacyAnchors.map((a) => (
@@ -85,94 +84,76 @@ export default function SolucoesPage() {
             ))}
             <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
               <div className={`md:col-span-6 lg:col-span-5 ${light ? "md:order-2 md:col-start-7 lg:col-start-8" : ""}`}>
+                {/* necessidade (contexto) → entregas (lista) → como começar (ação) */}
                 <p className="font-label text-accent">{s.index}</p>
-                <h2 id={`${s.slug}-title`} className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
+                <h2 id={`${s.slug}-title`} className="font-title mt-3 text-balance text-[length:var(--text-h2)] text-fg">
                   {s.name}
                 </h2>
-                <p className="font-heading mt-4 text-balance text-[length:var(--text-h3)] text-fg">{s.promise}</p>
+                <p className="font-heading mt-3 text-balance text-[length:var(--text-h3)] text-fg">{s.promise}</p>
+                <p className="mt-4 max-w-[52ch] text-pretty leading-relaxed text-fg-muted">{s.need}</p>
 
-                <dl className="mt-10 space-y-8">
-                  <div>
-                    <dt className="font-kicker text-accent">Quando faz sentido</dt>
-                    <dd className="mt-2 text-pretty leading-relaxed text-fg">{s.need}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-kicker text-accent">Como ajudamos</dt>
-                    <dd className="mt-2 text-pretty leading-relaxed text-fg-muted">{s.explanation}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-kicker text-accent">O que podemos construir</dt>
-                    <dd className="mt-3">
-                      <ul className="space-y-2.5 leading-relaxed text-fg">
-                        {s.delivery.map((d) => (
-                          <li key={d} className="flex gap-3">
-                            <span aria-hidden className="mt-[0.65em] h-1 w-1 shrink-0 rounded-full bg-current" />
-                            {d}
-                          </li>
-                        ))}
-                      </ul>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="font-kicker text-accent">Por onde começar</dt>
-                    <dd className="mt-2 text-pretty leading-relaxed text-fg">{s.start}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-kicker text-accent">Exemplos reais</dt>
-                    <dd className="mt-3 flex flex-wrap gap-2">
-                      {s.examples.map((slug) => {
-                        const p = getProjectBySlug(slug);
-                        if (!p) return null;
-                        return (
-                          <Link
-                            key={slug}
-                            href={`/projetos/${slug}`}
-                            className="focus-ring group/btn inline-flex min-h-11 items-center gap-2 rounded-full border border-rule px-4 text-[length:var(--text-small)] text-fg transition-colors hover:border-fg"
-                          >
-                            {p.title}
-                            <Arrow className="h-3.5 w-3.5" />
-                          </Link>
-                        );
-                      })}
-                    </dd>
-                  </div>
-                </dl>
+                <h3 className="font-kicker mt-8 text-accent">O que entregamos</h3>
+                <ul className="mt-3 space-y-2.5 leading-relaxed text-fg">
+                  {s.delivery.map((d) => (
+                    <li key={d} className="flex gap-3">
+                      <span aria-hidden className="mt-[0.65em] h-1 w-1 shrink-0 rounded-full bg-current" />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
 
-                <div className="mt-10">
-                  <Button href={contactHref(s.interest)} variant={light ? "solid" : "primary"} arrow>
-                    {s.cta}
-                  </Button>
+                <div className="mt-8 border-t border-rule pt-6">
+                  <h3 className="font-kicker text-accent">Como começar</h3>
+                  <p className="mt-2 max-w-[52ch] text-pretty leading-relaxed text-fg">{s.start}</p>
+                  <div className="mt-5">
+                    <Button href={contactHref(s.interest)} variant={light ? "solid" : "primary"} arrow>
+                      {s.cta}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
               <div className={`md:col-span-6 ${light ? "md:order-1 md:col-start-1" : "md:col-start-7"} md:self-start`}>
                 <FrontVisual slug={s.slug} />
+                <p className="mt-5 flex flex-wrap items-center gap-2 text-[length:var(--text-small)] text-fg-muted">
+                  Exemplos:
+                  {s.examples.map((slug) => {
+                    const p = getProjectBySlug(slug);
+                    if (!p) return null;
+                    return (
+                      <Link
+                        key={slug}
+                        href={`/projetos/${slug}`}
+                        className="focus-ring group/btn inline-flex min-h-10 items-center gap-1.5 rounded-full border border-rule px-3.5 text-fg transition-colors hover:border-fg"
+                      >
+                        {p.title}
+                        <Arrow className="h-3.5 w-3.5" />
+                      </Link>
+                    );
+                  })}
+                </p>
               </div>
             </div>
           </section>
         );
       })}
 
-      <section className="surface-paper py-20 md:py-28">
-        <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
-          <h2 className="font-display text-balance text-[length:var(--text-h2)] text-fg md:col-span-7">
-            Comece por uma necessidade. A estrutura cresce junto.
-          </h2>
-          <div className="md:col-span-5 md:self-end">
-            <p className="max-w-[60ch] text-pretty leading-relaxed text-fg">
-              As frentes conversam entre si: um formulário pode alimentar o acompanhamento de contatos, um cadastro pode
-              disparar um lembrete, uma placa leva à página de avaliação. Cada uma entra quando fizer sentido para você.
+      <section aria-labelledby="comecar-title" className="surface-paper py-16 md:py-20">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-[var(--gutter)] md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 id="comecar-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg">
+              Não sabe por onde começar?
+            </h2>
+            <p className="mt-3 max-w-[52ch] text-pretty leading-relaxed text-fg-muted">
+              Conte o que está acontecendo. As frentes se conectam aos poucos: um formulário alimenta o acompanhamento de
+              contatos, um cadastro dispara um lembrete.
             </p>
-            <div className="mt-6">
-              <Button href={contactHref("entender")} variant="solid" arrow>
-                Conversar sobre meu negócio
-              </Button>
-            </div>
           </div>
+          <Button href={contactHref("entender")} variant="solid" arrow>
+            Conversar sobre meu negócio
+          </Button>
         </div>
       </section>
-
-      <Method surface="surface-mineral" />
     </main>
   );
 }

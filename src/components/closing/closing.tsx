@@ -104,10 +104,9 @@ export default function Closing() {
       />
 
       <div className="relative mx-auto w-full max-w-[1440px] px-[var(--gutter)] text-center">
-        <p className="font-kicker text-signal">Próximo passo</p>
         <h2
           id="encerramento-title"
-          className="font-display mx-auto mt-6 max-w-[17ch] text-balance text-[length:var(--text-hero)] text-fg"
+          className="font-display mx-auto max-w-[17ch] text-balance text-[length:var(--text-hero)] text-fg"
         >
           {words.map((w, i) => (
             <span key={i}>
@@ -127,9 +126,8 @@ export default function Closing() {
             </span>
           ))}
         </h2>
-        <p className="mx-auto mt-8 max-w-[52ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">
-          Conte o que está tomando tempo, dificultando sua rotina ou o que você quer construir. A ArpeX ajuda a
-          identificar por onde começar.
+        <p className="mx-auto mt-6 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.5] text-fg">
+          Conte o que está tomando tempo ou o que você quer construir. Ajudamos a definir por onde começar.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Button href={contactHref("entender")} arrow>

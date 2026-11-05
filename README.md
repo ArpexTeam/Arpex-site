@@ -18,4 +18,4 @@ npm run build && npm start
 - `src/assets/projects/` — capturas reais dos trabalhos (origem em `docs/refatoracao/README.md`).
 - `scripts/render-plaque-poster.mjs` — regenera o poster da placa depois de mudar `src/data/plaque.ts`.
 
-Decisões, validações, medições e pendências de material: [docs/refatoracao/README.md](docs/refatoracao/README.md) (refatoração) e [docs/ajuste-posicionamento/README.md](docs/ajuste-posicionamento/README.md) (posicionamento, conteúdo e tipografia, com capturas antes/depois).
+Decisões, validações, medições e pendências de material: [docs/refatoracao/README.md](docs/refatoracao/README.md) (refatoração) , [docs/ajuste-posicionamento/README.md](docs/ajuste-posicionamento/README.md) (posicionamento, conteúdo e tipografia) e [docs/refinamento-hierarquia/README.md](docs/refinamento-hierarquia/README.md) (hierarquia, quantidade de texto e ritmo), todos com capturas antes/depois.

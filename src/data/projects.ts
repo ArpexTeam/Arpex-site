@@ -56,6 +56,8 @@ export type Project = {
   slug: string;
   title: string;
   client: string;
+  /** tipo de solução, em poucas palavras (listas e capítulos) */
+  type: string;
   /** frentes (categorias) com evidência da entrega */
   categories: string[];
   summary: string;
@@ -86,6 +88,7 @@ export const projects: Project[] = [
     slug: "carta-toricelli",
     title: "Carta de vinhos 3D",
     client: "Toricelli Panetteria",
+    type: "Carta digital em 3D para tablets",
     categories: ["Experiência digital", "Aplicativo web (PWA)"],
     summary:
       "Uma carta para tablets que se folheia como um livro. Ao tocar um vinho, a garrafa 3D sai do rótulo e vai ao palco, sem trocar de tela.",
@@ -108,7 +111,7 @@ export const projects: Project[] = [
       urlLabel: "Abrir a carta",
       checkedAt,
     },
-    note: "Rótulos e imagens das garrafas são provisórios: foram gerados a partir dos dados da carta até a chegada das artes oficiais.",
+    note: "Os rótulos das garrafas são provisórios, até a chegada das artes oficiais.",
     cover: { src: torVinhos, alt: "Tela da carta Toricelli com a garrafa Guaspari Vale da Pedra Syrah em 3D ao lado da ficha do vinho", kind: "desktop" },
     gallery: [
       { src: torCarta, alt: "Carta aberta como livro: sumário à esquerda e página de tintos à direita", kind: "desktop", caption: "A carta abre como um livro, com sumário e páginas por tipo." },
@@ -125,6 +128,7 @@ export const projects: Project[] = [
     slug: "chef-bruno",
     title: "Chef Bruno Sushi",
     client: "Chef Bruno Sushi",
+    type: "Site com painel de conteúdo",
     categories: ["Presença digital", "Painel de conteúdo", "Google e SEO"],
     summary:
       "Site editorial para um chef que leva o sushi ao endereço do evento, com cardápio, modalidades e pedido de orçamento — atualizável pelo próprio cliente.",
@@ -165,6 +169,7 @@ export const projects: Project[] = [
     slug: "lux-bar",
     title: "Lux Bartenders",
     client: "Lux Bartenders",
+    type: "Site com configurador de eventos",
     categories: ["Presença digital", "Experiência digital"],
     summary:
       "Site para um bar de eventos que faz o visitante ver o drink e montar o próprio bar antes de pedir a proposta.",
@@ -198,6 +203,7 @@ export const projects: Project[] = [
     slug: "honoratto-tattoo",
     title: "Honoratto Tattoo",
     client: "Honoratto Tattoo",
+    type: "Site de portfólio",
     categories: ["Presença digital"],
     summary:
       "Site de portfólio para um estúdio de tatuagem autoral: o trabalho em primeiro plano e o orçamento a um clique.",
@@ -223,6 +229,7 @@ export const projects: Project[] = [
     slug: "flor-de-maria-vip",
     title: "Flor de Maria VIP",
     client: "Flor de Maria",
+    type: "Sistema de lembretes",
     categories: ["Sistema sob medida", "Automação"],
     summary:
       "Sistema de lembretes para uma floricultura: o cliente cadastra as datas importantes e recebe um aviso no WhatsApp antes de cada uma.",
@@ -237,8 +244,8 @@ export const projects: Project[] = [
       "Painel administrativo de usuários, datas e opções",
       "Mensagens de lembrete pelo WhatsApp, em modo manual ou automático",
     ],
-    status: { label: "Sistema desenvolvido · domínio público em verificação" },
-    note: "O endereço flordemariavip.com.br não respondeu na verificação de 04/11/2026; a captura mostra a página de apresentação.",
+    status: { label: "Sistema desenvolvido" },
+    note: "A imagem mostra a página de apresentação do sistema.",
     cover: { src: florLanding, alt: "Página de apresentação da Flor de Maria VIP: “Nunca mais perca aniversário, bodas ou datas especiais”", kind: "desktop" },
     gallery: [],
     palette: { bg: "#f6efec", fg: "#3a1512", muted: "#6e4b46", accent: "#8e2a23", dark: false },
@@ -248,6 +255,7 @@ export const projects: Project[] = [
     slug: "arpex-crm",
     title: "ArpeX CRM",
     client: "Produto próprio",
+    type: "CRM · produto próprio",
     categories: ["Produto próprio", "Sistema"],
     summary:
       "CRM próprio da ArpeX: o dia começa pela próxima oportunidade, o modo foco prepara a mensagem e o pipeline mostra o que avançou.",
@@ -256,8 +264,8 @@ export const projects: Project[] = [
     solution:
       "Tela “Hoje” com a próxima oportunidade e a fila do dia, modo foco com contexto e mensagem pronta para o WhatsApp, pipeline em tabela ou fluxo, métricas e financeiro.",
     deliverables: ["Hoje e fila do dia", "Modo foco com mensagem pronta", "Pipeline em tabela e fluxo", "Follow-ups, prospecção e modelos de mensagem", "Métricas, financeiro e relatórios"],
-    status: { label: "Produto publicado · acesso com login", url: "/ecossistema", urlLabel: "Conhecer o produto" },
-    note: "Telas reais do produto com dados de demonstração.",
+    status: { label: "Produto publicado, com acesso por login", url: "/ecossistema", urlLabel: "Conhecer o produto" },
+    note: "Telas reais do produto, com dados de demonstração.",
     cover: { src: crmHoje, alt: "Tela Hoje do ArpeX CRM com a próxima oportunidade e a fila do dia (dados de demonstração)", kind: "desktop" },
     gallery: [
       { src: crmModoFoco, alt: "Modo foco do ArpeX CRM com a mensagem pronta para o WhatsApp (dados de demonstração)", kind: "desktop" },
@@ -272,6 +280,7 @@ export const projects: Project[] = [
     slug: "dalury",
     title: "Dalury",
     client: "Dalury",
+    type: "Projeto",
     categories: [],
     summary: "Este trabalho ainda não tem material liberado para publicação.",
     deliverables: [],

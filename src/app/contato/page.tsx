@@ -18,12 +18,11 @@ export default function ContatoPage() {
           {/* ordem no celular: título → formulário → canais diretos */}
           <div className="lg:col-span-5 lg:row-start-1">
             <p className="font-kicker text-accent">Contato</p>
-            <h1 className="font-display mt-4 text-balance text-[length:var(--text-display)] text-fg">
+            <h1 className="font-display mt-4 max-w-[14ch] text-balance text-[length:var(--text-display)] text-fg">
               Vamos falar do seu negócio.
             </h1>
             <p className="mt-6 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">
-              Pode ser uma necessidade específica, como um site ou uma placa, ou a vontade de organizar melhor a rotina. Se
-              ainda não sabe por onde começar, a conversa serve para isso.
+              Um site, uma placa ou a rotina que está pesando. Duas linhas bastam para começar.
             </p>
           </div>
 
@@ -69,9 +68,9 @@ export default function ContatoPage() {
         </div>
       </section>
 
-      <section aria-labelledby="faq-title" className="surface-paper py-24 md:py-32">
+      <section aria-labelledby="faq-title" className="surface-paper py-20 md:py-28">
         <div className="mx-auto grid w-full max-w-[1440px] gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
-          <h2 id="faq-title" className="font-display text-balance text-[length:var(--text-h2)] text-fg md:col-span-4">
+          <h2 id="faq-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg md:col-span-4">
             Dúvidas frequentes
           </h2>
           <div className="md:col-span-7 md:col-start-6">

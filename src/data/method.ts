@@ -9,21 +9,21 @@ export const methodSteps: MethodStep[] = [
   {
     index: "01",
     title: "Entender",
-    description: "Conhecemos o negócio, a rotina da equipe e o que precisa melhorar primeiro.",
+    description: "Conhecemos o negócio, a rotina e o que precisa melhorar primeiro.",
   },
   {
     index: "02",
     title: "Definir",
-    description: "Escolhemos as prioridades e planejamos uma solução proporcional à necessidade, com proposta por escrito.",
+    description: "Priorizamos e planejamos uma solução do tamanho da necessidade.",
   },
   {
     index: "03",
     title: "Construir e validar",
-    description: "Desenvolvemos em etapas e conferimos o funcionamento com quem vai usar, no celular e no computador.",
+    description: "Desenvolvemos em etapas e testamos com quem vai usar.",
   },
   {
     index: "04",
     title: "Acompanhar",
-    description: "Depois da entrega, ajustamos e evoluímos a solução conforme o projeto e o suporte contratado.",
+    description: "Ajustamos e evoluímos a solução conforme o suporte contratado.",
   },
 ];

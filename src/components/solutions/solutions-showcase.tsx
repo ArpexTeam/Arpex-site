@@ -42,22 +42,26 @@ export default function SolutionsShowcase() {
   }
 
   return (
-    <section id="solucoes" aria-labelledby="solucoes-title" className="surface-mineral relative py-24 md:py-36">
+    <section id="solucoes" aria-labelledby="solucoes-title" className="surface-mineral relative py-20 md:py-28">
       <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
-        <div className="grid gap-8 md:grid-cols-12 md:gap-x-6">
-          <div className="md:col-span-7">
-            <p className="font-kicker text-accent">Como podemos ajudar</p>
-            <h2 id="solucoes-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
-              Estruturação digital em três frentes.
+        {/* a introdução só orienta; o que cada frente faz está nas abas */}
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 id="solucoes-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg">
+              Presença, atendimento e operação.
             </h2>
+            <p className="mt-3 text-[length:var(--text-lead)] leading-[1.5] text-fg-muted">Comece pela necessidade do seu negócio.</p>
           </div>
-          <p className="max-w-[60ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg md:col-span-5 md:self-end">
-            Presença para ser encontrado, atendimento para acompanhar cada cliente e operação para ter controle da rotina.
-            Você começa pela que pesa mais hoje, sem precisar contratar tudo.
-          </p>
+          <Link
+            href="/solucoes"
+            className="focus-ring group/btn inline-flex min-h-11 shrink-0 items-center gap-2 font-semibold text-fg underline decoration-rule underline-offset-[6px] hover:decoration-fg"
+          >
+            Ver as soluções em detalhe
+            <Arrow />
+          </Link>
         </div>
 
-        <div className="mt-14 grid gap-10 md:mt-20 lg:grid-cols-12 lg:gap-x-10">
+        <div className="mt-10 grid gap-10 md:mt-14 lg:grid-cols-12 lg:gap-x-10">
           <div
             role="tablist"
             aria-label="Frentes de solução"
@@ -127,16 +131,12 @@ export default function SolutionsShowcase() {
                   <SolutionDemoView demo={s.demo} active={selected} />
                   {/* no celular a promessa da aba não aparece: entra aqui */}
                   <p className="font-heading mt-8 text-balance text-[length:var(--text-h3)] text-fg lg:hidden">{s.promise}</p>
-                  <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:mt-8">
+                  {/* visão geral: uma frase e três entregas; o detalhe fica em /solucoes */}
+                  <div className="mt-6 grid gap-6 sm:grid-cols-2 sm:gap-8 lg:mt-8">
+                    <p className="text-pretty text-[length:var(--text-lead)] leading-[1.5] text-fg">{s.summary}</p>
                     <div>
-                      <p className="font-kicker text-accent">Quando faz sentido</p>
-                      <p className="mt-3 text-pretty leading-relaxed text-fg">{s.need}</p>
-                      <p className="mt-3 text-pretty leading-relaxed text-fg-muted">{s.explanation}</p>
-                    </div>
-                    <div>
-                      <p className="font-kicker text-accent">O que podemos construir</p>
-                      <ul className="mt-3 space-y-2.5 leading-relaxed text-fg">
-                        {s.delivery.map((d) => (
+                      <ul aria-label="Entregas" className="space-y-2 leading-relaxed text-fg">
+                        {s.highlights.map((d) => (
                           <li key={d} className="flex gap-3">
                             <span aria-hidden className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-current" />
                             {d}
@@ -145,12 +145,12 @@ export default function SolutionsShowcase() {
                       </ul>
                     </div>
                   </div>
-                  <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-rule pt-6">
+                  <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-rule pt-6">
                     <Button href={contactHref(s.interest)} variant="solid" arrow>
                       {s.cta}
                     </Button>
                     <p className="text-[length:var(--text-small)] text-fg-muted">
-                      Exemplos reais:{" "}
+                      Exemplos:{" "}
                       {s.examples.map((slug, k) => {
                         const p = getProjectBySlug(slug);
                         if (!p) return null;
@@ -171,19 +171,6 @@ export default function SolutionsShowcase() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-4 border-t border-rule pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-[60ch] text-pretty text-fg">
-            Não sabe por qual frente começar? A primeira conversa serve para entender a rotina da empresa e indicar o
-            primeiro passo.
-          </p>
-          <Link
-            href="/solucoes"
-            className="focus-ring group/btn inline-flex min-h-11 items-center gap-2 font-semibold text-fg underline decoration-rule underline-offset-[6px] hover:decoration-fg"
-          >
-            Ver as soluções em detalhe
-            <Arrow />
-          </Link>
-        </div>
       </div>
     </section>
   );

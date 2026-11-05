@@ -12,8 +12,20 @@ const surfaceBg = {
   "surface-ink": "#0b0e0c",
 } as const;
 
-/** Entender, definir, construir e validar, acompanhar: a linha avança com a rolagem e acende cada número. */
-export default function Method({ surface = "surface-paper" }: { surface?: keyof typeof surfaceBg }) {
+type Principle = { t: string; d: string };
+
+/**
+ * Entender, definir, construir e validar, acompanhar: a linha avança com a
+ * rolagem e acende cada número. As etapas se explicam sozinhas, sem
+ * introdução. `principles` (opcional) acrescenta critérios curtos abaixo.
+ */
+export default function Method({
+  surface = "surface-paper",
+  principles,
+}: {
+  surface?: keyof typeof surfaceBg;
+  principles?: Principle[];
+}) {
   const ref = useRef<HTMLElement>(null);
   const dotBg = surfaceBg[surface];
 
@@ -42,22 +54,13 @@ export default function Method({ surface = "surface-paper" }: { surface?: keyof 
   );
 
   return (
-    <section ref={ref} aria-labelledby="metodo-title" className={`${surface} py-24 md:py-36`}>
+    <section ref={ref} aria-labelledby="metodo-title" className={`${surface} py-20 md:py-28`}>
       <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
-        <div className="grid gap-8 md:grid-cols-12 md:gap-x-6">
-          <div className="md:col-span-7">
-            <p className="font-kicker text-accent">Como trabalhamos</p>
-            <h2 id="metodo-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
-              Método, cuidado e tecnologia na medida do seu negócio.
-            </h2>
-          </div>
-          <p className="max-w-[60ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg md:col-span-5 md:self-end">
-            Cada projeto passa por planejamento, validação e testes antes de chegar à sua equipe, no tamanho que o seu
-            negócio precisa.
-          </p>
-        </div>
+        <h2 id="metodo-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg">
+          Como trabalhamos
+        </h2>
 
-        <ol data-method-list className="relative mt-16 grid gap-10 md:mt-24 md:grid-cols-4 md:gap-6">
+        <ol data-method-list className="relative mt-10 grid gap-10 md:mt-14 md:grid-cols-4 md:gap-6">
           <span aria-hidden className="absolute left-[19px] top-2 bottom-2 w-px bg-rule md:left-0 md:right-0 md:top-[19px] md:bottom-auto md:h-px md:w-auto" />
           <span
             aria-hidden
@@ -75,11 +78,25 @@ export default function Method({ surface = "surface-paper" }: { surface?: keyof 
               </span>
               <div className="md:mt-8 md:pr-6">
                 <h3 className="font-heading text-[length:var(--text-h3)] text-fg">{s.title}</h3>
-                <p className="mt-3 max-w-[38ch] text-pretty leading-relaxed text-fg-muted">{s.description}</p>
+                <p className="mt-2 max-w-[32ch] text-pretty leading-relaxed text-fg-muted">{s.description}</p>
               </div>
             </li>
           ))}
         </ol>
+
+        {principles && (
+          <div className="mt-14 grid gap-6 border-t border-rule pt-8 md:mt-20 md:grid-cols-12 md:gap-x-6">
+            <h3 className="font-kicker text-accent md:col-span-3">Critérios que seguimos</h3>
+            <ul className="grid gap-6 sm:grid-cols-2 md:col-span-9">
+              {principles.map((p) => (
+                <li key={p.t}>
+                  <p className="font-heading text-fg">{p.t}</p>
+                  <p className="mt-1 max-w-[44ch] text-pretty leading-relaxed text-fg-muted">{p.d}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   );

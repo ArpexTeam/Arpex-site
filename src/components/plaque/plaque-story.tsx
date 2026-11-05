@@ -146,17 +146,17 @@ export default function PlaqueStory({ variant = "home" }: Props) {
           {/* em 1024px a placa entra perto da coluna: a largura fica abaixo de 1/3 da tela */}
           <div className="lg:col-span-5 lg:max-w-[32vw] xl:max-w-none">
             <p ref={monoRef} className="font-kicker text-signal">
-              Presença · Placas de avaliação com QR Code e NFC
+              Presença · Placa de avaliação com QR Code e NFC
             </p>
-            <Title ref={titleRef} id="placas-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
+            <Title ref={titleRef} id="placas-title" className="font-title mt-4 text-balance text-[length:var(--text-h2)] text-fg">
               Do balcão à avaliação, em um toque.
             </Title>
             <p
               ref={bodyRef}
               className="mt-5 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg lg:text-[length:var(--text-body)] scene-short:hidden"
             >
-              Uma placa de acrílico com a identidade da sua empresa. O cliente aproxima o celular ou escaneia o QR Code e
-              chega à página de avaliação da empresa, onde escolhe a nota e decide se envia.
+              {/* o percurso fica com a cena e as etapas; aqui só o que é a placa */}
+              Uma placa de acrílico com a identidade da sua empresa, para o balcão, a mesa ou a recepção.
             </p>
 
             <ol className="mt-8 lg:mt-6" data-mode={fullMode ? "full" : "flow"}>

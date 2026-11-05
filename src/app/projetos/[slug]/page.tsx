@@ -99,7 +99,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
           <div className="mt-10 grid gap-8 md:grid-cols-12 md:gap-x-6">
             <div className="md:col-span-8">
-              <p className="font-label text-accent">{project.categories.join(" · ") || "Projeto"}</p>
+              <p className="font-kicker text-accent">{project.type}</p>
               <h1 className="font-display mt-5 text-balance text-[length:var(--text-display)]">{project.title}</h1>
               {project.client !== project.title && <p className="mt-4 text-[length:var(--text-lead)] text-fg-muted">{project.client}</p>}
             </div>
@@ -156,11 +156,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <section aria-label="Desafio e solução" className="pb-20 md:pb-28">
           <div className="mx-auto grid w-full max-w-[1440px] gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
             <div className="md:col-span-5">
-              <p className="font-kicker text-accent">O que precisava resolver</p>
+              <p className="font-kicker text-accent">Desafio</p>
               <p className="font-heading mt-3 text-pretty text-[length:var(--text-h3)]">{project.challenge}</p>
             </div>
             <div className="md:col-span-6 md:col-start-7">
-              <p className="font-kicker text-accent">O que construímos</p>
+              <p className="font-kicker text-accent">Solução</p>
               <p className="mt-3 max-w-[62ch] text-pretty text-[length:var(--text-lead)] leading-[1.55]">{project.solution}</p>
             </div>
           </div>
@@ -204,7 +204,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {project.deliverables.length > 0 && (
         <section aria-labelledby="entregas-title" className="border-t border-rule py-20 md:py-28">
           <div className="mx-auto grid w-full max-w-[1440px] gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
-            <h2 id="entregas-title" className="font-display text-[length:var(--text-h2)] md:col-span-4">
+            <h2 id="entregas-title" className="font-title text-[length:var(--text-h2)] md:col-span-4">
               Entregas
             </h2>
             <ul className="md:col-span-7 md:col-start-6">
@@ -222,7 +222,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <section aria-labelledby="resultado-title" className="border-t border-rule py-20 md:py-24">
         <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
           <h2 id="resultado-title" className="font-kicker text-accent md:col-span-4">
-            Situação verificável
+            Situação atual
           </h2>
           <div className="md:col-span-7 md:col-start-6">
             <p className="font-heading text-[length:var(--text-h3)]">{project.status.label}</p>
@@ -231,7 +231,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 <a href={project.status.url} target="_blank" rel="noopener noreferrer" className="focus-ring underline decoration-rule underline-offset-4 hover:decoration-fg">
                   {project.status.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                 </a>
-                {project.status.checkedAt && ` · endereço verificado em ${project.status.checkedAt}`}
               </p>
             )}
             {project.note && <p className="mt-4 max-w-[60ch] text-pretty text-sm leading-relaxed text-fg-muted">{project.note}</p>}
@@ -245,10 +244,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <div className="mx-auto grid w-full max-w-[1440px] items-center gap-8 px-[var(--gutter)] py-16 md:grid-cols-12 md:gap-x-6 md:py-24">
               <div className="md:col-span-6">
                 <p className="font-kicker text-fg-muted">Próximo case</p>
-                <p className="font-display mt-4 text-[length:var(--text-h2)] text-fg transition-colors group-hover/next:text-signal">
+                <p className="font-title mt-4 text-[length:var(--text-h2)] text-fg transition-colors group-hover/next:text-signal">
                   {next.title}
                 </p>
-                <p className="mt-3 text-fg-muted">{next.categories.join(" · ")}</p>
+                <p className="mt-3 text-fg-muted">{next.type}</p>
               </div>
               {next.cover && (
                 <div className="frame relative aspect-[16/10] transition-transform duration-500 group-hover/next:scale-[1.015] md:col-span-5 md:col-start-8">

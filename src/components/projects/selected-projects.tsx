@@ -12,16 +12,10 @@ export default function SelectedProjects() {
     <section id="projetos" aria-labelledby="projetos-title" className="relative scroll-mt-[var(--header-height)]">
       {/* abertura no fundo do primeiro capítulo, para a passagem de cor continuar igual */}
       <div style={{ background: first.palette.bg, color: first.palette.fg }}>
-        <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-[var(--gutter)] pt-24 md:grid-cols-12 md:gap-x-6 md:pt-36">
-          <div className="md:col-span-7">
-            <p className="font-kicker text-signal">Projetos</p>
-            <h2 id="projetos-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)]">
-              O que construímos e o que isso resolveu.
-            </h2>
-          </div>
-          <p className="max-w-[60ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] md:col-span-5 md:self-end">
-            Trabalhos entregues para negócios reais: o que cada cliente precisava resolver e o que foi construído.
-          </p>
+        <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)] pt-20 md:pt-28">
+          <h2 id="projetos-title" className="font-title text-balance text-[length:var(--text-h2)]">
+            O que construímos e o que isso resolveu.
+          </h2>
         </div>
       </div>
       {featuredProjects.map((project, i) => (
@@ -30,6 +24,7 @@ export default function SelectedProjects() {
           project={project}
           index={i}
           previousBg={i === 0 ? first.palette.bg : featuredProjects[i - 1].palette.bg}
+          first={i === 0}
         />
       ))}
       <div style={{ background: last.palette.bg, color: last.palette.fg }}>

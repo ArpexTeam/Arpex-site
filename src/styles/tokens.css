@@ -53,14 +53,16 @@
   --accent: var(--color-signal);
   --header-height: 64px;
 
-  /* Escala tipográfica fluida, limitada nos dois extremos.
-     abertura ≈ 36px (390) → 64px (1440) → 72px · seção ≈ 28 → 44 → 48px
-     texto ≈ 16px no celular → 18px no desktop */
+  /* Escala tipográfica fluida, limitada nos dois extremos. Cinco papéis:
+     título da página (hero/display) > título de seção (h2) > título de item
+     (h3) > texto (lead/body) > legenda (small/label).
+     abertura ≈ 36px (390) → 64px (1440) · página ≈ 34 → 57px
+     seção ≈ 28 → 37px · item ≈ 19 → 23px · apoio 18 → 20px · texto 16 → 18px */
   --text-hero: clamp(2.25rem, 1.3rem + 3vw, 4.5rem);
   --text-display: clamp(2.125rem, 1.25rem + 2.6vw, 3.75rem);
-  --text-h2: clamp(1.75rem, 1.25rem + 1.65vw, 3rem);
-  --text-h3: clamp(1.25rem, 1.12rem + 0.45vw, 1.625rem);
-  --text-lead: clamp(1.125rem, 1.06rem + 0.25vw, 1.3125rem);
+  --text-h2: clamp(1.75rem, 1.35rem + 1.05vw, 2.5rem);
+  --text-h3: clamp(1.1875rem, 1.08rem + 0.4vw, 1.5rem);
+  --text-lead: clamp(1.125rem, 1.06rem + 0.2vw, 1.25rem);
   --text-body: clamp(1rem, 0.95rem + 0.22vw, 1.125rem);
   --text-small: 0.9375rem;
   --text-kicker: 0.9375rem;
@@ -85,7 +87,7 @@
 /* Componentes em camada: utilitários do Tailwind (absolute, bg-*, etc.)
    continuam podendo sobrescrever estas classes. */
 @layer components {
-  /* Títulos grandes (abertura e seções). */
+  /* Título da página (abertura, h1 das páginas internas, encerramento). */
   .font-display {
     font-family: var(--font-display);
     font-weight: 700;
@@ -93,7 +95,15 @@
     line-height: 1.08;
   }
 
-  /* Títulos menores (abas, passos, cartões). */
+  /* Títulos de seção: mais contidos que o título da página. */
+  .font-title {
+    font-family: var(--font-display);
+    font-weight: 650;
+    letter-spacing: -0.018em;
+    line-height: 1.12;
+  }
+
+  /* Títulos de item (abas, passos, situações). */
   .font-heading {
     font-family: var(--font-display);
     font-weight: 600;

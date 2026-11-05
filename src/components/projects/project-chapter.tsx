@@ -14,6 +14,8 @@ type Props = {
   index: number;
   /** cor do capítulo anterior, para a transição de cor entre capítulos */
   previousBg: string;
+  /** primeiro capítulo, logo abaixo do título da seção: menos espaço acima */
+  first?: boolean;
 };
 
 const byKind = (p: Project, kind: ProjectMedia["kind"]) => p.gallery.filter((m) => m.kind === kind);
@@ -191,7 +193,7 @@ function Media({ project }: { project: Project }) {
   }
 }
 
-export default function ProjectChapter({ project, index, previousBg }: Props) {
+export default function ProjectChapter({ project, index, previousBg, first }: Props) {
   const ref = useRef<HTMLElement>(null);
   const { palette } = project;
 
@@ -248,7 +250,7 @@ export default function ProjectChapter({ project, index, previousBg }: Props) {
     <article
       ref={ref}
       aria-labelledby={`chapter-${project.slug}`}
-      className="relative overflow-hidden py-24 md:py-36"
+      className={cn("relative overflow-hidden py-20 md:py-28", first && "pt-10 md:pt-14")}
       style={
         {
           "--fg": palette.fg,
@@ -263,14 +265,15 @@ export default function ProjectChapter({ project, index, previousBg }: Props) {
       }
     >
       <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
-        <header className="mb-12 grid grid-cols-12 gap-y-6 md:mb-16 md:gap-x-6">
-          <div className="col-span-12 md:col-span-7">
-            <p className="font-label flex flex-wrap items-center gap-x-4 gap-y-2" style={{ color: palette.accent }}>
-              <span>{num}</span>
+        {/* na home: nome, necessidade, síntese e acesso; desafio e solução completos ficam no case */}
+        <header className="mb-10 grid grid-cols-12 gap-y-5 md:mb-14 md:gap-x-6">
+          <div className="col-span-12 md:col-span-6">
+            <p className="font-kicker flex flex-wrap items-center gap-x-3 gap-y-1" style={{ color: palette.accent }}>
+              <span className="font-label">{num}</span>
               <span aria-hidden className="h-px w-8 bg-current" />
-              <span style={{ color: palette.muted }}>{project.categories.join(" · ")}</span>
+              <span style={{ color: palette.muted }}>{project.type}</span>
             </p>
-            <h3 id={`chapter-${project.slug}`} className="font-display mt-5 text-balance text-[length:var(--text-display)]">
+            <h3 id={`chapter-${project.slug}`} className="font-display mt-4 text-balance text-[clamp(2rem,1.4rem+1.6vw,3rem)]">
               <span className="line-mask">
                 <span data-chapter-line className="block">
                   {project.title}
@@ -283,38 +286,32 @@ export default function ProjectChapter({ project, index, previousBg }: Props) {
               </p>
             )}
           </div>
-          <p className="col-span-12 self-end text-pretty text-[length:var(--text-lead)] leading-[1.5] md:col-span-5" style={{ color: palette.muted }}>
-            {project.summary}
-          </p>
+          <div className="col-span-12 self-end md:col-span-5 md:col-start-8">
+            {project.problem && (
+              <p className="text-pretty leading-relaxed" style={{ color: palette.muted }}>
+                <span className="font-semibold" style={{ color: palette.accent }}>
+                  Desafio:{" "}
+                </span>
+                {project.problem}
+              </p>
+            )}
+            <p className="mt-3 text-pretty text-[length:var(--text-lead)] leading-[1.5]">{project.summary}</p>
+          </div>
         </header>
 
         <Media project={project} />
 
-        <div className="mt-14 grid grid-cols-12 gap-y-10 border-t pt-10 md:mt-20 md:gap-x-6" style={{ borderColor: "var(--rule)" }}>
-          <div className="col-span-12 md:col-span-4">
-            <p className="font-kicker" style={{ color: palette.accent }}>
-              O que precisava resolver
-            </p>
-            <p className="mt-3 text-pretty leading-relaxed">{project.challenge}</p>
-          </div>
-          <div className="col-span-12 md:col-span-4">
-            <p className="font-kicker" style={{ color: palette.accent }}>
-              O que construímos
-            </p>
-            <p className="mt-3 text-pretty leading-relaxed">{project.solution}</p>
-          </div>
-          <div className="col-span-12 flex flex-col items-start gap-5 md:col-span-3 md:col-start-10">
-            <p className="text-sm" style={{ color: palette.muted }}>
-              <span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-2px] rounded-full" style={{ background: palette.accent }} />
-              {project.status.label}
-            </p>
-            <CaseLink
-              project={project}
-              className={palette.dark ? "bg-[color:var(--fg)] text-black" : "bg-[color:var(--fg)] text-white"}
-            >
-              Ver o case
-            </CaseLink>
-          </div>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6 md:mt-14" style={{ borderColor: "var(--rule)" }}>
+          <p className="text-[length:var(--text-small)]" style={{ color: palette.muted }}>
+            <span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-2px] rounded-full" style={{ background: palette.accent }} />
+            {project.status.label}
+          </p>
+          <CaseLink
+            project={project}
+            className={palette.dark ? "bg-[color:var(--fg)] text-black" : "bg-[color:var(--fg)] text-white"}
+          >
+            Ver o case
+          </CaseLink>
         </div>
       </div>
     </article>
