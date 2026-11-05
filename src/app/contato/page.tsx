@@ -1,50 +1,83 @@
 import type { Metadata } from "next";
-import Container from "@/components/ui/container";
-import { H1, H2, Label } from "@/components/ui/heading";
 import ContactForm from "@/components/contact/contact-form";
 import FaqAccordion from "@/components/contact/faq-accordion";
-import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/data/social-links";
+import { CONTACT_EMAIL, INSTAGRAM_HANDLE, INSTAGRAM_URL, waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
 
 export const metadata: Metadata = {
   title: "Contato",
   description:
-    "Conte o momento da sua empresa e estruturamos a conversa certa. Fale com a ArpeX por WhatsApp ou e-mail.",
+    "Fale com a ArpeX sobre o seu negócio: presença digital, atendimento, automação de tarefas ou um sistema sob medida. Também para quem ainda não sabe por onde começar. WhatsApp e e-mail.",
   alternates: { canonical: "/contato" },
 };
 
 export default function ContatoPage() {
   return (
-    <main className="bg-ink pt-[72px]">
-      <section className="py-24 md:py-32">
-        <Container>
-          <Label>Contato</Label>
-          <H1 className="mt-6 max-w-[26ch]">
-            Conte o momento do seu negócio, e estruturamos a conversa certa.
-          </H1>
-          <p className="mt-6 max-w-[52ch] text-[length:var(--text-body-lg)] leading-relaxed text-muted">
-            Diagnóstico claro, escopo objetivo e execução forte. Esse é o começo de um
-            projeto com padrão ArpeX.
-          </p>
-          <ul className="mt-6 space-y-1 text-sm text-muted">
-            <li>WhatsApp — {WHATSAPP_DISPLAY}</li>
-            <li>E-mail — {CONTACT_EMAIL}</li>
-          </ul>
-        </Container>
-      </section>
-
-      <section className="pb-28 md:pb-36">
-        <Container className="max-w-[900px]">
-          <div className="rounded-xl border border-smoke bg-graphite p-8 md:p-14">
-            <ContactForm />
+    <main className="surface-ink">
+      <section className="pt-[calc(var(--header-height)+72px)] pb-24 md:pt-[calc(var(--header-height)+112px)] md:pb-32">
+        <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-[var(--gutter)] lg:grid-cols-12 lg:gap-x-6">
+          {/* ordem no celular: título → formulário → canais diretos */}
+          <div className="lg:col-span-5 lg:row-start-1">
+            <p className="font-kicker text-accent">Contato</p>
+            <h1 className="font-display mt-4 text-balance text-[length:var(--text-display)] text-fg">
+              Vamos falar do seu negócio.
+            </h1>
+            <p className="mt-6 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">
+              Pode ser uma necessidade específica, como um site ou uma placa, ou a vontade de organizar melhor a rotina. Se
+              ainda não sabe por onde começar, a conversa serve para isso.
+            </p>
           </div>
-        </Container>
+
+          <div className="lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
+            <div className="rounded-[var(--radius-frame)] border border-rule bg-ink-2 p-6 sm:p-10">
+              <ContactForm />
+            </div>
+          </div>
+          <div className="lg:col-span-5 lg:row-start-2">
+            <dl className="space-y-0">
+              <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-rule py-4">
+                <dt className="font-label pt-0.5 text-fg-muted">WhatsApp</dt>
+                <dd>
+                  <a
+                    href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg"
+                  >
+                    {WHATSAPP_DISPLAY}
+                  </a>
+                </dd>
+              </div>
+              <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-rule py-4">
+                <dt className="font-label pt-0.5 text-fg-muted">E-mail</dt>
+                <dd>
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="focus-ring break-all text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+                    {CONTACT_EMAIL}
+                  </a>
+                </dd>
+              </div>
+              <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-y border-rule py-4">
+                <dt className="font-label pt-0.5 text-fg-muted">Instagram</dt>
+                <dd>
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+                    {INSTAGRAM_HANDLE}
+                  </a>
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+        </div>
       </section>
 
-      <section className="pb-28 md:pb-36">
-        <Container className="max-w-[900px]">
-          <H2 className="mb-8">Dúvidas frequentes</H2>
-          <FaqAccordion />
-        </Container>
+      <section aria-labelledby="faq-title" className="surface-paper py-24 md:py-32">
+        <div className="mx-auto grid w-full max-w-[1440px] gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
+          <h2 id="faq-title" className="font-display text-balance text-[length:var(--text-h2)] text-fg md:col-span-4">
+            Dúvidas frequentes
+          </h2>
+          <div className="md:col-span-7 md:col-start-6">
+            <FaqAccordion />
+          </div>
+        </div>
       </section>
     </main>
   );

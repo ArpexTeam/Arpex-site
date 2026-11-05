@@ -1,53 +1,29 @@
-export type MethodStepIcon = "plan" | "content" | "fe" | "dev" | "qa" | "ship";
-
 export type MethodStep = {
   index: string;
-  icon: MethodStepIcon;
   title: string;
   description: string;
 };
 
+/** Planejamento, validação, testes e evolução — no tamanho de cada projeto. */
 export const methodSteps: MethodStep[] = [
   {
     index: "01",
-    icon: "plan",
-    title: "Diagnóstico",
-    description:
-      "Entendemos o contexto do negócio, as dores atuais e os objetivos para definir a direção correta.",
+    title: "Entender",
+    description: "Conhecemos o negócio, a rotina da equipe e o que precisa melhorar primeiro.",
   },
   {
     index: "02",
-    icon: "content",
-    title: "Escopo e proposta",
-    description:
-      "Transformamos o diagnóstico em um plano claro, com prioridades, entregas, prazos e definição de valor.",
+    title: "Definir",
+    description: "Escolhemos as prioridades e planejamos uma solução proporcional à necessidade, com proposta por escrito.",
   },
   {
     index: "03",
-    icon: "fe",
-    title: "Protótipo e validação",
-    description:
-      "Quando faz sentido, validamos fluxos, telas e estrutura antes do desenvolvimento para reduzir risco e retrabalho.",
+    title: "Construir e validar",
+    description: "Desenvolvemos em etapas e conferimos o funcionamento com quem vai usar, no celular e no computador.",
   },
   {
     index: "04",
-    icon: "dev",
-    title: "Desenvolvimento",
-    description:
-      "Construímos a solução com foco em robustez, clareza operacional, experiência de uso e evolução futura.",
-  },
-  {
-    index: "05",
-    icon: "qa",
-    title: "Lançamento",
-    description:
-      "Publicamos a entrega com validações finais, ajustes de qualidade e preparação do ambiente para uso real.",
-  },
-  {
-    index: "06",
-    icon: "ship",
-    title: "Ajustes e evolução",
-    description:
-      "Acompanhamos os primeiros ciclos de uso e refinamos o que for necessário para consolidar o resultado.",
+    title: "Acompanhar",
+    description: "Depois da entrega, ajustamos e evoluímos a solução conforme o projeto e o suporte contratado.",
   },
 ];

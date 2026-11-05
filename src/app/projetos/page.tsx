@@ -1,46 +1,95 @@
 import type { Metadata } from "next";
-import Container from "@/components/ui/container";
-import { H1, Label, Sub } from "@/components/ui/heading";
-import ProjectArchive from "@/components/projects/project-archive";
-import ScrollRail from "@/components/projects/scroll-rail";
-import ScrollRailMobile from "@/components/projects/scroll-rail-mobile";
+import Image from "next/image";
+import PageIntro from "@/components/layout/page-intro";
+import TransitionLink from "@/components/motion/transition-link";
+import { Arrow, Button } from "@/components/ui/button";
+import { listedProjects } from "@/data/projects";
+import { contactHref } from "@/data/contact";
 
 export const metadata: Metadata = {
   title: "Projetos",
   description:
-    "Arquivo editorial com os projetos reais da ArpeX: sites, sistemas e o produto próprio ArpeX CRM.",
+    "O que a ArpeX construiu e o que isso resolveu: sites para Chef Bruno Sushi, Lux Bartenders e Honoratto Tattoo, a carta de vinhos 3D da Toricelli, o sistema Flor de Maria VIP e o ArpeX CRM.",
   alternates: { canonical: "/projetos" },
 };
 
 export default function ProjetosPage() {
   return (
-    <main className="bg-ink pt-[72px]">
-      <section className="py-24 md:py-32">
-        <Container>
-          <Label>Arquivo</Label>
-          <H1 className="mt-6 max-w-[22ch]">Entregas reais, não conceitos.</H1>
-          <Sub className="mt-6 max-w-[56ch]">
-            Cada projeto aqui já foi construído, publicado e usado. A atuação da
-            ArpeX vai além de sites — inclui software sob medida, automação e
-            operação.
-          </Sub>
-        </Container>
-      </section>
+    <main>
+      <PageIntro
+        eyebrow="Projetos"
+        title="O que construímos e o que isso resolveu."
+        lead="Sites, sistemas, uma carta digital em 3D e o nosso próprio CRM. Em cada trabalho, o que o cliente precisava resolver e o que foi entregue. As imagens são capturas das entregas publicadas."
+      />
 
-      <section className="pb-28 md:pb-36">
-        <Container>
-          <div className="relative">
-            <ScrollRail targetId="projects-scroller" easing={1.8} />
-            <ScrollRailMobile targetId="projects-scroller" easing={1.8} />
+      <section aria-label="Arquivo de projetos" className="surface-ink pb-24 md:pb-36">
+        <ol className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
+          {listedProjects.map((p, i) => (
+            <li key={p.slug} className="border-t border-rule last:border-b">
+              <TransitionLink
+                href={`/projetos/${p.slug}`}
+                className="focus-ring group/row relative grid grid-cols-12 items-center gap-x-6 gap-y-6 py-10 md:py-12"
+              >
+                {/* cor do projeto entra discretamente no hover/foco */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 -inset-x-[var(--gutter)] opacity-0 transition-opacity duration-500 group-hover/row:opacity-100 group-focus-visible/row:opacity-100"
+                  style={{ background: `linear-gradient(90deg, ${p.palette.accent}14, transparent 70%)` }}
+                />
+                <span className="font-label relative col-span-12 text-fg-muted md:col-span-1">{String(i + 1).padStart(2, "0")}</span>
+                <div className="relative col-span-12 md:col-span-5">
+                  <h2 className="font-display text-[length:var(--text-h2)] text-fg">{p.title}</h2>
+                  <p className="mt-3 text-[length:var(--text-small)] text-fg-muted">
+                    {p.client !== p.title ? `${p.client} · ` : ""}
+                    {p.categories.join(" · ")}
+                  </p>
+                  {p.problem && (
+                    <p className="mt-5 max-w-[52ch] text-pretty leading-relaxed text-fg">
+                      <span className="font-kicker block text-signal">O que precisava resolver</span>
+                      {p.problem}
+                    </p>
+                  )}
+                  <p className="mt-4 max-w-[52ch] text-pretty leading-relaxed text-fg-muted">
+                    <span className="font-kicker block text-fg">O que construímos</span>
+                    {p.summary}
+                  </p>
+                  <p className="mt-5 inline-flex items-center gap-2 text-[length:var(--text-small)] text-fg">
+                    <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: p.palette.accent === "#121212" ? "#00cf77" : p.palette.accent }} />
+                    {p.status.label}
+                  </p>
+                </div>
+                <div className="relative col-span-12 md:col-span-6">
+                  {p.cover && (
+                    <div
+                      className="frame relative aspect-[16/10] origin-right transition-transform duration-500 ease-out md:scale-[0.92] md:group-hover/row:scale-100 md:group-focus-visible/row:scale-100"
+                      style={{ viewTransitionName: `case-${p.slug}` }}
+                    >
+                      <Image
+                        src={p.cover.src}
+                        alt={p.cover.alt}
+                        fill
+                        sizes="(min-width: 768px) 46vw, 92vw"
+                        priority={i < 2}
+                        className="object-cover object-top transition-transform duration-700 ease-out group-hover/row:scale-[1.03]"
+                      />
+                    </div>
+                  )}
+                  <span className="font-label absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-ink/85 px-4 py-2 text-ivory backdrop-blur md:opacity-0 md:transition-opacity md:duration-300 md:group-hover/row:opacity-100 md:group-focus-visible/row:opacity-100">
+                    Abrir case
+                    <Arrow className="h-3.5 w-3.5" />
+                  </span>
+                </div>
+              </TransitionLink>
+            </li>
+          ))}
+        </ol>
 
-            <div
-              id="projects-scroller"
-              className="no-scrollbar relative pl-4 md:h-[70vh] md:overflow-y-auto md:overscroll-contain md:pl-0 md:pr-4"
-            >
-              <ProjectArchive />
-            </div>
-          </div>
-        </Container>
+        <div className="mx-auto mt-16 flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-6 px-[var(--gutter)]">
+          <p className="max-w-[52ch] text-pretty text-fg">Tem uma necessidade parecida? Conte o que está acontecendo na sua empresa.</p>
+          <Button href={contactHref("entender")} arrow>
+            Conversar sobre meu negócio
+          </Button>
+        </div>
       </section>
     </main>
   );

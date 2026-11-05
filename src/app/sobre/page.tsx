@@ -1,97 +1,116 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Container from "@/components/ui/container";
-import { H1, H2, Label } from "@/components/ui/heading";
+import Link from "next/link";
+import PageIntro from "@/components/layout/page-intro";
+import Method from "@/components/method/method";
+import Backstage from "@/components/about/backstage";
 import { Button } from "@/components/ui/button";
-import { waLink } from "@/data/social-links";
-import arpexFachada from "@/images/aboutusarpex 1.png";
+import { contactHref } from "@/data/contact";
 
 export const metadata: Metadata = {
   title: "Sobre",
   description:
-    "A ArpeX Technology é uma empresa de tecnologia sob medida que transforma processos improvisados em sistemas, automações e experiências digitais.",
+    "A ArpeX Technology faz estruturação digital sob medida para micro, pequenas e médias empresas: entende a rotina do negócio e indica a solução adequada, de um site a um sistema.",
   alternates: { canonical: "/sobre" },
 };
 
+/** Capacidades comprovadas por entregas publicadas — cada uma aponta para a prova. */
+const capabilities = [
+  { what: "Site com painel para o cliente atualizar o conteúdo", proof: "Chef Bruno Sushi", href: "/projetos/chef-bruno" },
+  { what: "Perfil no Google, SEO básico e QR Code", proof: "Chef Bruno Sushi", href: "/projetos/chef-bruno" },
+  { what: "Configurador que vira briefing para a equipe", proof: "Lux Bartenders", href: "/projetos/lux-bar" },
+  { what: "Sistema com login, painel administrativo e lembretes", proof: "Flor de Maria VIP", href: "/projetos/flor-de-maria-vip" },
+  { what: "Organização de contatos e acompanhamento comercial", proof: "ArpeX CRM", href: "/ecossistema" },
+  { what: "Aplicativo instalável que funciona sem internet", proof: "Carta de vinhos 3D", href: "/projetos/carta-toricelli" },
+  { what: "3D em tempo real no navegador", proof: "Carta de vinhos 3D", href: "/projetos/carta-toricelli" },
+];
+
 const principles = [
   {
-    title: "Diagnóstico",
-    desc: "Entendemos o contexto antes de propor tecnologia, para construir a solução certa para o momento da empresa.",
+    t: "Entender antes de propor.",
+    d: "A conversa começa pela rotina da empresa e pelo que precisa melhorar, não por um pacote pronto.",
   },
   {
-    title: "Execução",
-    desc: "Desenvolvemos software com clareza técnica, robustez, estética visual e foco em valor operacional real.",
+    t: "Começar pelo que pesa mais.",
+    d: "Uma necessidade específica pode ser a porta de entrada. As outras frentes entram só quando fizerem sentido.",
   },
   {
-    title: "Parceria",
-    desc: "Atuamos lado a lado com o cliente para que escopo, prioridades e evolução façam sentido para o negócio.",
+    t: "Construir com cuidado.",
+    d: "Planejamento, validação com quem vai usar e testes antes da entrega, no tamanho de cada projeto.",
   },
 ];
 
 export default function SobrePage() {
   return (
-    <main className="bg-ink pt-[72px]">
-      <section className="py-24 md:py-32">
-        <Container>
-          <Label>Sobre a ArpeX</Label>
-          <H1 className="mt-6 max-w-[22ch]">
-            O sistema já existia. Ele só estava espalhado.
-          </H1>
-        </Container>
-      </section>
+    <main>
+      <PageIntro
+        eyebrow="Sobre a ArpeX"
+        title="Entendemos o negócio antes de construir."
+        lead="A ArpeX Technology faz estruturação digital sob medida para micro, pequenas e médias empresas: organiza a presença, o atendimento e os processos com sites, automações e sistemas pensados para a realidade de cada uma."
+      />
 
-      <section className="pb-28 md:pb-36">
-        <Container className="grid grid-cols-1 items-start gap-14 md:grid-cols-2">
-          <div className="max-w-[56ch]">
-            <H2>Um pouco sobre nós</H2>
-            <p className="mt-5 leading-relaxed text-muted">
-              A ArpeX Technology desenvolve software personalizado para organizar
-              operações, automatizar processos, criar aplicativos, estruturar soluções
-              financeiras e construir experiências digitais com impacto real.
-            </p>
-            <p className="mt-4 leading-relaxed text-muted">
-              Nosso trabalho começa antes do desenvolvimento: entendemos o contexto do
-              cliente, identificamos gargalos e definimos a tecnologia que faz sentido
-              para o momento do negócio.
-            </p>
-            <p className="mt-4 leading-relaxed text-muted">
-              Mais do que executar, buscamos construir com direção, clareza de escopo e
-              proximidade real com quem vai usar a solução no dia a dia.
-            </p>
-
-            <div className="mt-8">
-              <Button
-                href={waLink("Olá! Vim pela página sobre e quero entender como a ArpeX pode ajudar meu negócio.")}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Conversar com a ArpeX
-              </Button>
+      <section aria-labelledby="principios-title" className="surface-paper py-24 md:py-32">
+        <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
+          <div className="grid gap-6 md:grid-cols-12 md:gap-x-6">
+            <div className="md:col-span-8">
+              <p className="font-kicker text-accent">Como pensamos</p>
+              <h2 id="principios-title" className="font-display mt-4 text-balance text-[length:var(--text-h2)] text-fg">
+                Uma atuação consultiva, do primeiro contato à evolução da solução.
+              </h2>
             </div>
           </div>
+          <ol className="mt-14 grid gap-x-6 gap-y-10 md:grid-cols-3">
+            {principles.map((p, i) => (
+              <li key={p.t} className="border-t border-rule pt-6">
+                <p className="font-label text-accent">0{i + 1}</p>
+                <h3 className="font-heading mt-4 text-[length:var(--text-h3)] text-fg">{p.t}</h3>
+                <p className="mt-3 max-w-[40ch] text-pretty leading-relaxed text-fg-muted">{p.d}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
-          <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-smoke bg-graphite">
-            <Image
-              src={arpexFachada}
-              alt="Fachada da ArpeX Technology"
-              fill
-              className="object-cover"
-              sizes="(min-width:1024px) 560px, 92vw"
-              priority
-            />
+      <Method surface="surface-mineral" />
+
+      <section aria-labelledby="capacidade-title" className="surface-ink py-24 md:py-32">
+        <div className="mx-auto grid w-full max-w-[1440px] gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
+          <div className="md:col-span-3">
+            <p className="font-kicker text-accent">O que já entregamos</p>
+            <h2 id="capacidade-title" className="font-heading mt-4 text-balance text-[length:var(--text-h3)] text-fg">
+              Cada item aponta para o trabalho que comprova.
+            </h2>
           </div>
-        </Container>
-
-        <Container className="mt-16">
-          <ul className="grid gap-4 md:grid-cols-3">
-            {principles.map((item) => (
-              <li key={item.title} className="rounded-xl border border-smoke bg-graphite p-8">
-                <p className="text-sm font-semibold uppercase tracking-wide text-system">{item.title}</p>
-                <p className="mt-4 leading-relaxed text-muted">{item.desc}</p>
+          <ul className="md:col-span-9">
+            {capabilities.map((c) => (
+              <li key={c.what} className="border-t border-rule last:border-b">
+                <Link href={c.href} className="focus-ring group/cap grid gap-2 py-6 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">
+                  <span className="font-heading text-[length:var(--text-h3)] text-fg transition-colors group-hover/cap:text-signal">{c.what}</span>
+                  <span className="text-[length:var(--text-small)] text-fg-muted">
+                    Veja em: <span className="text-fg underline decoration-rule underline-offset-4">{c.proof}</span>
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
-        </Container>
+        </div>
+      </section>
+
+      <Backstage />
+
+      <section className="surface-ink py-20 md:py-28">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-end justify-between gap-8 px-[var(--gutter)]">
+          <h2 className="font-display max-w-[20ch] text-balance text-[length:var(--text-h2)] text-fg">
+            Vamos entender o próximo passo do seu negócio?
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            <Button href={contactHref("entender")} arrow>
+              Conversar com a ArpeX
+            </Button>
+            <Button href="/solucoes" variant="secondary">
+              Ver as soluções
+            </Button>
+          </div>
+        </div>
       </section>
     </main>
   );

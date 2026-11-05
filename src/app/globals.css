@@ -2,28 +2,31 @@
 @import "../styles/tokens.css";
 @import "../styles/motion.css";
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 html {
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  background: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--color-ink);
   color: var(--color-ivory);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  overflow-x: clip;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-system) 30%, transparent);
-  color: var(--color-ivory);
+  background: color-mix(in srgb, var(--color-signal) 35%, transparent);
+  color: inherit;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+a {
+  -webkit-tap-highlight-color: transparent;
 }

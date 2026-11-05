@@ -1,75 +1,188 @@
-/* Design tokens — ArpeX. Paleta e tipografia restauradas do site original,
-   escala controlada (não fluida) para manter a sensação comercial/humana.
-   Nomes de variável mantidos (--color-system etc.) para não exigir rename em
-   toda a base — só os valores voltam à paleta antiga. */
+/* Tokens ArpeX — "ArpeX em ação".
+   Tinta escura (ink) + mineral claro + verde de assinatura. As cores de cada
+   projeto entram por variáveis locais (--case-*) definidas no próprio
+   capítulo, nunca como tokens globais. */
 
 @theme {
-  /* Paleta */
-  --color-ink: #000000; /* Preto — header, footer, seções escuras */
-  --color-deep: #04150e; /* Verde profundo — hero/gradientes */
-  --color-surface: #002415; /* Verde estrutural — cards, gradientes */
-  --color-graphite: #101010; /* Cinza-preto — seções alternadas (serviços, projetos) */
-  --color-ivory: #f5f5f5; /* Branco funcional */
-  --color-muted: #a3aaa6; /* Cinza neutro para texto secundário */
-  --color-smoke: rgba(255, 255, 255, 0.1); /* Bordas discretas */
-  --color-system: #00cf77; /* Verde ArpeX (brand) */
-  --color-system-soft: #4fe6a3; /* Verde claro — hover/destaques */
-  --color-champagne: #b8ae9d; /* Metal champagne — acentos pontuais */
+  /* Superfícies escuras */
+  --color-ink: #0b0e0c;
+  --color-ink-2: #121613;
+  --color-ink-3: #1b201c;
+  /* Superfícies claras (mineral) */
+  --color-mineral: #e7e3da;
+  --color-mineral-2: #d9d3c7;
+  --color-paper: #f2efe8;
 
-  /* Tipografia — escala controlada (não clamp gigante) */
-  --text-display: 3rem; /* ~48px mobile */
-  --text-h1: 2.25rem; /* ~36px mobile */
-  --text-h2: 1.75rem; /* ~28px mobile */
-  --text-h3: 1.375rem; /* ~22px mobile */
-  --text-body-lg: 1.125rem; /* 18px */
-  --text-body: 1rem; /* 16px */
-  --text-label: 0.75rem; /* 12px */
+  /* Texto */
+  --color-ivory: #ede9e1; /* sobre ink */
+  --color-muted: #9da39e; /* sobre ink — 7.6:1 */
+  --color-graphite: #141815; /* sobre mineral */
+  --color-stone: #5a605b; /* sobre mineral — 5:1 */
 
-  --radius-arpex: 6px;
-  --container-max: 1200px;
+  /* Linhas */
+  --color-line: rgba(237, 233, 225, 0.12);
+  --color-line-strong: rgba(237, 233, 225, 0.24);
+  --color-line-dark: rgba(20, 24, 21, 0.14);
+
+  /* Verde ArpeX: #00CF77 como preenchimento e sobre ink; em fundo claro,
+     texto usa signal-ink (5.2:1 sobre mineral). */
+  --color-signal: #00cf77;
+  --color-signal-soft: #5ce8a8;
+  --color-signal-ink: #006b3e;
+
+  /* Títulos: Manrope (600/700). Leitura: Source Sans 3 (400/500/600).
+     Ambas variáveis, só o subconjunto latin. */
+  --font-display: var(--font-manrope), "Manrope", system-ui, sans-serif;
+  --font-sans: var(--font-source-sans), "Source Sans 3", system-ui, sans-serif;
+
+  --radius-frame: 18px;
+  --radius-device: 28px;
+}
+
+@theme inline {
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
 }
 
 :root {
-  /* Altura real do header fixo (ver src/components/layout/header.tsx: h-[72px]) —
-     usada por cenas sticky para calcular a altura útil do palco. */
-  --header-height: 72px;
+  --fg: var(--color-ivory);
+  --fg-muted: var(--color-muted);
+  --rule: var(--color-line);
+  --accent: var(--color-signal);
+  --header-height: 64px;
+
+  /* Escala tipográfica fluida, limitada nos dois extremos.
+     abertura ≈ 36px (390) → 64px (1440) → 72px · seção ≈ 28 → 44 → 48px
+     texto ≈ 16px no celular → 18px no desktop */
+  --text-hero: clamp(2.25rem, 1.3rem + 3vw, 4.5rem);
+  --text-display: clamp(2.125rem, 1.25rem + 2.6vw, 3.75rem);
+  --text-h2: clamp(1.75rem, 1.25rem + 1.65vw, 3rem);
+  --text-h3: clamp(1.25rem, 1.12rem + 0.45vw, 1.625rem);
+  --text-lead: clamp(1.125rem, 1.06rem + 0.25vw, 1.3125rem);
+  --text-body: clamp(1rem, 0.95rem + 0.22vw, 1.125rem);
+  --text-small: 0.9375rem;
+  --text-kicker: 0.9375rem;
+  --text-label: 0.75rem;
+
+  --gutter: 16px;
+  color-scheme: dark;
 }
 
 @media (min-width: 768px) {
   :root {
-    --text-display: 3.5rem; /* ~56px desktop */
-    --text-h1: 3rem; /* ~48px desktop */
-    --text-h2: 2.25rem; /* ~36px desktop */
-    --text-h3: 1.5rem; /* ~24px desktop */
-    --text-body-lg: 1.25rem; /* 20px */
+    --gutter: 32px;
   }
 }
 
-:root {
-  color-scheme: dark;
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 48px;
+  }
 }
 
-.font-display {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
+/* Componentes em camada: utilitários do Tailwind (absolute, bg-*, etc.)
+   continuam podendo sobrescrever estas classes. */
+@layer components {
+  /* Títulos grandes (abertura e seções). */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.08;
+  }
 
-.font-heading {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.15;
-}
+  /* Títulos menores (abas, passos, cartões). */
+  .font-heading {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1.18;
+  }
 
-.font-label {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: var(--text-label);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
+  /* Identificador de seção em caixa normal: lido como frase. */
+  .font-kicker {
+    font-family: var(--font-display);
+    font-size: var(--text-kicker);
+    font-weight: 600;
+    line-height: 1.4;
+  }
 
-.text-balance-editorial {
-  text-wrap: balance;
+  /* Rótulos curtos (índices, tags, campos de ficha). Caixa alta só aqui. */
+  .font-label {
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Superfícies: cada uma define o próprio par de cores de texto, para que
+     componentes reutilizados (botões, labels) leiam bem em qualquer fundo. */
+  .surface-ink {
+    --fg: var(--color-ivory);
+    --fg-muted: var(--color-muted);
+    --rule: var(--color-line);
+    --accent: var(--color-signal);
+    background-color: var(--color-ink);
+    color: var(--fg);
+  }
+
+  .surface-ink-2 {
+    --fg: var(--color-ivory);
+    --fg-muted: var(--color-muted);
+    --rule: var(--color-line);
+    --accent: var(--color-signal);
+    background-color: var(--color-ink-2);
+    color: var(--fg);
+  }
+
+  .surface-mineral {
+    --fg: var(--color-graphite);
+    --fg-muted: var(--color-stone);
+    --rule: var(--color-line-dark);
+    --accent: var(--color-signal-ink);
+    background-color: var(--color-mineral);
+    color: var(--fg);
+  }
+
+  .surface-paper {
+    --fg: var(--color-graphite);
+    --fg-muted: var(--color-stone);
+    --rule: var(--color-line-dark);
+    --accent: var(--color-signal-ink);
+    background-color: var(--color-paper);
+    color: var(--fg);
+  }
+
+
+  /* Moldura padrão de captura: borda fina + luz de topo (sem blend mode,
+     que forçaria composição extra em toda moldura durante a rolagem). */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-frame);
+    background: var(--color-ink-2);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 40px 80px -40px rgba(0, 0, 0, 0.55);
+  }
+  .frame::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 22%);
+  }
 }

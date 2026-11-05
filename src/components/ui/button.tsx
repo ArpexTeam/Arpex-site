@@ -2,75 +2,84 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 
 const base =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-7 py-3 text-[15px] font-semibold " +
-  "transition duration-200 focus-ring disabled:opacity-60 disabled:pointer-events-none";
+  "group/btn relative inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-6 text-[15px] font-semibold leading-none " +
+  "transition-[background-color,color,border-color,transform] duration-200 ease-out focus-ring active:translate-y-px " +
+  "disabled:pointer-events-none disabled:opacity-60";
 
 const styles = {
-  primary: "bg-system text-black hover:brightness-110 active:translate-y-px",
-  ghost:
-    "border border-champagne/40 text-ivory hover:border-system/60 hover:text-system",
-  line: "px-0 py-0 min-h-0 text-ivory hover:text-system",
+  // verde de assinatura com texto ink (9.4:1)
+  primary: "bg-signal text-ink hover:bg-signal-soft",
+  // contorno que herda a cor de texto da superfície
+  secondary: "border border-rule text-fg hover:border-fg",
+  // sobre fundo claro: preenchimento grafite
+  solid: "bg-graphite text-paper hover:bg-ink",
+  text: "min-h-11 px-0 text-fg underline decoration-rule underline-offset-[6px] hover:decoration-fg",
 } as const;
 
 type BaseProps = {
   children: React.ReactNode;
   variant?: keyof typeof styles;
   className?: string;
+  /** seta → que desliza no hover */
+  arrow?: boolean;
 };
 
 type ButtonAsButton = BaseProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children"> & {
-    href?: undefined;
-  };
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children"> & { href?: undefined };
 
 type ButtonAsLink = BaseProps &
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "className" | "children"> & {
-    href: string;
-  };
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "className" | "children"> & { href: string };
 
-type ButtonProps = ButtonAsButton | ButtonAsLink;
+export type ButtonProps = ButtonAsButton | ButtonAsLink;
+
+export function Arrow({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 16 16"
+      className={cn("h-4 w-4 shrink-0 transition-transform duration-200 ease-out group-hover/btn:translate-x-0.5", className)}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    >
+      <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export function Button(props: ButtonProps): React.ReactElement {
-  const { children, variant = "primary", className } = props;
+  const { children, variant = "primary", className, arrow } = props;
   const cls = cn(base, styles[variant], className);
+  const content = (
+    <>
+      {children}
+      {arrow && <Arrow />}
+    </>
+  );
 
-  if (typeof (props as ButtonAsLink).href === "string") {
-    const {
-      href,
-      variant: linkVariant,
-      className: linkClassName,
-      children: linkChildren,
-      ...anchorProps
-    } = props as ButtonAsLink;
-
-    void linkVariant;
-    void linkClassName;
-    void linkChildren;
-
-    const isInternal = href.startsWith("/");
-    const Wrapper = isInternal ? Link : "a";
-
+  if (typeof props.href === "string") {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { href, variant: _v, className: _c, children: _ch, arrow: _a, ...rest } = props as ButtonAsLink;
+    const external = /^https?:|^mailto:|^tel:/.test(href);
+    if (external) {
+      return (
+        <a href={href} className={cls} {...rest}>
+          {content}
+        </a>
+      );
+    }
     return (
-      <Wrapper href={href} className={cls} {...anchorProps}>
-        {children}
-      </Wrapper>
+      <Link href={href} className={cls} {...rest}>
+        {content}
+      </Link>
     );
   }
 
-  const {
-    variant: buttonVariant,
-    className: buttonClassName,
-    children: buttonChildren,
-    ...buttonProps
-  } = props as ButtonAsButton;
-
-  void buttonVariant;
-  void buttonClassName;
-  void buttonChildren;
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { variant: _v, className: _c, children: _ch, arrow: _a, ...rest } = props as ButtonAsButton;
   return (
-    <button className={cls} {...buttonProps}>
-      {children}
+    <button className={cls} {...rest}>
+      {content}
     </button>
   );
 }

@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+
+# gravações de referência das rodadas de ajuste (grandes; ficam só na máquina local)
+docs/**/*.webm

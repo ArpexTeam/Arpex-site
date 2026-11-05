@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "ArpeX Technology";
+export const alt = "ArpeX Technology — Tecnologia para seu negócio funcionar melhor e crescer.";
 
 export default function Image() {
   return new ImageResponse(
@@ -15,25 +15,23 @@ export default function Image() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 80,
-          backgroundColor: "#080B09",
-          color: "#F1EFE8",
+          backgroundColor: "#0b0e0c",
+          color: "#ede9e1",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", fontSize: 44, fontWeight: 700, letterSpacing: -1 }}>
+        <div style={{ display: "flex", alignItems: "center", fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>
           <span>ARPE</span>
-          <span style={{ color: "#00E57A" }}>X</span>
-          <span style={{ marginLeft: 16, fontSize: 20, color: "#858D87", fontWeight: 400, letterSpacing: 3 }}>
-            TECHNOLOGY
-          </span>
+          <span style={{ color: "#00cf77" }}>X</span>
+          <span style={{ marginLeft: 16, fontSize: 18, color: "#9da39e", fontWeight: 400, letterSpacing: 4 }}>TECHNOLOGY</span>
         </div>
-
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: 920 }}>
-          <div style={{ display: "flex", fontSize: 56, lineHeight: 1.15, fontWeight: 600 }}>
-            Sua empresa já tem um sistema.
+        <div style={{ display: "flex", flexDirection: "column", maxWidth: 980 }}>
+          <div style={{ display: "flex", fontSize: 76, lineHeight: 1.02, fontWeight: 700, letterSpacing: -2 }}>
+            Tecnologia para seu negócio funcionar melhor e crescer
+            <span style={{ color: "#00cf77" }}>.</span>
           </div>
-          <div style={{ display: "flex", fontSize: 56, lineHeight: 1.15, fontWeight: 600, color: "#00E57A" }}>
-            Ele só está espalhado.
+          <div style={{ display: "flex", marginTop: 28, fontSize: 28, color: "#9da39e" }}>
+            Estruturação digital sob medida: presença, atendimento e operação.
           </div>
         </div>
       </div>

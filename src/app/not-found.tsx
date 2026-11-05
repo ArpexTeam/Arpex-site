@@ -1,30 +1,25 @@
-import Link from "next/link";
-import Container from "@/components/ui/container";
-import { H1, Label } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-[92svh] items-center bg-ink pt-[72px]">
-      <Container className="text-center">
-        <Label>404</Label>
-        <H1 className="mx-auto mt-6 max-w-[24ch]">
-          Esse fragmento não faz parte do sistema.
-        </H1>
-        <p className="mx-auto mt-4 max-w-[46ch] text-muted">
-          A página que você procura não existe ou foi movida. Volte para o início e
-          encontre o caminho certo.
+    <main className="surface-ink flex min-h-[92svh] items-center pt-[var(--header-height)]">
+      <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
+        <p className="font-kicker text-accent">Erro 404</p>
+        <h1 className="font-display mt-4 max-w-[16ch] text-balance text-[length:var(--text-display)] text-fg">
+          Esta página não existe (ainda<span className="text-signal">)</span>.
+        </h1>
+        <p className="mt-6 max-w-[44ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">
+          O endereço pode ter mudado. As soluções, os projetos e o contato continuam no mesmo lugar.
         </p>
-        <div className="mt-10 flex justify-center gap-4">
-          <Button href="/">Voltar ao início</Button>
-          <Link
-            href="/projetos"
-            className="inline-flex items-center text-sm font-semibold text-ivory transition-colors hover:text-system"
-          >
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Button href="/" arrow>
+            Voltar ao início
+          </Button>
+          <Button href="/projetos" variant="secondary">
             Ver projetos
-          </Link>
+          </Button>
         </div>
-      </Container>
+      </div>
     </main>
   );
 }

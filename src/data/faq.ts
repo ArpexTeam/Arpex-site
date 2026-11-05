@@ -5,23 +5,27 @@ export type FaqItem = {
 
 export const faq: FaqItem[] = [
   {
-    q: "Como saber se eu preciso de um site, automação, aplicativo ou sistema sob medida?",
-    a: "Esse é o papel do diagnóstico da ArpeX. Primeiro mapeamos seu contexto, os gargalos e o objetivo do negócio. A partir disso, definimos qual solução faz sentido agora.",
+    q: "Preciso contratar tudo de uma vez?",
+    a: "Não. Você pode começar por uma necessidade específica, como um site, uma placa ou a automação de uma tarefa. Outras frentes só entram se fizerem sentido depois.",
   },
   {
-    q: "Quanto custa um projeto personalizado?",
-    a: "O investimento varia conforme escopo, complexidade, integrações e prazo. Depois do diagnóstico, estruturamos uma proposta clara para você saber exatamente o que está sendo contratado.",
+    q: "Ainda não sei do que preciso. Posso conversar mesmo assim?",
+    a: "Pode. A primeira conversa serve para entender a rotina da empresa e identificar por onde começar.",
   },
   {
-    q: "Qual é o prazo médio para uma entrega?",
-    a: "Depende do tipo de solução. Projetos mais enxutos podem sair em poucas semanas; operações mais complexas exigem mais validação e desenvolvimento. O prazo é definido com transparência na proposta.",
+    q: "Quanto custa um projeto?",
+    a: "Depende do escopo, das integrações e do prazo. Depois da conversa inicial você recebe uma proposta por escrito com o que está incluído.",
   },
   {
-    q: "A ArpeX faz apenas o desenvolvimento?",
-    a: "Não. Também atuamos no diagnóstico, na definição de escopo, na validação da solução e nos ajustes após o lançamento, para garantir que a entrega funcione no contexto real do negócio.",
+    q: "Qual é o prazo?",
+    a: "Projetos enxutos saem em poucas semanas; sistemas com mais regras pedem mais validação. O prazo vem definido na proposta.",
   },
   {
-    q: "Vocês oferecem suporte e evolução contínua?",
-    a: "Sim. Depois do lançamento, acompanhamos a operação, corrigimos ajustes finos e evoluímos a solução conforme novas necessidades e oportunidades aparecem.",
+    q: "O que recebo na entrega?",
+    a: "A solução publicada, as informações de acesso e do que foi configurado, e o suporte definido na proposta para ajustes.",
+  },
+  {
+    q: "A placa publica uma avaliação sozinha?",
+    a: "Não. A placa só abre a página de avaliação. O cliente escolhe a nota, escreve e decide se envia.",
   },
 ];

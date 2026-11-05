@@ -1,79 +1,84 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { SITE_URL } from "@/data/social-links";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Títulos e rótulos: Manrope. Leitura: Source Sans 3. Um arquivo variável
+// por família (só latin, sem itálico); o eixo de peso contínuo da Manrope
+// também alimenta a resposta ao ponteiro do encerramento.
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
   subsets: ["latin"],
+  display: "swap",
 });
+
+const title = "ArpeX Technology | Estruturação digital sob medida";
+const description =
+  "Sites, automações e sistemas sob medida para micro, pequenas e médias empresas organizarem a presença digital, o atendimento e os processos.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://arpex-site.vercel.app"),
-  title: {
-    default: "ArpeX Technology | Sua empresa já tem um sistema. Ele só está espalhado.",
-    template: "%s | ArpeX Technology",
-  },
-  description:
-    "A ArpeX transforma processos improvisados em sistemas, automações e experiências digitais que dão clareza para crescer.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: title, template: "%s | ArpeX Technology" },
+  description,
   applicationName: "ArpeX Technology",
   keywords: [
     "ArpeX",
-    "sistemas sob medida",
-    "automação de processos",
-    "aplicativos personalizados",
-    "experiências digitais",
     "estruturação digital",
-    "software sob medida",
+    "criação de sites",
+    "sistemas sob medida",
+    "automação de tarefas",
+    "pequenas e médias empresas",
+    "Perfil da Empresa no Google",
+    "placa de avaliação NFC",
+    "QR Code",
   ],
   authors: [{ name: "ArpeX Technology" }],
   openGraph: {
-    title: "ArpeX Technology | Sua empresa já tem um sistema. Ele só está espalhado.",
-    description:
-      "A ArpeX transforma processos improvisados em sistemas, automações e experiências digitais que dão clareza para crescer.",
+    title,
+    description,
     url: "/",
     siteName: "ArpeX Technology",
     locale: "pt_BR",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "ArpeX Technology | Sua empresa já tem um sistema. Ele só está espalhado.",
-    description:
-      "A ArpeX transforma processos improvisados em sistemas, automações e experiências digitais que dão clareza para crescer.",
-  },
+  twitter: { card: "summary_large_image", title, description },
   icons: { icon: "/favicon.ico" },
   alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#0b0e0c",
   colorScheme: "dark",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="pt-BR"
-      className="bg-ink text-ivory"
-      data-scroll-behavior="smooth"
+      className={`${manrope.variable} ${sourceSans.variable}`}
       suppressHydrationWarning
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-dvh antialiased selection:bg-system/30`}
-      >
+      <body className="min-h-dvh antialiased">
+        <a
+          href="#conteudo"
+          className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-3 focus-visible:z-[100] focus-visible:rounded-full focus-visible:bg-signal focus-visible:px-5 focus-visible:py-2.5 focus-visible:text-sm focus-visible:font-semibold focus-visible:text-ink"
+        >
+          Pular para o conteúdo
+        </a>
         <MotionProvider>
           <Header />
-          {children}
+          <div id="conteudo" tabIndex={-1} className="outline-none">
+            {children}
+          </div>
           <Footer />
         </MotionProvider>
       </body>

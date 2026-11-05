@@ -3,8 +3,9 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navLinks } from "./nav-links";
-import { waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
+import { cn } from "@/lib/cn";
+import { isActivePath, navLinks } from "./nav-links";
+import { CONTACT_EMAIL, waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
 
 type MobileNavProps = {
   open: boolean;
@@ -15,32 +16,31 @@ type MobileNavProps = {
 export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavProps) {
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const firstLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const wasOpen = useRef(false);
 
   useEffect(() => {
-    if (!open) return;
-
+    if (!open) {
+      if (wasOpen.current) returnFocusRef.current?.focus();
+      wasOpen.current = false;
+      return;
+    }
+    wasOpen.current = true;
     const root = document.documentElement;
     root.style.overflow = "hidden";
-    firstLinkRef.current?.focus();
+    panelRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
 
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
+        e.preventDefault();
         onClose();
-        returnFocusRef.current?.focus();
         return;
       }
-
       if (e.key !== "Tab" || !panelRef.current) return;
-
-      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled])'
-      );
-      if (focusable.length === 0) return;
-
+      const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"));
+      // inclui o botão de fechar no cabeçalho dentro do ciclo de foco
+      if (returnFocusRef.current) focusable.unshift(returnFocusRef.current);
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();
@@ -57,45 +57,62 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
     };
   }, [open, onClose, returnFocusRef]);
 
-  const isActive = (href: string) => pathname === href;
-
   return (
     <div
       id="mobile-menu"
-      className={`fixed inset-0 top-[72px] z-40 md:hidden ${open ? "block" : "hidden"}`}
+      ref={panelRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu"
+      inert={!open}
+      className={cn(
+        "surface-ink fixed inset-x-0 bottom-0 top-[var(--header-height)] z-40 flex flex-col overflow-y-auto px-[var(--gutter)] pb-8 pt-6 lg:hidden",
+        "transition-[opacity,clip-path] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        open ? "visible opacity-100 [clip-path:inset(0_0_0_0)]" : "invisible opacity-0 [clip-path:inset(0_0_100%_0)]"
+      )}
     >
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Menu"
-        className="flex h-full flex-col justify-between bg-ink px-6 pb-10 pt-8"
-      >
-        <nav className="flex flex-col">
-          {navLinks.map((link, i) => (
-            <Link
-              key={link.href}
-              ref={i === 0 ? firstLinkRef : undefined}
-              href={link.href}
-              onClick={onClose}
-              className={`group flex items-baseline gap-4 border-b border-smoke py-5 font-heading text-3xl transition-colors ${
-                isActive(link.href) ? "text-system" : "text-ivory hover:text-system"
-              }`}
-            >
-              <span className="font-label text-muted">{String(i + 1).padStart(2, "0")}</span>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+      <nav aria-label="Navegação principal (celular)">
+        <ul>
+          {[...navLinks, { label: "Contato", href: "/contato" }].map((link, i) => {
+            const active = isActivePath(pathname, link.href);
+            return (
+              <li key={link.href} className="border-b border-rule">
+                <Link
+                  href={link.href}
+                  onClick={onClose}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "focus-ring flex items-baseline gap-4 py-4 font-display text-[2rem] transition-colors",
+                    active ? "text-signal" : "text-fg"
+                  )}
+                  style={{ transitionDelay: open ? `${60 + i * 30}ms` : "0ms" }}
+                >
+                  <span className="font-label w-6 text-fg-muted">{String(i + 1).padStart(2, "0")}</span>
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
 
+      <div className="mt-auto space-y-3 pt-10">
+        <Link
+          href="/contato"
+          onClick={onClose}
+          className="focus-ring flex min-h-12 items-center justify-center rounded-full bg-signal text-[15px] font-semibold text-ink"
+        >
+          Conversar com a ArpeX
+        </Link>
         <a
-          href={waLink("Olá! Vim pelo site e quero mapear a operação do meu negócio.")}
+          href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-10 inline-flex items-center justify-center rounded-md border border-champagne/40 py-4 text-[15px] font-semibold text-ivory transition-colors hover:border-system/60 hover:text-system"
+          className="focus-ring flex min-h-12 items-center justify-center rounded-full border border-rule text-[15px] font-semibold text-fg"
         >
-          Mapear operação — {WHATSAPP_DISPLAY}
+          WhatsApp {WHATSAPP_DISPLAY}
         </a>
+        <p className="pt-2 text-center text-sm text-fg-muted">{CONTACT_EMAIL}</p>
       </div>
     </div>
   );

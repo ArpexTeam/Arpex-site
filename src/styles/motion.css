@@ -1,22 +1,32 @@
-/* Controlador global de motion — durações, easings e regras de reduced motion.
-   Fase 1: apenas tokens e utilitários estáticos. As timelines GSAP/WebGL das
-   fases seguintes devem ler estas variáveis em vez de repetir valores. */
+/* Sistema de movimento — durações por papel, não um fade único.
+   micro: 160–240ms · interface: 300–500ms · composição: 600–900ms.
+   As cenas ligadas à rolagem usam scrub (respondem ao progresso). */
 
 :root {
-  --ease-arpex: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-arpex-in: cubic-bezier(0.5, 0, 0.75, 0);
-  --duration-fast: 200ms;
-  --duration-base: 320ms;
-  --duration-slow: 700ms;
-  --duration-peel: 800ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 200ms;
+  --dur-ui: 380ms;
+  --dur-compose: 800ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --duration-fast: 1ms;
-    --duration-base: 1ms;
-    --duration-slow: 1ms;
-    --duration-peel: 1ms;
+    --dur-micro: 1ms;
+    --dur-ui: 1ms;
+    --dur-compose: 1ms;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -32,30 +42,19 @@
   outline: none;
 }
 .focus-ring:focus-visible {
-  outline: 2px solid var(--color-system);
+  outline: 2px solid var(--accent, var(--color-signal));
   outline-offset: 3px;
 }
 
-/* Máscara de linha para revelação de texto (usada nas fases de motion) */
-.line-mask {
-  overflow: hidden;
-  display: block;
+/* Transições entre páginas (View Transitions API, quando disponível). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--ease-out);
 }
-
-/* Cursor contextual "Abrir case": some o cursor nativo só quando o pill
-   customizado está ativo (desktop com hover real, sem reduced-motion). */
-html.has-case-cursor [data-cursor="open-case"] {
-  cursor: none;
-}
-
-/* View Transitions entre arquivo de projetos e página do case */
 ::view-transition-group(*) {
-  animation-duration: var(--duration-slow);
-}
-::view-transition-old(*),
-::view-transition-new(*) {
-  animation-duration: var(--duration-slow);
-  animation-timing-function: var(--ease-arpex);
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-out);
 }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
@@ -65,180 +64,152 @@ html.has-case-cursor [data-cursor="open-case"] {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+/* ---------------------------------------------------------------------
+   Cenas sticky. A condição abaixo é a mesma de FULL_SCENE_QUERY
+   (src/lib/motion/queries.ts): sticky e altura estendida só existem
+   quando a timeline completa também vai rodar. Editar as duas juntas.
+   --------------------------------------------------------------------- */
 
-/* Cena "Fragment Flow" (Mapa Operacional) — sticky real via CSS, não
-   GSAP pin. A altura estendida e o sticky só existem quando a experiência
-   completa vai rodar. Esta condição precisa ser IDÊNTICA, termo a termo, à
-   query "isFull" registrada em operational-map.tsx (gsap.matchMedia) — se
-   uma mudar sem a outra, a seção pode ficar sticky/alta sem a timeline
-   completa (ou vice-versa). Nunca edite uma sem editar a outra. */
-.fragment-flow-section {
+.scene-section {
   position: relative;
 }
-.fragment-flow-stage {
-  position: static;
-  height: auto;
+.scene-stage {
+  position: relative;
 }
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-flow-section {
-    height: 210svh;
+
+@media (min-width: 1024px) and (min-height: 620px) and (prefers-reduced-motion: no-preference) {
+  .scene-section[data-scene="hero"] {
+    height: 205svh;
   }
-  .fragment-flow-stage {
+  .scene-section[data-scene="plaque"] {
+    height: 300svh;
+  }
+  .scene-section[data-scene="crm"] {
+    height: 270svh;
+  }
+  .scene-stage {
     position: sticky;
-    top: var(--header-height);
-    height: calc(100svh - var(--header-height));
+    top: 0;
+    height: 100svh;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    /* Padding vertical do conteúdo interno, compartilhado com
-       .fragment-flow-pad e .fragment-flow-visual abaixo — encolhe em
-       viewports baixos (1366×768, 1024×768) para que a composição caiba
-       sem cortar (o palco usa overflow: hidden). */
-    --frag-pad: clamp(20px, 5svh, 96px);
   }
 }
 
-/* Nós do mapa: quadrantes absolutos só na versão sticky; em fluxo normal
-   (mobile/tablet/reduced-motion) empilham como itens normais da lista. */
-.fragment-node {
-  position: static;
+/* Cena completa em telas baixas (notebooks 1366×768, 1280×720): as colunas
+   de texto das cenas se compactam para caber em 100svh. */
+@custom-variant scene-short (@media (min-width: 1024px) and (min-height: 620px) and (max-height: 780px) and (prefers-reduced-motion: no-preference));
+
+/* Largura máxima do texto da abertura: termina antes da borda esquerda da
+   tela principal, que fica em (0.535 − 0.065 × wide) da largura
+   (heroPoses, src/components/hero/hero-layout.ts). "wide" sai da proporção
+   da tela em degraus de 0.25, arredondados para cima (lado seguro). */
+:root {
+  --hero-wide: 0;
+  --hero-copy-max: min(
+    640px,
+    calc((0.535 - 0.065 * var(--hero-wide)) * 100vw - max(0px, (100vw - 1440px) / 2) - var(--gutter) - 24px)
+  );
 }
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-node {
-    position: absolute;
-    width: min(46%, 260px);
+@media (min-aspect-ratio: 13/10) {
+  :root {
+    --hero-wide: 0.25;
+  }
+}
+@media (min-aspect-ratio: 57/40) {
+  :root {
+    --hero-wide: 0.5;
+  }
+}
+@media (min-aspect-ratio: 31/20) {
+  :root {
+    --hero-wide: 0.75;
+  }
+}
+@media (min-aspect-ratio: 67/40) {
+  :root {
+    --hero-wide: 1;
   }
 }
 
-/* Conector em loop (SVG) só existe na versão espacial de desktop — no
-   fluxo mobile a conexão é comunicada pela linha vertical simples. */
-.fragment-flow-connector {
+/* Elementos que só existem na versão espacial completa ou só fora dela. */
+.only-full {
   display: none;
 }
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-flow-connector {
+@media (min-width: 1024px) and (min-height: 620px) and (prefers-reduced-motion: no-preference) {
+  .only-full {
     display: block;
+  }
+  .only-flow {
+    display: none !important;
   }
 }
 
-/* Linha vertical simples — só no fluxo mobile/tablet (inverso da anterior). */
-.fragment-flow-mobile-line {
+/* Revelação de linha (títulos). O texto continua visível sem JS. A folga
+   vertical cobre acentos e descendentes da Manrope (que ultrapassam a
+   entrelinha de 1.08) sem mudar o espaçamento entre linhas. */
+.line-mask {
   display: block;
+  overflow: hidden;
+  padding-block: 0.16em;
+  margin-block: -0.16em;
 }
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-flow-mobile-line {
-    display: none;
+
+/* Mesma revelação por palavra: o título quebra naturalmente em qualquer
+   largura (sem quebras fixas) e as palavras de uma linha sobem juntas. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-block: 0.16em;
+  margin-block: -0.16em;
+}
+
+/* Rolagem interna de captura de página inteira (demonstração isolada).
+   O quadro precisa de container-type: size (100cqh = altura do quadro). */
+@keyframes page-scroll {
+  0%,
+  8% {
+    transform: translateY(0);
+  }
+  92%,
+  100% {
+    transform: translateY(calc(-100% + 100cqh));
   }
 }
 
-/* Espaço para a linha mobile não ficar sob o texto dos cards; some no
-   palco espacial de desktop, onde os fragmentos ocupam a área inteira. */
-.fragment-flow-list {
-  padding-left: 22px;
-}
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-flow-list {
-    padding-left: 0;
+@keyframes sweep {
+  from {
+    transform: translateX(-120%) skewX(-24deg);
+  }
+  to {
+    transform: translateX(220%) skewX(-24deg);
   }
 }
 
-/* Padding vertical do conteúdo dentro do palco sticky — substitui o py-20
-   md:py-24 fixo do Tailwind apenas no modo completo, para caber em telas
-   baixas (ver .fragment-flow-stage acima). Fora dessa condição o padding
-   do Tailwind permanece intacto (fluxo normal não sofre corte). */
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-flow-pad {
-    padding-block: var(--frag-pad, 80px);
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
   }
 }
 
-/* Quadro visual (fragmentos + conector): quadrado que responde tanto à
-   largura da coluna quanto à altura útil do palco, para nunca ultrapassar
-   a viewport (o palco corta com overflow: hidden). */
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .fragment-flow-visual {
-    width: min(100%, 560px, calc(100svh - var(--header-height) - (var(--frag-pad, 80px) * 2) - 40px));
+@keyframes caret {
+  50% {
+    opacity: 0;
   }
 }
 
-/* Cena "Pipeline Vivo" (ArpeX CRM) — mesmo princípio do Fragment Flow acima:
-   sticky real via CSS, ativado pela MESMA condição que o gsap.matchMedia()
-   de crm-showcase.tsx (isFull). Nunca edite uma sem editar a outra. */
-.crm-story-section {
-  position: relative;
-}
-.crm-story-stage {
-  position: static;
-  height: auto;
-}
-
-/* Espaçamento vertical no fluxo normal — mobile/tablet e reduced motion
-   (ambos caem fora da media query do modo sticky abaixo, que tem sua
-   própria lógica baseada em svh). Sem isto a seção fica colada nas
-   vizinhas fora do modo completo. */
-.crm-story-pad {
-  padding-block: 88px;
-}
-@media (min-width: 900px) {
-  .crm-story-pad {
-    padding-block: 112px;
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-}
-
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .crm-story-section {
-    height: 190svh;
-  }
-  .crm-story-stage {
-    position: sticky;
-    top: var(--header-height);
-    height: calc(100svh - var(--header-height));
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    --crm-pad: clamp(20px, 5svh, 80px);
-  }
-  .crm-story-pad {
-    padding-block: var(--crm-pad, 64px);
-  }
-  .crm-story-visual {
-    max-height: calc(100svh - var(--header-height) - (var(--crm-pad, 64px) * 2) - 40px);
-  }
-}
-
-/* Chips e rotas de convergência: só existem na cena espacial de desktop —
-   no fluxo mobile a entrada dos dados é comunicada pelo próprio reveal do
-   quadro, sem os fragmentos flutuantes. */
-.crm-story-chip,
-.crm-story-routes {
-  display: none;
-}
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .crm-story-chip,
-  .crm-story-routes {
-    display: block;
-  }
-}
-
-/* Colunas do pipeline: empilhadas (fluxo vertical compacto) fora do modo
-   completo; grade de 4 colunas apenas quando a experiência sticky roda —
-   a mesma condição exata do JS decide entre "top" (vertical) e "left"
-   (horizontal) para mover a oportunidade entre as etapas. */
-.crm-board-columns {
-  grid-template-columns: 1fr;
-}
-@media (min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .crm-board-columns {
-    grid-template-columns: repeat(4, 1fr);
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
