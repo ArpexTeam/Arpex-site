@@ -12,19 +12,17 @@ const surfaceBg = {
   "surface-ink": "#0b0e0c",
 } as const;
 
-type Principle = { t: string; d: string };
-
 /**
  * Entender, definir, construir e validar, acompanhar: a linha avança com a
  * rolagem e acende cada número. As etapas se explicam sozinhas, sem
- * introdução. `principles` (opcional) acrescenta critérios curtos abaixo.
+ * introdução. `children` (opcional) liga as etapas a material concreto, abaixo.
  */
 export default function Method({
   surface = "surface-paper",
-  principles,
+  children,
 }: {
   surface?: keyof typeof surfaceBg;
-  principles?: Principle[];
+  children?: React.ReactNode;
 }) {
   const ref = useRef<HTMLElement>(null);
   const dotBg = surfaceBg[surface];
@@ -84,19 +82,7 @@ export default function Method({
           ))}
         </ol>
 
-        {principles && (
-          <div className="mt-14 grid gap-6 border-t border-rule pt-8 md:mt-20 md:grid-cols-12 md:gap-x-6">
-            <h3 className="font-kicker text-accent md:col-span-3">Critérios que seguimos</h3>
-            <ul className="grid gap-6 sm:grid-cols-2 md:col-span-9">
-              {principles.map((p) => (
-                <li key={p.t}>
-                  <p className="font-heading text-fg">{p.t}</p>
-                  <p className="mt-1 max-w-[44ch] text-pretty leading-relaxed text-fg-muted">{p.d}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {children}
       </div>
     </section>
   );

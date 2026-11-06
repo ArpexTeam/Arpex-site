@@ -8,18 +8,17 @@ import { FULL_SCENE_QUERY, supportsWebGL2 } from "@/lib/motion/queries";
 import { useMotionPreference } from "@/components/motion/motion-provider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
-import { plaqueSteps } from "@/data/plaque";
+import { PLAQUE_BG, plaqueSteps } from "@/data/plaque";
 import { contactHref } from "@/data/contact";
 import type { PlaqueSceneApi } from "./plaque-scene";
 
-export const PLAQUE_BG = "#0d110f";
 const POSTER = "/placas/placa-demonstracao.webp";
 const QR = "/placas/qr-demonstracao.svg";
 // alinhado à cena: celular encosta (~0.58), tela abre (0.66–0.76), composição final (0.82+)
 const STEP_AT = [0, 0.66, 0.82];
 
 type Props = {
-  /** na página /placas o título é h1 e o link "como funciona" não aparece */
+  /** na página /placas a cena é a demonstração: outro título, sem os botões */
   variant?: "home" | "page";
 };
 
@@ -115,7 +114,10 @@ export default function PlaqueStory({ variant = "home" }: Props) {
             },
           },
         });
-        tl.fromTo("[data-plaque-cta]", { autoAlpha: 0.35 }, { autoAlpha: 1, duration: 0.1 }, 0.86).to({}, { duration: 0.04 }, 0.96);
+        // os botões só existem na home
+        const cta = sectionRef.current?.querySelector("[data-plaque-cta]");
+        if (cta) tl.fromTo(cta, { autoAlpha: 0.35 }, { autoAlpha: 1, duration: 0.1 }, 0.86);
+        tl.to({}, { duration: 0.04 }, 0.96);
         return () => setStep(0);
       });
       return () => mm.revert();
@@ -123,7 +125,6 @@ export default function PlaqueStory({ variant = "home" }: Props) {
     { scope: sectionRef }
   );
 
-  const Title = variant === "page" ? "h1" : "h2";
 
   return (
     <section
@@ -136,8 +137,14 @@ export default function PlaqueStory({ variant = "home" }: Props) {
       <div className="scene-stage">
         {/* 3D (modo completo): poster até o primeiro quadro, depois o canvas. */}
         <div aria-hidden className="only-full absolute inset-0">
-          <div className="absolute inset-y-0 right-0 w-[64%] transition-opacity duration-700" style={{ opacity: ready ? 0 : 1 }}>
-            <Image src={POSTER} alt="" fill sizes="64vw" className="object-contain" />
+          {/* o poster fica nas colunas da cena, sem cobrir o texto (sem WebGL, ele não sai) */}
+          <div
+            className="absolute inset-0 mx-auto grid max-w-[1440px] grid-cols-12 gap-12 px-[var(--gutter)] pt-[var(--header-height)] transition-opacity duration-700"
+            style={{ opacity: ready ? 0 : 1 }}
+          >
+            <div className="relative col-span-7 col-start-6">
+              <Image src={POSTER} alt="" fill sizes="(min-width: 1440px) 800px, 56vw" className="object-contain" />
+            </div>
           </div>
           <div ref={hostRef} className="absolute inset-0 transition-opacity duration-700" style={{ opacity: ready ? 1 : 0 }} />
         </div>
@@ -146,17 +153,19 @@ export default function PlaqueStory({ variant = "home" }: Props) {
           {/* em 1024px a placa entra perto da coluna: a largura fica abaixo de 1/3 da tela */}
           <div className="lg:col-span-5 lg:max-w-[32vw] xl:max-w-none">
             <p ref={monoRef} className="font-kicker text-signal">
-              Presença · Placa de avaliação com QR Code e NFC
+              {variant === "page" ? "Demonstração" : "Presença · Placa de avaliação com QR Code e NFC"}
             </p>
-            <Title ref={titleRef} id="placas-title" className="font-title mt-4 text-balance text-[length:var(--text-h2)] text-fg">
-              Do balcão à avaliação, em um toque.
-            </Title>
+            <h2 ref={titleRef} id="placas-title" className="font-title mt-4 text-balance text-[length:var(--text-h2)] text-fg">
+              {variant === "page" ? "Como funciona" : "Do balcão à avaliação, em um toque."}
+            </h2>
             <p
               ref={bodyRef}
               className="mt-5 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg lg:text-[length:var(--text-body)] scene-short:hidden"
             >
               {/* o percurso fica com a cena e as etapas; aqui só o que é a placa */}
-              Uma placa de acrílico com a identidade da sua empresa, para o balcão, a mesa ou a recepção.
+              {variant === "page"
+                ? "A placa primeiro; o celular entra quando chega a hora de aproximar."
+                : "Uma placa de acrílico com a identidade da sua empresa, para o balcão, a mesa ou a recepção."}
             </p>
 
             <ol className="mt-8 lg:mt-6" data-mode={fullMode ? "full" : "flow"}>
@@ -188,16 +197,14 @@ export default function PlaqueStory({ variant = "home" }: Props) {
               })}
             </ol>
 
-            <div data-plaque-cta className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 lg:mt-6 scene-short:mt-4">
-              <Button href={contactHref("placas")} arrow>
-                Quero uma placa para minha empresa
-              </Button>
-              {variant === "home" && (
+            {variant === "home" && (
+              <div data-plaque-cta className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-6 scene-short:mt-4">
+                <Button href={contactHref("placas")}>Solicitar uma placa</Button>
                 <Button href="/placas" variant="link" arrow>
-                  Como funciona
+                  Conhecer a placa
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
             <p className="mt-5 text-[13px] leading-relaxed text-fg-muted scene-short:mt-3">
               Cena ilustrativa: a arte da placa e a tela do celular são demonstrações.
             </p>

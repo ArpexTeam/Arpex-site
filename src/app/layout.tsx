@@ -1,22 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Source_Sans_3 } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { SITE_URL } from "@/data/social-links";
 
-// Títulos e rótulos: Manrope. Leitura: Source Sans 3. Um arquivo variável
-// por família (só latin, sem itálico); o eixo de peso contínuo da Manrope
-// também alimenta a resposta ao ponteiro do encerramento.
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const sourceSans = Source_Sans_3({
-  variable: "--font-source-sans",
+// Uma família para títulos, textos e controles: Instrument Sans, variável
+// (400–700, só latin, sem itálico). O eixo de peso contínuo também alimenta a
+// resposta ao ponteiro do encerramento.
+const instrument = Instrument_Sans({
+  variable: "--font-instrument",
   subsets: ["latin"],
   display: "swap",
 });
@@ -64,13 +58,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html
       lang="pt-BR"
-      className={`${manrope.variable} ${sourceSans.variable}`}
+      className={instrument.variable}
       suppressHydrationWarning
     >
       <body className="min-h-dvh antialiased">
         <a
           href="#conteudo"
-          className="btn btn-primary btn-sm sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-3 focus-visible:z-[100] focus-visible:px-5"
+          className="btn sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-3 focus-visible:z-[100] focus-visible:px-5"
         >
           Pular para o conteúdo
         </a>

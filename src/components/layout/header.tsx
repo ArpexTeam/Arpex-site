@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import MobileNav from "@/components/navigation/mobile-nav";
 import { isActivePath, navLinks } from "@/components/navigation/nav-links";
 import TransitionLink from "@/components/motion/transition-link";
+import { Arrow } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import logo from "@/images/logo-oficial.png";
 
@@ -81,11 +82,21 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {/* a ação do cabeçalho tem a escala da navegação; a seta a distingue */}
             <TransitionLink
               href="/contato"
-              className="btn btn-primary btn-sm hidden sm:inline-flex"
+              aria-current={isActivePath(pathname, "/contato") ? "page" : undefined}
+              className="nav-link relative hidden h-10 items-center gap-1.5 px-3 text-[14px] font-medium sm:inline-flex"
             >
-              Conversar com a ArpeX
+              Contato
+              <Arrow className="h-3.5 w-3.5" />
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute bottom-1.5 left-3 h-1 w-1 rounded-full bg-signal transition-opacity",
+                  isActivePath(pathname, "/contato") ? "opacity-100" : "opacity-0"
+                )}
+              />
             </TransitionLink>
 
             <button
@@ -95,7 +106,7 @@ export default function Header() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Fechar menu" : "Abrir menu"}
-              className="btn btn-secondary h-11 min-h-11 w-11 px-0 lg:hidden"
+              className="icon-btn lg:hidden"
             >
               <span aria-hidden className="relative block h-3 w-5">
                 <span

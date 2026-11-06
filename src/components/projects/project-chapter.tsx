@@ -23,7 +23,7 @@ const byKind = (p: Project, kind: ProjectMedia["kind"]) => p.gallery.filter((m) 
 /** Link de case: ação em texto na cor do capítulo; a capa já é o alvo grande. */
 function CaseLink({ project, children }: { project: Project; children: React.ReactNode }) {
   return (
-    <TransitionLink href={`/projetos/${project.slug}`} className="link inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold">
+    <TransitionLink href={`/projetos/${project.slug}`} className="link link-action">
       {children}
       <Arrow />
     </TransitionLink>
@@ -255,6 +255,7 @@ export default function ProjectChapter({ project, index, previousBg, first }: Pr
           "--fg-muted": palette.muted,
           "--rule": palette.dark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.12)",
           "--accent": palette.accent,
+          "--fg-inverse": palette.bg,
           "--case-muted": palette.muted,
           color: palette.fg,
           // transição de cor entre capítulos: o topo herda o fundo anterior
@@ -263,38 +264,25 @@ export default function ProjectChapter({ project, index, previousBg, first }: Pr
       }
     >
       <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
-        {/* na home: nome, necessidade, síntese e acesso; desafio e solução completos ficam no case */}
-        <header className="mb-10 grid grid-cols-12 gap-y-5 md:mb-14 md:gap-x-6">
-          <div className="col-span-12 md:col-span-6">
-            <p className="font-kicker flex flex-wrap items-center gap-x-3 gap-y-1" style={{ color: palette.accent }}>
-              <span className="font-label">{num}</span>
-              <span aria-hidden className="h-px w-8 bg-current" />
-              <span style={{ color: palette.muted }}>{project.type}</span>
-            </p>
-            <h3 id={`chapter-${project.slug}`} className="font-display mt-4 text-balance text-[clamp(2rem,1.4rem+1.6vw,3rem)]">
-              <span className="line-mask">
-                <span data-chapter-line className="block">
-                  {project.title}
-                </span>
+        {/* nome, categoria e uma frase; desafio, escopo e detalhes ficam no case */}
+        <header className="mb-8 md:mb-10">
+          <p className="font-kicker flex flex-wrap items-center gap-x-3 gap-y-1" style={{ color: palette.accent }}>
+            <span className="font-label">{num}</span>
+            <span aria-hidden className="h-px w-8 bg-current" />
+            <span style={{ color: palette.muted }}>{project.type}</span>
+          </p>
+          <h3 id={`chapter-${project.slug}`} className="font-title mt-3 text-balance text-[length:var(--text-project)]">
+            <span className="line-mask">
+              <span data-chapter-line className="block">
+                {project.title}
               </span>
-            </h3>
-            {project.client !== project.title && (
-              <p className="mt-3 text-[length:var(--text-lead)]" style={{ color: palette.muted }}>
-                {project.client}
-              </p>
-            )}
-          </div>
-          <div className="col-span-12 self-end md:col-span-5 md:col-start-8">
-            {project.problem && (
-              <p className="text-pretty leading-relaxed" style={{ color: palette.muted }}>
-                <span className="font-semibold" style={{ color: palette.accent }}>
-                  Desafio:{" "}
-                </span>
-                {project.problem}
-              </p>
-            )}
-            <p className="mt-3 text-pretty text-[length:var(--text-lead)] leading-[1.5]">{project.summary}</p>
-          </div>
+            </span>
+          </h3>
+          {project.context && (
+            <p className="mt-2 max-w-[56ch] text-pretty text-[length:var(--text-lead)] leading-[1.45]" style={{ color: palette.muted }}>
+              {project.context}
+            </p>
+          )}
         </header>
 
         <Media project={project} />

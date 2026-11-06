@@ -122,7 +122,8 @@ function LocalDemo({ active }: { active: boolean }) {
   return (
     <figure>
       <div className="frame relative grid aspect-[4/3] grid-cols-[0.8fr_1fr] gap-5 bg-[#121613] p-5 sm:gap-8 sm:p-8">
-        <div className="relative overflow-hidden rounded-xl bg-white">
+        {/* o cartão inteiro, na proporção da foto (3:4), sem corte nas laterais */}
+        <div className="relative aspect-[3/4] self-center overflow-hidden rounded-xl bg-white">
           <Image src={chefCartaoQr} alt="Cartão com QR Code entregue ao Chef Bruno Sushi" fill sizes="(min-width: 1024px) 20vw, 40vw" className="object-cover" />
         </div>
         <ul className="flex flex-col justify-center gap-2.5 sm:gap-3.5">

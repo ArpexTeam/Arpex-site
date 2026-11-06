@@ -30,16 +30,16 @@
   --color-signal-soft: #5ce8a8;
   --color-signal-ink: #006b3e;
 
-  /* Títulos: Manrope (600/700). Leitura: Source Sans 3 (400/500/600).
-     Ambas variáveis, só o subconjunto latin. */
-  --font-display: var(--font-manrope), "Manrope", system-ui, sans-serif;
-  --font-sans: var(--font-source-sans), "Source Sans 3", system-ui, sans-serif;
+  /* Uma família só (Instrument Sans): títulos 600, texto 400, ações 500.
+     Os níveis se distinguem pelo tamanho, não por famílias diferentes. */
+  --font-display: var(--font-instrument), "Instrument Sans", system-ui, sans-serif;
+  --font-sans: var(--font-instrument), "Instrument Sans", system-ui, sans-serif;
 
   --radius-frame: 18px;
   --radius-device: 28px;
 
   /* transition-* sem duração explícita: a mesma dos controles (controls.css) */
-  --default-transition-duration: 180ms;
+  --default-transition-duration: 160ms;
 }
 
 @theme inline {
@@ -57,14 +57,16 @@
   --fg-inverse: var(--color-ink);
   --header-height: 64px;
 
-  /* Escala tipográfica fluida, limitada nos dois extremos. Cinco papéis:
-     título da página (hero/display) > título de seção (h2) > título de item
-     (h3) > texto (lead/body) > legenda (small/label).
+  /* Escala tipográfica fluida, limitada nos dois extremos. Papéis:
+     título da página (hero/display) > título de seção (h2) > nome de projeto
+     > título de item (h3) > texto (lead/body) > legenda (small/label).
      abertura ≈ 36px (390) → 64px (1440) · página ≈ 34 → 57px
-     seção ≈ 28 → 37px · item ≈ 19 → 23px · apoio 18 → 20px · texto 16 → 18px */
+     seção ≈ 28 → 37px · projeto ≈ 24 → 31px · item ≈ 19 → 23px
+     apoio 18 → 20px · texto 16 → 18px */
   --text-hero: clamp(2.25rem, 1.3rem + 3vw, 4.5rem);
   --text-display: clamp(2.125rem, 1.25rem + 2.6vw, 3.75rem);
   --text-h2: clamp(1.75rem, 1.35rem + 1.05vw, 2.5rem);
+  --text-project: clamp(1.5rem, 1.2rem + 0.8vw, 2.125rem);
   --text-h3: clamp(1.1875rem, 1.08rem + 0.4vw, 1.5rem);
   --text-lead: clamp(1.125rem, 1.06rem + 0.2vw, 1.25rem);
   --text-body: clamp(1rem, 0.95rem + 0.22vw, 1.125rem);
@@ -94,15 +96,15 @@
   /* Título da página (abertura, h1 das páginas internas, encerramento). */
   .font-display {
     font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: -0.022em;
-    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.024em;
+    line-height: 1.06;
   }
 
   /* Títulos de seção: mais contidos que o título da página. */
   .font-title {
     font-family: var(--font-display);
-    font-weight: 650;
+    font-weight: 600;
     letter-spacing: -0.018em;
     line-height: 1.12;
   }
@@ -119,7 +121,7 @@
   .font-kicker {
     font-family: var(--font-display);
     font-size: var(--text-kicker);
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.4;
   }
 
@@ -127,7 +129,7 @@
   .font-label {
     font-family: var(--font-display);
     font-size: var(--text-label);
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.08em;
     line-height: 1.4;
     text-transform: uppercase;

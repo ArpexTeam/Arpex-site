@@ -1,5 +1,8 @@
 # Refinamento de botões, links e seletores
 
+> Substituído em parte pela [revisão visual](../revisao-visual/README.md): o botão principal deixou de ser
+> verde, o secundário saiu e as abas ganharam classe própria. As tabelas abaixo registram esta rodada.
+
 Esta rodada parte da versão em produção (commit `1a61d95`). Mantivemos identidade, fontes, cenas,
 animações e textos. O que mudou foi a forma, a cor e os estados dos controles.
 

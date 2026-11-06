@@ -44,7 +44,7 @@ export default function ContatoPage() {
                     href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="link-inline"
+                    className="link link-inline"
                   >
                     {WHATSAPP_DISPLAY}
                   </a>
@@ -56,7 +56,7 @@ export default function ContatoPage() {
                   <span className="sr-only">E-mail</span>
                 </dt>
                 <dd>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="link-inline break-all">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="link link-inline break-all">
                     {CONTACT_EMAIL}
                   </a>
                 </dd>
@@ -67,7 +67,7 @@ export default function ContatoPage() {
                   <span className="sr-only">Instagram</span>
                 </dt>
                 <dd>
-                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="link-inline">
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="link link-inline">
                     {INSTAGRAM_HANDLE}
                   </a>
                 </dd>

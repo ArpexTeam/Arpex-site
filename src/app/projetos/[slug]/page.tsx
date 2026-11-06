@@ -84,6 +84,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     "--fg-muted": palette.muted,
     "--rule": palette.dark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.12)",
     "--accent": palette.accent,
+    "--fg-inverse": palette.bg,
     background: palette.bg,
     color: palette.fg,
   } as React.CSSProperties;
@@ -92,7 +93,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     <main style={vars} data-top={palette.dark ? "dark" : "light"}>
       <section className="pt-[calc(var(--header-height)+56px)] pb-12 md:pt-[calc(var(--header-height)+88px)] md:pb-16">
         <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
-          <TransitionLink href="/projetos" className="link link-muted inline-flex min-h-11 items-center gap-2 text-sm font-semibold">
+          <TransitionLink href="/projetos" className="link link-muted link-action text-sm">
             <Arrow className="h-3.5 w-3.5 rotate-180" />
             Todos os projetos
           </TransitionLink>
@@ -104,14 +105,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               {project.client !== project.title && <p className="mt-4 text-[length:var(--text-lead)] text-fg-muted">{project.client}</p>}
             </div>
             <div className="md:col-span-4 md:self-end">
-              <p className="text-pretty text-[length:var(--text-lead)] leading-[1.55]">{project.summary}</p>
+              {/* a entrega em uma frase; desafio e solução vêm uma vez, abaixo da capa */}
+              <p className="text-pretty text-[length:var(--text-lead)] leading-[1.55]">{project.context ?? project.summary}</p>
               <div className="mt-6 flex flex-wrap gap-3">
                 {project.status.url && (
                   <Button href={project.status.url} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} arrow>
                     {project.status.urlLabel ?? "Visitar"}
                   </Button>
                 )}
-                <Button href={contactHref(undefined, { projeto: project.slug })} variant="secondary">
+                <Button href={contactHref(undefined, { projeto: project.slug })} variant="link">
                   Quero algo assim
                 </Button>
               </div>
@@ -139,7 +141,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               <Button href="/projetos" arrow>
                 Ver projetos
               </Button>
-              <Button href="/contato" variant="secondary">
+              <Button href="/contato" variant="link">
                 Conversar com a ArpeX
               </Button>
             </div>
@@ -223,7 +225,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <p className="font-heading text-[length:var(--text-h3)]">{project.status.label}</p>
             {project.status.url && external && (
               <p className="mt-3 text-fg-muted">
-                <a href={project.status.url} target="_blank" rel="noopener noreferrer" className="link-inline">
+                <a href={project.status.url} target="_blank" rel="noopener noreferrer" className="link link-inline">
                   {project.status.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                 </a>
               </p>

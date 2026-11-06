@@ -3,12 +3,10 @@ import { cn } from "@/lib/cn";
 
 // Forma, cores e estados ficam em src/styles/controls.css.
 const styles = {
-  // verde da marca com texto ink, em qualquer fundo
-  primary: "btn btn-primary",
-  // contorno discreto na cor do texto da superfície
-  secondary: "btn btn-secondary",
-  // ação em texto: sublinhado fino aparece no hover
-  link: "link inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-fg",
+  // preenchido na cor do texto da superfície; só nos pontos de decisão
+  primary: "btn",
+  // ação em texto, com sublinhado fino sempre visível
+  link: "link link-action text-fg",
 } as const;
 
 type BaseProps = {

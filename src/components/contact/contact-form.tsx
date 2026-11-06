@@ -141,7 +141,7 @@ export default function ContactForm() {
         </p>
         <button
           type="submit"
-          className="btn btn-primary shrink-0 whitespace-nowrap px-7"
+          className="btn shrink-0 whitespace-nowrap"
         >
           <WhatsAppIcon />
           Abrir no WhatsApp
@@ -152,13 +152,13 @@ export default function ContactForm() {
         {opened && (
           <p className="text-fg-muted">
             Abrimos o WhatsApp em outra aba. Não abriu?{" "}
-            <a href={waLink(opened)} target="_blank" rel="noopener noreferrer" className="link-inline">
+            <a href={waLink(opened)} target="_blank" rel="noopener noreferrer" className="link link-inline">
               Tente por este link
             </a>{" "}
             ou{" "}
             <a
               href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Contato pelo site")}&body=${encodeURIComponent(mailBody)}`}
-              className="link-inline"
+              className="link link-inline"
             >
               envie por e-mail
             </a>

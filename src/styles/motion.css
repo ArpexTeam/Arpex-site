@@ -137,7 +137,7 @@
 }
 
 /* Revelação de linha (títulos). O texto continua visível sem JS. A folga
-   vertical cobre acentos e descendentes da Manrope (que ultrapassam a
+   vertical cobre acentos e descendentes da fonte (que ultrapassam a
    entrelinha de 1.08) sem mudar o espaçamento entre linhas. */
 .line-mask {
   display: block;

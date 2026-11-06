@@ -134,12 +134,10 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
             </ol>
 
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 scene-short:mt-4">
-              <Button href={contactHref("crm")} arrow>
-                Conversar sobre o CRM
-              </Button>
+              <Button href={contactHref("crm")}>Conversar sobre o CRM</Button>
               {headingLevel === 2 && (
                 <Button href="/ecossistema" variant="link" arrow>
-                  Ver todas as telas
+                  Conhecer o CRM
                 </Button>
               )}
             </div>

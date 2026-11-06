@@ -28,7 +28,7 @@ const posterImages = [
 const REFERENCE_POSES = heroPoses(1600, 1000);
 // Sem quebras fixas: cada palavra tem a própria máscara e o título quebra
 // conforme a largura disponível.
-const titleWords = "Tecnologia para seu negócio funcionar melhor e crescer".split(" ");
+const titleWords = "Tecnologia para organizar seu negócio".split(" ");
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -272,15 +272,12 @@ export default function Hero() {
               ))}
             </h1>
             <p data-hero-reveal className="mt-6 max-w-[34em] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg/85 lg:max-w-[min(34em,var(--hero-copy-max))]">
-              Sites, automações e sistemas sob medida para organizar a presença, o atendimento e a operação da sua
-              empresa.
+              Criamos sites, automações e sistemas sob medida para empresas em crescimento.
             </p>
-            <div data-hero-reveal className="mt-8 flex flex-wrap items-center gap-3">
-              <Button href={contactHref("entender")} arrow>
-                Conversar sobre meu negócio
-              </Button>
-              <Button href="#solucoes" variant="secondary">
-                Conhecer as soluções
+            <div data-hero-reveal className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
+              <Button href={contactHref("entender")}>Falar com a ArpeX</Button>
+              <Button href="#solucoes" variant="link" arrow>
+                Ver soluções
               </Button>
             </div>
           </div>
@@ -339,7 +336,7 @@ export default function Hero() {
             </p>
             <TransitionLink
               href={`/projetos/${featured.slug}`}
-              className="btn btn-secondary"
+              className="link link-action text-fg"
             >
               Abrir o case
               <Arrow />

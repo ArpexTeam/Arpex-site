@@ -97,15 +97,15 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
         <Link
           href="/contato"
           onClick={onClose}
-          className="btn btn-primary w-full"
+          className="btn w-full"
         >
-          Conversar com a ArpeX
+          Falar com a ArpeX
         </Link>
         <a
           href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-secondary w-full"
+          className="link link-action w-full justify-center text-fg"
         >
           <WhatsAppIcon />
           <span className="sr-only">WhatsApp: </span>

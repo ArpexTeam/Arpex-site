@@ -19,24 +19,27 @@ export const plaqueModel = {
   photosAvailable: false,
 };
 
+/** Fundo da cena e dos renders da placa (a página Placas abre no mesmo tom). */
+export const PLAQUE_BG = "#0d110f";
+
 /** Destino do QR de demonstração: a própria página de placas da ArpeX. */
 export const plaqueDemoQrTarget = `${SITE_URL}/placas?origem=qr-demonstracao`;
 
 export const plaqueSteps = [
   {
     key: "aproxime",
-    title: "Aproxime ou escaneie.",
+    title: "Aproxime ou escaneie",
     text: "Encostando o celular (NFC) ou com a câmera (QR Code).",
   },
   {
     key: "acesse",
-    title: "Abra a página.",
+    title: "Abra a página",
     text: "A página de avaliação da sua empresa abre no navegador, sem aplicativo.",
   },
   {
     key: "avalie",
-    title: "O cliente avalia.",
-    text: "Ele escolhe a nota, escreve e decide se publica. Abrir o link não publica nada.",
+    title: "Deixe sua avaliação",
+    text: "O cliente escolhe a nota, escreve e decide se publica.",
   },
 ] as const;
 
@@ -48,8 +51,24 @@ export const plaqueUses = [
 ];
 
 export const plaqueCustomization = [
-  "A identidade da sua empresa: logotipo, cores e frase de chamada.",
-  "O destino do link, definido com você antes da produção: normalmente a página de avaliação da sua empresa.",
+  { t: "Acrílico, sem base", d: "Medidas e acabamento são combinados na contratação." },
+  { t: "A arte da sua empresa", d: "Logotipo, cores e a frase de chamada, definidos com você." },
+];
+
+/** Contratação: arte, destino do link e entrega, combinados na mesma conversa. */
+export const plaqueHire = [
+  { t: "Arte", d: "Definimos com você o logotipo, as cores e a frase da placa." },
+  { t: "Destino do link", d: "O QR Code e o NFC levam à página que você escolher, normalmente a de avaliação da sua empresa." },
+  { t: "Entrega", d: "Produção, prazo e entrega são combinados na mesma conversa." },
+];
+
+/** Compatibilidade e dúvidas, numa área curta perto do fim. */
+export const plaqueFaq = [
+  {
+    q: "Funciona em qualquer celular?",
+    a: "Com NFC ativado, basta aproximar. Em qualquer celular com câmera, pelo QR Code. Por isso a placa tem os dois.",
+  },
+  { q: "Precisa de aplicativo?", a: "Não. A página abre no navegador do celular." },
 ];
 
 /** Itens a confirmar antes de publicar especificações comerciais. */

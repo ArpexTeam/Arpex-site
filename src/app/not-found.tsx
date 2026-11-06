@@ -15,7 +15,7 @@ export default function NotFound() {
           <Button href="/" arrow>
             Voltar ao início
           </Button>
-          <Button href="/projetos" variant="secondary">
+          <Button href="/projetos" variant="link">
             Ver projetos
           </Button>
         </div>

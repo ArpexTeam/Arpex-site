@@ -8,9 +8,9 @@ import { waLink } from "@/data/social-links";
 import { contactHref } from "@/data/contact";
 
 const words = "Vamos entender o próximo passo do seu negócio?".split(" ");
-// peso variável da Manrope: base e pico perto do ponteiro
-const BASE = 640;
-const PEAK = 800;
+// peso variável da Instrument Sans (400–700): base e pico perto do ponteiro
+const BASE = 560;
+const PEAK = 700;
 
 /**
  * Encerramento: a mesma tipografia da abertura, respondendo ao ponteiro
@@ -118,7 +118,7 @@ export default function Closing() {
                   wordRefs.current[i] = el;
                 }}
                 data-word={w}
-                className="inline-flex flex-col items-center after:invisible after:h-0 after:overflow-hidden after:content-[attr(data-word)] after:[font-weight:800]"
+                className="inline-flex flex-col items-center after:invisible after:h-0 after:overflow-hidden after:content-[attr(data-word)] after:[font-weight:700]"
                 style={{ fontWeight: BASE }}
               >
                 {w}
@@ -130,15 +130,13 @@ export default function Closing() {
         <p className="mx-auto mt-6 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.5] text-fg">
           Conte o que está tomando tempo ou o que você quer construir. Ajudamos a definir por onde começar.
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Button href={contactHref("entender")} arrow>
-            Conversar com a ArpeX
-          </Button>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
+          <Button href={contactHref("entender")}>Falar com a ArpeX</Button>
           <Button
             href={waLink("Olá! Vim pelo site da ArpeX e quero entender o próximo passo do meu negócio.")}
             target="_blank"
             rel="noopener noreferrer"
-            variant="secondary"
+            variant="link"
           >
             <WhatsAppIcon />
             Chamar no WhatsApp

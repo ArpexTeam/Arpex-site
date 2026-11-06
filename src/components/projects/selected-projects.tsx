@@ -14,7 +14,7 @@ export default function SelectedProjects() {
       <div style={{ background: first.palette.bg, color: first.palette.fg }}>
         <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)] pt-20 md:pt-28">
           <h2 id="projetos-title" className="font-title text-balance text-[length:var(--text-h2)]">
-            O que construímos e o que isso resolveu.
+            Projetos selecionados
           </h2>
         </div>
       </div>
@@ -35,6 +35,7 @@ export default function SelectedProjects() {
             "--fg": last.palette.fg,
             "--fg-muted": last.palette.muted,
             "--accent": last.palette.accent,
+            "--fg-inverse": last.palette.bg,
           } as React.CSSProperties
         }
       >
@@ -42,7 +43,7 @@ export default function SelectedProjects() {
           <p className="max-w-[60ch] text-pretty" style={{ color: last.palette.muted }}>
             No arquivo também: {others.map((p) => p.title).join(", ")}.
           </p>
-          <Link href="/projetos" className="btn btn-secondary">
+          <Link href="/projetos" className="link link-action">
             Ver todos os projetos
             <Arrow />
           </Link>

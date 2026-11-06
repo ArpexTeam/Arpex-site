@@ -76,7 +76,7 @@ export default function Footer() {
           </ul>
           <p className="mt-8 text-sm text-fg-muted">
             Já usa o ArpeX CRM?{" "}
-            <a href={CRM_LOGIN_URL} target="_blank" rel="noopener noreferrer" className="link-inline">
+            <a href={CRM_LOGIN_URL} target="_blank" rel="noopener noreferrer" className="link link-inline">
               Entrar
             </a>
           </p>

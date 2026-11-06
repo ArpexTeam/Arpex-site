@@ -58,6 +58,8 @@ export type Project = {
   client: string;
   /** tipo de solução, em poucas palavras (listas e capítulos) */
   type: string;
+  /** a entrega em uma frase, junto do nome e da imagem (home, portfólio, case) */
+  context?: string;
   /** frentes (categorias) com evidência da entrega */
   categories: string[];
   summary: string;
@@ -89,6 +91,7 @@ export const projects: Project[] = [
     title: "Carta de vinhos 3D",
     client: "Toricelli Panetteria",
     type: "Carta digital em 3D para tablets",
+    context: "Carta de vinhos e sobremesas em 3D para os tablets do salão de uma panetteria.",
     categories: ["Experiência digital", "Aplicativo web (PWA)"],
     summary:
       "Uma carta para tablets que se folheia como um livro. Ao tocar um vinho, a garrafa 3D sai do rótulo e vai ao palco, sem trocar de tela.",
@@ -129,6 +132,7 @@ export const projects: Project[] = [
     title: "Chef Bruno Sushi",
     client: "Chef Bruno Sushi",
     type: "Site com painel de conteúdo",
+    context: "Site com cardápio e pedido de orçamento para um chef de eventos.",
     categories: ["Presença digital", "Painel de conteúdo", "Google e SEO"],
     summary:
       "Site editorial para um chef que leva o sushi ao endereço do evento, com cardápio, modalidades e pedido de orçamento — atualizável pelo próprio cliente.",
@@ -170,6 +174,7 @@ export const projects: Project[] = [
     title: "Lux Bartenders",
     client: "Lux Bartenders",
     type: "Site com configurador de eventos",
+    context: "Site em que o visitante monta o próprio bar antes de pedir a proposta.",
     categories: ["Presença digital", "Experiência digital"],
     summary:
       "Site para um bar de eventos que faz o visitante ver o drink e montar o próprio bar antes de pedir a proposta.",
@@ -204,6 +209,7 @@ export const projects: Project[] = [
     title: "Honoratto Tattoo",
     client: "Honoratto Tattoo",
     type: "Site de portfólio",
+    context: "Portfólio de um estúdio de tatuagem autoral, com o orçamento a um clique.",
     categories: ["Presença digital"],
     summary:
       "Site de portfólio para um estúdio de tatuagem autoral: o trabalho em primeiro plano e o orçamento a um clique.",
@@ -230,6 +236,7 @@ export const projects: Project[] = [
     title: "Flor de Maria VIP",
     client: "Flor de Maria",
     type: "Sistema de lembretes",
+    context: "Sistema que avisa os clientes de uma floricultura antes das datas importantes.",
     categories: ["Sistema sob medida", "Automação"],
     summary:
       "Sistema de lembretes para uma floricultura: o cliente cadastra as datas importantes e recebe um aviso no WhatsApp antes de cada uma.",
@@ -256,6 +263,7 @@ export const projects: Project[] = [
     title: "ArpeX CRM",
     client: "Produto próprio",
     type: "CRM · produto próprio",
+    context: "O CRM da própria ArpeX, para organizar contatos, retornos e oportunidades.",
     categories: ["Produto próprio", "Sistema"],
     summary:
       "CRM próprio da ArpeX: o dia começa pela próxima oportunidade, o modo foco prepara a mensagem e o pipeline mostra o que avançou.",
