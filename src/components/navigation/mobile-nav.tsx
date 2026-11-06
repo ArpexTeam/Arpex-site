@@ -81,11 +81,7 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
                   href={link.href}
                   onClick={onClose}
                   aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "focus-ring flex items-baseline gap-4 py-4 font-display text-[2rem] transition-colors",
-                    active ? "text-signal" : "text-fg"
-                  )}
-                  style={{ transitionDelay: open ? `${60 + i * 30}ms` : "0ms" }}
+                  className={cn("nav-link flex items-baseline gap-4 rounded-none py-4 font-display text-[2rem]", active ? "text-signal" : "text-fg")}
                 >
                   <span className="font-label w-6 text-fg-muted">{String(i + 1).padStart(2, "0")}</span>
                   {link.label}
@@ -100,7 +96,7 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
         <Link
           href="/contato"
           onClick={onClose}
-          className="focus-ring flex min-h-12 items-center justify-center rounded-full bg-signal text-[15px] font-semibold text-ink"
+          className="btn btn-primary w-full"
         >
           Conversar com a ArpeX
         </Link>
@@ -108,7 +104,7 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
           href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
           target="_blank"
           rel="noopener noreferrer"
-          className="focus-ring flex min-h-12 items-center justify-center rounded-full border border-rule text-[15px] font-semibold text-fg"
+          className="btn btn-secondary w-full"
         >
           WhatsApp {WHATSAPP_DISPLAY}
         </a>

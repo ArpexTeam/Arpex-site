@@ -193,7 +193,7 @@ export default function PlaqueStory({ variant = "home" }: Props) {
                 Quero uma placa para minha empresa
               </Button>
               {variant === "home" && (
-                <Button href="/placas" variant="text" arrow>
+                <Button href="/placas" variant="link" arrow>
                   Como funciona
                 </Button>
               )}

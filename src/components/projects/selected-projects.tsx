@@ -27,15 +27,22 @@ export default function SelectedProjects() {
           first={i === 0}
         />
       ))}
-      <div style={{ background: last.palette.bg, color: last.palette.fg }}>
+      <div
+        style={
+          {
+            background: last.palette.bg,
+            color: last.palette.fg,
+            "--fg": last.palette.fg,
+            "--fg-muted": last.palette.muted,
+            "--accent": last.palette.accent,
+          } as React.CSSProperties
+        }
+      >
         <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-6 border-t border-black/10 px-[var(--gutter)] py-10">
           <p className="max-w-[60ch] text-pretty" style={{ color: last.palette.muted }}>
             No arquivo também: {others.map((p) => p.title).join(", ")}.
           </p>
-          <Link
-            href="/projetos"
-            className="focus-ring group/btn inline-flex min-h-12 items-center gap-2.5 rounded-full border border-black/20 px-6 text-[15px] font-semibold transition-colors hover:border-black/60"
-          >
+          <Link href="/projetos" className="btn btn-secondary">
             Ver todos os projetos
             <Arrow />
           </Link>

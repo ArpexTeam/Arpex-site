@@ -1,0 +1,300 @@
+/* Controles: botões, links e seletores.
+   Raio, cores e transições ficam aqui; os componentes só escolhem a classe.
+   Linhas e preenchimentos saem da cor do texto (currentColor), então o mesmo
+   controle serve no fundo escuro, no claro e nas paletas dos cases.
+   O hover só existe com ponteiro (como o hover: do Tailwind 4). No toque, a
+   resposta é o :active, que entra sem transição para aparecer mesmo num toque
+   curto; a volta usa a transição normal. */
+
+:root {
+  --radius-control: 8px; /* botões e campos */
+  --radius-choice: 6px; /* seletores, atalhos e rótulos de ação */
+  /* forma de pílula: só etiquetas curtas de status ou categoria */
+
+  --dur-control: 180ms; /* cor, fundo e borda */
+  --ease-control: cubic-bezier(0.2, 0, 0, 1);
+
+  /* verde da marca: o hover clareia, a pressão escurece (texto ink acima de 7:1) */
+  --color-signal-hover: #26d68b;
+  --color-signal-press: #00b669;
+
+  /* intensidade das linhas e preenchimentos, em % da cor do texto */
+  --control-line: 28%;
+  --control-line-hover: 60%;
+  --control-fill-hover: 7%;
+  --control-fill-press: 12%;
+}
+
+@layer components {
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 3px;
+  }
+
+  /* ---------------- Botões ---------------- */
+
+  .btn {
+    position: relative;
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    /* borda transparente no principal: as duas variantes têm a mesma caixa */
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    padding-inline: 1.5rem;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: color, background-color, border-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 3px;
+  }
+  .btn:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* cabeçalho: mesma forma, um degrau menor */
+  .btn-sm {
+    min-height: 2.5rem;
+    padding-inline: 1.25rem;
+    font-size: 14px;
+  }
+
+  .btn-primary {
+    background-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  .btn-secondary {
+    border-color: color-mix(in srgb, currentColor var(--control-line), transparent);
+    background-color: transparent;
+    color: var(--fg);
+  }
+
+  /* ---------------- Links ---------------- */
+
+  /* Link autônomo (ação com seta, voltar, destaque): o sublinhado fino e
+     afastado aparece no hover e no toque. */
+  .link,
+  .link-inline {
+    border-radius: 2px;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: color, text-decoration-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .link {
+    text-decoration-color: transparent;
+  }
+  .link-muted {
+    color: var(--fg-muted);
+  }
+
+  /* Link em texto corrido: sublinhado sempre visível (inclusive no celular),
+     reforçado no hover. */
+  .link-inline {
+    color: var(--fg);
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+
+  .link:focus-visible,
+  .link-inline:focus-visible {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 3px;
+  }
+  /* no meio da frase, o contorno fica mais junto para não cobrir a palavra vizinha */
+  .link-inline:focus-visible {
+    outline-offset: 1px;
+  }
+
+  /* Menu: só a cor muda no hover; a página atual tem cor plena e o
+     marcador próprio do cabeçalho. */
+  .nav-link {
+    border-radius: var(--radius-choice);
+    color: color-mix(in srgb, var(--fg) 66%, transparent);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: color, background-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .nav-link:focus-visible {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 2px;
+  }
+
+  /* ---------------- Campos ---------------- */
+
+  .field {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-control);
+    background-color: transparent;
+    padding: 0.875rem 1rem;
+    font-size: 16px; /* 16px: o iOS não amplia a página ao focar */
+    color: var(--fg);
+    outline: none;
+    transition-property: border-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .field::placeholder {
+    color: color-mix(in srgb, var(--fg-muted) 70%, transparent);
+  }
+  .field:focus {
+    border-color: var(--fg);
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 2px;
+  }
+
+  /* ---------------- Seletores ---------------- */
+
+  /* Assuntos do formulário, abas no celular, atalhos de página. Selecionado:
+     preenchido na cor do texto da superfície (claro no escuro, grafite no
+     claro). O verde fica para a ação principal e para o foco. */
+  .choice {
+    position: relative;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid color-mix(in srgb, currentColor var(--control-line), transparent);
+    border-radius: var(--radius-choice);
+    padding-inline: 1rem;
+    color: var(--fg);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: color, background-color, border-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .choice:focus-visible,
+  .choice:has(:focus-visible) {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 2px;
+  }
+
+  /* marcador de escolha única: anel vazio → círculo preenchido com ✓ */
+  .choice-mark {
+    display: grid;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    place-items: center;
+    border: 1.5px solid color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: 50%;
+    transition-property: background-color, border-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .choice-mark svg {
+    opacity: 0;
+    color: var(--fg);
+  }
+
+  /* Seta das ações: avança 2px no hover. */
+  .btn-arrow {
+    transition: transform var(--dur-control) var(--ease-control);
+  }
+}
+
+/* Estados, depois das bases. Mesma especificidade: a ordem decide
+   (hover → pressionado → atual/selecionado). */
+@layer components {
+  @media (hover: hover) {
+    .btn-primary:hover {
+      background-color: var(--color-signal-hover);
+    }
+    .btn-secondary:hover,
+    .choice:hover {
+      border-color: color-mix(in srgb, currentColor var(--control-line-hover), transparent);
+      background-color: color-mix(in srgb, currentColor var(--control-fill-hover), transparent);
+    }
+    .link:hover,
+    .link-inline:hover {
+      text-decoration-color: currentColor;
+    }
+    .link-muted:hover {
+      color: var(--fg);
+    }
+    .field:hover:not(:focus) {
+      border-color: color-mix(in srgb, currentColor var(--control-line), transparent);
+    }
+    .nav-link:hover {
+      color: color-mix(in srgb, var(--fg) 90%, transparent);
+    }
+    .choice:hover .choice-mark {
+      border-color: currentColor;
+    }
+    :is(.btn, .link, .choice):hover .btn-arrow {
+      transform: translateX(2px);
+    }
+  }
+
+  .btn:active,
+  .link:active,
+  .link-inline:active,
+  .nav-link:active,
+  .choice:active {
+    transition-duration: 0ms;
+  }
+  .btn-primary:active {
+    background-color: var(--color-signal-press);
+  }
+  .btn-secondary:active,
+  .choice:active {
+    border-color: color-mix(in srgb, currentColor var(--control-line-hover), transparent);
+    background-color: color-mix(in srgb, currentColor var(--control-fill-press), transparent);
+  }
+  .link:active,
+  .link-inline:active {
+    text-decoration-color: currentColor;
+  }
+  .link-muted:active {
+    color: var(--fg);
+  }
+  .nav-link:active {
+    color: var(--fg);
+    background-color: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .nav-link[aria-current="page"] {
+    color: var(--fg);
+  }
+
+  .choice[aria-selected="true"],
+  .choice:has(:checked) {
+    border-color: var(--fg);
+    background-color: var(--fg);
+    color: var(--fg-inverse);
+  }
+  .choice:has(:checked) .choice-mark {
+    border-color: currentColor;
+    background-color: currentColor;
+  }
+  .choice:has(:checked) .choice-mark svg {
+    opacity: 1;
+  }
+}

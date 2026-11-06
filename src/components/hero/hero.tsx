@@ -7,7 +7,7 @@ import { gsap } from "@/lib/gsap/gsap";
 import { FULL_SCENE_QUERY, FINE_HOVER_QUERY, matches, supportsWebGL2 } from "@/lib/motion/queries";
 import { useMotionPreference } from "@/components/motion/motion-provider";
 import TransitionLink from "@/components/motion/transition-link";
-import { Button } from "@/components/ui/button";
+import { Arrow, Button } from "@/components/ui/button";
 import { getProjectBySlug } from "@/data/projects";
 import { contactHref } from "@/data/contact";
 import chefInicio from "@/assets/projects/chef-bruno/inicio.webp";
@@ -313,7 +313,7 @@ export default function Hero() {
           >
             <TransitionLink
               href={`/projetos/${featured.slug}`}
-              className="focus-ring group/m flex items-center gap-3 text-sm text-fg-muted transition-colors hover:text-fg"
+              className="link link-muted flex items-center gap-3 text-sm"
             >
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-signal" />
               Projeto em destaque: {featured.title} · {featured.client}
@@ -339,12 +339,10 @@ export default function Hero() {
             </p>
             <TransitionLink
               href={`/projetos/${featured.slug}`}
-              className="focus-ring group/btn inline-flex min-h-12 items-center gap-2 rounded-full border border-rule px-6 text-[15px] font-semibold text-fg transition-colors hover:border-fg"
+              className="btn btn-secondary"
             >
               Abrir o case
-              <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <Arrow />
             </TransitionLink>
           </div>
         </div>

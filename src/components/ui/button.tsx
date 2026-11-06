@@ -1,26 +1,21 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
-const base =
-  "group/btn relative inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-6 text-[15px] font-semibold leading-none " +
-  "transition-[background-color,color,border-color,transform] duration-200 ease-out focus-ring active:translate-y-px " +
-  "disabled:pointer-events-none disabled:opacity-60";
-
+// Forma, cores e estados ficam em src/styles/controls.css.
 const styles = {
-  // verde de assinatura com texto ink (9.4:1)
-  primary: "bg-signal text-ink hover:bg-signal-soft",
-  // contorno que herda a cor de texto da superfície
-  secondary: "border border-rule text-fg hover:border-fg",
-  // sobre fundo claro: preenchimento grafite
-  solid: "bg-graphite text-paper hover:bg-ink",
-  text: "min-h-11 px-0 text-fg underline decoration-rule underline-offset-[6px] hover:decoration-fg",
+  // verde da marca com texto ink, em qualquer fundo
+  primary: "btn btn-primary",
+  // contorno discreto na cor do texto da superfície
+  secondary: "btn btn-secondary",
+  // ação em texto: sublinhado fino aparece no hover
+  link: "link inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-fg",
 } as const;
 
 type BaseProps = {
   children: React.ReactNode;
   variant?: keyof typeof styles;
   className?: string;
-  /** seta → que desliza no hover */
+  /** seta → que avança 2px no hover */
   arrow?: boolean;
 };
 
@@ -37,7 +32,7 @@ export function Arrow({ className }: { className?: string }) {
     <svg
       aria-hidden
       viewBox="0 0 16 16"
-      className={cn("h-4 w-4 shrink-0 transition-transform duration-200 ease-out group-hover/btn:translate-x-0.5", className)}
+      className={cn("btn-arrow h-4 w-4 shrink-0", className)}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.6"
@@ -49,7 +44,7 @@ export function Arrow({ className }: { className?: string }) {
 
 export function Button(props: ButtonProps): React.ReactElement {
   const { children, variant = "primary", className, arrow } = props;
-  const cls = cn(base, styles[variant], className);
+  const cls = cn(styles[variant], className);
   const content = (
     <>
       {children}

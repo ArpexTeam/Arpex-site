@@ -55,7 +55,7 @@ export default function SobrePage() {
                 <Link href={c.href} className="focus-ring group/cap grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">
                   <span className="font-heading text-[length:var(--text-h3)] text-fg transition-colors group-hover/cap:text-signal">{c.what}</span>
                   <span className="text-[length:var(--text-small)] text-fg-muted">
-                    Veja em: <span className="text-fg underline decoration-rule underline-offset-4">{c.proof}</span>
+                    Veja em: <span className="link-inline">{c.proof}</span>
                   </span>
                 </Link>
               </li>
@@ -70,7 +70,7 @@ export default function SobrePage() {
             Quer conversar sobre o seu negócio?
           </h2>
           <div className="flex flex-wrap gap-3">
-            <Button href={contactHref("entender")} variant="solid" arrow>
+            <Button href={contactHref("entender")} arrow>
               Conversar com a ArpeX
             </Button>
             <Button href="/solucoes" variant="secondary">

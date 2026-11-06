@@ -20,8 +20,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const fieldCls =
-  "block w-full rounded-xl border border-rule bg-transparent px-4 py-3.5 text-[16px] text-fg placeholder:text-fg-muted/70 outline-none transition-colors duration-200 focus:border-fg";
+const fieldCls = "field";
 
 /**
  * Formulário curto: nome, assunto e, se quiser, empresa e detalhes.
@@ -39,7 +38,6 @@ export default function ContactForm() {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -54,8 +52,6 @@ export default function ContactForm() {
     setProjectSlug(slug);
   }, [setValue]);
 
-  const interest = watch("interest");
-
   function onSubmit(data: FormValues) {
     const text = buildContactMessage({ ...data, project: project?.title });
     const url = waLink(text);
@@ -68,16 +64,15 @@ export default function ContactForm() {
   // quem ainda não sabe o que precisa tem a primeira opção; quem já sabe escolhe uma das outras
   const [understand, ...specific] = contactInterests;
 
+  // disponível: anel vazio · selecionado: preenchido, com ✓ · foco: contorno verde
   const chip = (i: (typeof contactInterests)[number], className?: string) => (
-    <label
-      key={i.value}
-      className={cn(
-        "relative inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 transition-colors duration-200 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal",
-        interest === i.value ? "border-signal bg-signal text-ink" : "border-rule text-fg hover:border-fg",
-        className
-      )}
-    >
+    <label key={i.value} className={cn("choice", className)}>
       <input type="radio" value={i.value} className="sr-only" {...register("interest")} />
+      <span aria-hidden className="choice-mark">
+        <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M2.5 6.2 5 8.5l4.5-5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
       {i.label}
     </label>
   );
@@ -99,7 +94,7 @@ export default function ContactForm() {
       </fieldset>
 
       {project && (
-        <p className="rounded-xl border border-rule px-4 py-3 text-sm text-fg-muted">
+        <p className="rounded-[var(--radius-control)] border border-rule px-4 py-3 text-sm text-fg-muted">
           A mensagem vai mencionar o case <span className="text-fg">{project.title}</span>.
         </p>
       )}
@@ -145,7 +140,7 @@ export default function ContactForm() {
         </p>
         <button
           type="submit"
-          className="focus-ring inline-flex min-h-12 shrink-0 items-center justify-center gap-2.5 whitespace-nowrap rounded-full bg-signal px-7 text-[15px] font-semibold text-ink transition-colors duration-200 hover:bg-signal-soft"
+          className="btn btn-primary shrink-0 whitespace-nowrap px-7"
         >
           Abrir no WhatsApp
         </button>
@@ -155,13 +150,13 @@ export default function ContactForm() {
         {opened && (
           <p className="text-fg-muted">
             Abrimos o WhatsApp em outra aba. Não abriu?{" "}
-            <a href={waLink(opened)} target="_blank" rel="noopener noreferrer" className="text-fg underline underline-offset-4">
+            <a href={waLink(opened)} target="_blank" rel="noopener noreferrer" className="link-inline">
               Tente por este link
             </a>{" "}
             ou{" "}
             <a
               href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Contato pelo site")}&body=${encodeURIComponent(mailBody)}`}
-              className="text-fg underline underline-offset-4"
+              className="link-inline"
             >
               envie por e-mail
             </a>

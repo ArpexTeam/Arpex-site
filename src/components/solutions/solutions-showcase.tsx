@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 import { solutions } from "@/data/solutions";
 import { contactHref } from "@/data/contact";
 import { getProjectBySlug } from "@/data/projects";
-import { Arrow, Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import SolutionDemoView from "./solution-demos";
 
 /**
@@ -52,13 +52,9 @@ export default function SolutionsShowcase() {
             </h2>
             <p className="mt-3 text-[length:var(--text-lead)] leading-[1.5] text-fg-muted">Comece pela necessidade do seu negócio.</p>
           </div>
-          <Link
-            href="/solucoes"
-            className="focus-ring group/btn inline-flex min-h-11 shrink-0 items-center gap-2 font-semibold text-fg underline decoration-rule underline-offset-[6px] hover:decoration-fg"
-          >
+          <Button href="/solucoes" variant="link" arrow className="shrink-0">
             Ver as soluções em detalhe
-            <Arrow />
-          </Link>
+          </Button>
         </div>
 
         <div className="mt-10 grid gap-10 md:mt-14 lg:grid-cols-12 lg:gap-x-10">
@@ -85,11 +81,9 @@ export default function SolutionsShowcase() {
                   onClick={() => setActive(i)}
                   onKeyDown={(e) => onKeyDown(e, i)}
                   className={cn(
-                    "focus-ring group/tab relative shrink-0 snap-start rounded-full border px-4 py-3 text-left transition-colors duration-200",
-                    "lg:rounded-none lg:border-0 lg:border-t lg:px-0 lg:py-6",
-                    selected
-                      ? "border-graphite bg-graphite text-paper lg:border-rule lg:bg-transparent lg:text-fg"
-                      : "border-rule text-fg-muted hover:text-fg lg:border-rule"
+                    "choice group/tab shrink-0 snap-start py-3 text-left",
+                    "lg:block lg:rounded-none lg:border-0 lg:border-t lg:border-rule lg:bg-transparent lg:px-0 lg:py-6",
+                    selected ? "lg:text-fg" : "lg:text-fg-muted lg:hover:text-fg"
                   )}
                 >
                   <span className="flex items-baseline gap-3">
@@ -146,7 +140,7 @@ export default function SolutionsShowcase() {
                     </div>
                   </div>
                   <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-rule pt-6">
-                    <Button href={contactHref(s.interest)} variant="solid" arrow>
+                    <Button href={contactHref(s.interest)} arrow>
                       {s.cta}
                     </Button>
                     <p className="text-[length:var(--text-small)] text-fg-muted">
@@ -157,7 +151,7 @@ export default function SolutionsShowcase() {
                         return (
                           <span key={slug}>
                             {k > 0 && ", "}
-                            <Link href={`/projetos/${slug}`} className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+                            <Link href={`/projetos/${slug}`} className="link-inline">
                               {p.title}
                             </Link>
                           </span>

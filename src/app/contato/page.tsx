@@ -40,7 +40,7 @@ export default function ContatoPage() {
                     href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg"
+                    className="link-inline"
                   >
                     {WHATSAPP_DISPLAY}
                   </a>
@@ -49,7 +49,7 @@ export default function ContatoPage() {
               <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-rule py-4">
                 <dt className="font-label pt-0.5 text-fg-muted">E-mail</dt>
                 <dd>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="focus-ring break-all text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="link-inline break-all">
                     {CONTACT_EMAIL}
                   </a>
                 </dd>
@@ -57,7 +57,7 @@ export default function ContatoPage() {
               <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-y border-rule py-4">
                 <dt className="font-label pt-0.5 text-fg-muted">Instagram</dt>
                 <dd>
-                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="link-inline">
                     {INSTAGRAM_HANDLE}
                   </a>
                 </dd>

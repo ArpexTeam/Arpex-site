@@ -25,7 +25,7 @@ function FrontVisual({ slug }: { slug: string }) {
         <SolutionDemoView demo="local" active />
         <p className="mt-4 text-[length:var(--text-small)] text-fg-muted">
           Placas de avaliação com QR Code e NFC:{" "}
-          <Link href="/placas" className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+          <Link href="/placas" className="link-inline">
             veja como funcionam
           </Link>
           .
@@ -60,7 +60,7 @@ export default function SolucoesPage() {
         <ul className="no-scrollbar mx-auto flex w-full max-w-[1440px] gap-2 overflow-x-auto px-[var(--gutter)] py-4">
           {solutions.map((s) => (
             <li key={s.slug} className="shrink-0">
-              <a href={`#${s.slug}`} className="focus-ring inline-flex min-h-11 items-center gap-2 rounded-full border border-rule px-4 text-[length:var(--text-small)] text-fg transition-colors hover:border-fg">
+              <a href={`#${s.slug}`} className="choice text-[length:var(--text-small)]">
                 <span className="font-label text-signal">{s.index}</span>
                 {s.name}
               </a>
@@ -106,7 +106,7 @@ export default function SolucoesPage() {
                   <h3 className="font-kicker text-accent">Como começar</h3>
                   <p className="mt-2 max-w-[52ch] text-pretty leading-relaxed text-fg">{s.start}</p>
                   <div className="mt-5">
-                    <Button href={contactHref(s.interest)} variant={light ? "solid" : "primary"} arrow>
+                    <Button href={contactHref(s.interest)} arrow>
                       {s.cta}
                     </Button>
                   </div>
@@ -124,7 +124,7 @@ export default function SolucoesPage() {
                       <Link
                         key={slug}
                         href={`/projetos/${slug}`}
-                        className="focus-ring group/btn inline-flex min-h-10 items-center gap-1.5 rounded-full border border-rule px-3.5 text-fg transition-colors hover:border-fg"
+                        className="choice min-h-10 gap-1.5 px-3.5"
                       >
                         {p.title}
                         <Arrow className="h-3.5 w-3.5" />
@@ -149,7 +149,7 @@ export default function SolucoesPage() {
               contatos, um cadastro dispara um lembrete.
             </p>
           </div>
-          <Button href={contactHref("entender")} variant="solid" arrow>
+          <Button href={contactHref("entender")} arrow>
             Conversar sobre meu negócio
           </Button>
         </div>

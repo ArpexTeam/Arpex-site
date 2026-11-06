@@ -33,7 +33,7 @@ export default function ProjetosPage() {
                 {/* cor do projeto entra discretamente no hover/foco */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-y-0 -inset-x-[var(--gutter)] opacity-0 transition-opacity duration-500 group-hover/row:opacity-100 group-focus-visible/row:opacity-100"
+                  className="pointer-events-none absolute inset-y-0 -inset-x-[var(--gutter)] opacity-0 transition-opacity group-hover/row:opacity-100 group-focus-visible/row:opacity-100"
                   style={{ background: `linear-gradient(90deg, ${p.palette.accent}14, transparent 70%)` }}
                 />
                 <span className="font-label relative col-span-12 text-fg-muted md:col-span-1">{String(i + 1).padStart(2, "0")}</span>
@@ -64,7 +64,7 @@ export default function ProjetosPage() {
                       />
                     </div>
                   )}
-                  <span className="font-label absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-ink/85 px-4 py-2 text-ivory backdrop-blur md:opacity-0 md:transition-opacity md:duration-300 md:group-hover/row:opacity-100 md:group-focus-visible/row:opacity-100">
+                  <span className="font-label absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-[var(--radius-choice)] bg-ink/85 px-4 py-2 text-ivory backdrop-blur md:opacity-0 md:transition-opacity md:duration-300 md:group-hover/row:opacity-100 md:group-focus-visible/row:opacity-100">
                     Abrir case
                     <Arrow className="h-3.5 w-3.5" />
                   </span>

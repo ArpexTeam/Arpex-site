@@ -57,7 +57,7 @@ export default function EcossistemaPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button href={contactHref("crm")} variant="solid" arrow>
+            <Button href={contactHref("crm")} arrow>
               Conversar sobre o CRM
             </Button>
             <Button href={CRM_LOGIN_URL} target="_blank" rel="noopener noreferrer" variant="secondary">

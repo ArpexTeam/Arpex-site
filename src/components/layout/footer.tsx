@@ -5,7 +5,7 @@ import { CRM_LOGIN_URL } from "@/data/crm";
 import { CONTACT_EMAIL, INSTAGRAM_HANDLE, INSTAGRAM_URL, waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
 import logo from "@/images/logo-oficial.png";
 
-const linkCls = "focus-ring rounded-sm text-fg-muted transition-colors duration-200 hover:text-fg";
+const linkCls = "nav-link";
 
 export default function Footer() {
   return (
@@ -67,7 +67,7 @@ export default function Footer() {
           </ul>
           <p className="mt-8 text-sm text-fg-muted">
             Já usa o ArpeX CRM?{" "}
-            <a href={CRM_LOGIN_URL} target="_blank" rel="noopener noreferrer" className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+            <a href={CRM_LOGIN_URL} target="_blank" rel="noopener noreferrer" className="link-inline">
               Entrar
             </a>
           </p>

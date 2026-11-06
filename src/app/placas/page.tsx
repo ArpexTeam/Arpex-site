@@ -92,13 +92,13 @@ export default function PlacasPage() {
             </p>
             <p className="mt-3 text-[length:var(--text-small)] text-fg-muted">
               Serviço independente, sem vínculo com o Google. Faz parte da frente de{" "}
-              <Link href="/solucoes#presenca" className="focus-ring text-fg underline decoration-rule underline-offset-4 hover:decoration-fg">
+              <Link href="/solucoes#presenca" className="link-inline">
                 presença
               </Link>
               .
             </p>
             <div className="mt-6">
-              <Button href={contactHref("local")} variant="solid" arrow>
+              <Button href={contactHref("local")} arrow>
                 Quero revisar meu perfil
               </Button>
             </div>

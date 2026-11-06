@@ -89,10 +89,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   } as React.CSSProperties;
 
   return (
-    <main style={vars}>
+    <main style={vars} data-top={palette.dark ? "dark" : "light"}>
       <section className="pt-[calc(var(--header-height)+56px)] pb-12 md:pt-[calc(var(--header-height)+88px)] md:pb-16">
         <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
-          <TransitionLink href="/projetos" className="focus-ring group/btn inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-fg-muted transition-colors hover:text-fg">
+          <TransitionLink href="/projetos" className="link link-muted inline-flex min-h-11 items-center gap-2 text-sm font-semibold">
             <Arrow className="h-3.5 w-3.5 rotate-180" />
             Todos os projetos
           </TransitionLink>
@@ -107,12 +107,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               <p className="text-pretty text-[length:var(--text-lead)] leading-[1.55]">{project.summary}</p>
               <div className="mt-6 flex flex-wrap gap-3">
                 {project.status.url && (
-                  <Button
-                    href={project.status.url}
-                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className={palette.dark ? "bg-[color:var(--fg)] text-black" : "bg-[color:var(--fg)] text-white"}
-                    arrow
-                  >
+                  <Button href={project.status.url} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} arrow>
                     {project.status.urlLabel ?? "Visitar"}
                   </Button>
                 )}
@@ -228,7 +223,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <p className="font-heading text-[length:var(--text-h3)]">{project.status.label}</p>
             {project.status.url && external && (
               <p className="mt-3 text-fg-muted">
-                <a href={project.status.url} target="_blank" rel="noopener noreferrer" className="focus-ring underline decoration-rule underline-offset-4 hover:decoration-fg">
+                <a href={project.status.url} target="_blank" rel="noopener noreferrer" className="link-inline">
                   {project.status.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                 </a>
               </p>

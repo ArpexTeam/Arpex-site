@@ -20,12 +20,10 @@ type Props = {
 
 const byKind = (p: Project, kind: ProjectMedia["kind"]) => p.gallery.filter((m) => m.kind === kind);
 
-function CaseLink({ project, className, children }: { project: Project; className?: string; children: React.ReactNode }) {
+/** Link de case: ação em texto na cor do capítulo; a capa já é o alvo grande. */
+function CaseLink({ project, children }: { project: Project; children: React.ReactNode }) {
   return (
-    <TransitionLink
-      href={`/projetos/${project.slug}`}
-      className={cn("focus-ring group/btn inline-flex min-h-12 items-center gap-2.5 rounded-full px-6 text-[15px] font-semibold", className)}
-    >
+    <TransitionLink href={`/projetos/${project.slug}`} className="link inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold">
       {children}
       <Arrow />
     </TransitionLink>
@@ -73,7 +71,7 @@ function Cover({
         </div>
         <span
           aria-hidden
-          className="font-label absolute bottom-4 right-4 inline-flex translate-y-2 items-center gap-2 rounded-full bg-ink/85 px-4 py-2 text-ivory opacity-0 backdrop-blur transition-[opacity,transform] duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 group-focus-visible/cover:translate-y-0 group-focus-visible/cover:opacity-100"
+          className="font-label absolute bottom-4 right-4 inline-flex translate-y-2 items-center gap-2 rounded-[var(--radius-choice)] bg-ink/85 px-4 py-2 text-ivory opacity-0 backdrop-blur transition-[opacity,transform] duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 group-focus-visible/cover:translate-y-0 group-focus-visible/cover:opacity-100"
         >
           Abrir case
         </span>
@@ -306,12 +304,7 @@ export default function ProjectChapter({ project, index, previousBg, first }: Pr
             <span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-2px] rounded-full" style={{ background: palette.accent }} />
             {project.status.label}
           </p>
-          <CaseLink
-            project={project}
-            className={palette.dark ? "bg-[color:var(--fg)] text-black" : "bg-[color:var(--fg)] text-white"}
-          >
-            Ver o case
-          </CaseLink>
+          <CaseLink project={project}>Ver o case</CaseLink>
         </div>
       </div>
     </article>

@@ -37,6 +37,9 @@
 
   --radius-frame: 18px;
   --radius-device: 28px;
+
+  /* transition-* sem duração explícita: a mesma dos controles (controls.css) */
+  --default-transition-duration: 180ms;
 }
 
 @theme inline {
@@ -51,6 +54,7 @@
   --fg-muted: var(--color-muted);
   --rule: var(--color-line);
   --accent: var(--color-signal);
+  --fg-inverse: var(--color-ink);
   --header-height: 64px;
 
   /* Escala tipográfica fluida, limitada nos dois extremos. Cinco papéis:
@@ -138,10 +142,12 @@
   }
 
   /* Superfícies: cada uma define o próprio par de cores de texto, para que
-     componentes reutilizados (botões, labels) leiam bem em qualquer fundo. */
+     componentes reutilizados (botões, labels) leiam bem em qualquer fundo.
+     --fg-inverse é a cor do fundo, usada no texto de um seletor marcado. */
   .surface-ink {
     --fg: var(--color-ivory);
     --fg-muted: var(--color-muted);
+    --fg-inverse: var(--color-ink);
     --rule: var(--color-line);
     --accent: var(--color-signal);
     background-color: var(--color-ink);
@@ -151,6 +157,7 @@
   .surface-ink-2 {
     --fg: var(--color-ivory);
     --fg-muted: var(--color-muted);
+    --fg-inverse: var(--color-ink-2);
     --rule: var(--color-line);
     --accent: var(--color-signal);
     background-color: var(--color-ink-2);
@@ -160,6 +167,7 @@
   .surface-mineral {
     --fg: var(--color-graphite);
     --fg-muted: var(--color-stone);
+    --fg-inverse: var(--color-mineral);
     --rule: var(--color-line-dark);
     --accent: var(--color-signal-ink);
     background-color: var(--color-mineral);
@@ -169,6 +177,7 @@
   .surface-paper {
     --fg: var(--color-graphite);
     --fg-muted: var(--color-stone);
+    --fg-inverse: var(--color-paper);
     --rule: var(--color-line-dark);
     --accent: var(--color-signal-ink);
     background-color: var(--color-paper);

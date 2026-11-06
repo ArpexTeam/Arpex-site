@@ -138,7 +138,7 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
                 Conversar sobre o CRM
               </Button>
               {headingLevel === 2 && (
-                <Button href="/ecossistema" variant="text" arrow>
+                <Button href="/ecossistema" variant="link" arrow>
                   Ver todas as telas
                 </Button>
               )}
