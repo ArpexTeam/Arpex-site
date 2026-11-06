@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { WhatsAppIcon } from "@/components/ui/contact-icons";
 import { FINE_HOVER_QUERY, REDUCED_MOTION_QUERY } from "@/lib/motion/queries";
 import { waLink } from "@/data/social-links";
 import { contactHref } from "@/data/contact";
@@ -139,6 +140,7 @@ export default function Closing() {
             rel="noopener noreferrer"
             variant="secondary"
           >
+            <WhatsAppIcon />
             Chamar no WhatsApp
           </Button>
         </div>

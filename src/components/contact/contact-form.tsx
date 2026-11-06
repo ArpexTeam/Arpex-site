@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { buildContactMessage, contactInterests, isContactInterest, type ContactInterest } from "@/data/contact";
 import { getProjectBySlug } from "@/data/projects";
 import { CONTACT_EMAIL, waLink } from "@/data/social-links";
+import { WhatsAppIcon } from "@/components/ui/contact-icons";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Diga como podemos chamar você."),
@@ -142,6 +143,7 @@ export default function ContactForm() {
           type="submit"
           className="btn btn-primary shrink-0 whitespace-nowrap px-7"
         >
+          <WhatsAppIcon />
           Abrir no WhatsApp
         </button>
       </div>

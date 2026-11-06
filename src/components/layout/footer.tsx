@@ -4,8 +4,11 @@ import { navLinks } from "@/components/navigation/nav-links";
 import { CRM_LOGIN_URL } from "@/data/crm";
 import { CONTACT_EMAIL, INSTAGRAM_HANDLE, INSTAGRAM_URL, waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
 import logo from "@/images/logo-oficial.png";
+import { InstagramIcon, MailIcon, WhatsAppIcon } from "@/components/ui/contact-icons";
 
 const linkCls = "nav-link";
+// canais: o ícone substitui o nome, que fica só para leitor de tela
+const channelCls = "nav-link inline-flex items-center gap-2.5";
 
 export default function Footer() {
   return (
@@ -49,19 +52,25 @@ export default function Footer() {
                 href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={linkCls}
+                className={channelCls}
               >
-                WhatsApp {WHATSAPP_DISPLAY}
+                <WhatsAppIcon />
+                <span className="sr-only">WhatsApp: </span>
+                {WHATSAPP_DISPLAY}
               </a>
             </li>
             <li>
-              <a href={`mailto:${CONTACT_EMAIL}`} className={linkCls}>
+              <a href={`mailto:${CONTACT_EMAIL}`} className={channelCls}>
+                <MailIcon />
+                <span className="sr-only">E-mail: </span>
                 {CONTACT_EMAIL}
               </a>
             </li>
             <li>
-              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={linkCls}>
-                Instagram {INSTAGRAM_HANDLE}
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={channelCls}>
+                <InstagramIcon />
+                <span className="sr-only">Instagram: </span>
+                {INSTAGRAM_HANDLE}
               </a>
             </li>
           </ul>

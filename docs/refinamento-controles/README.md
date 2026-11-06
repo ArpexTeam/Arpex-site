@@ -67,6 +67,22 @@ no fundo escuro, no claro e nas paletas dos cases, sem variante por fundo.
 - **Também:** Soluções (atalhos das frentes e exemplos), Sobre, rodapé e 404, que já usavam os
   componentes compartilhados.
 
+## Ícones dos canais de contato
+
+Os nomes "WhatsApp", "E-mail" e "Instagram" foram trocados por ícones (`src/components/ui/contact-icons.tsx`):
+
+- **Rodapé:** ícone seguido do número, do endereço ou do perfil.
+- **Lista de canais do Contato:** o ícone ocupa o lugar do rótulo.
+- **Menu do celular:** o botão do WhatsApp mostra ícone e número; o e-mail ganhou ícone e passou a ser
+  um link (antes era só texto).
+
+Os ícones usam a cor do texto e seguem o hover de cada link. Para leitor de tela, o nome do canal
+continua em texto escondido ("WhatsApp: (19) 98893-5849").
+
+Nos botões "Chamar no WhatsApp" e "Abrir no WhatsApp" o texto foi mantido e o ícone entrou ao lado.
+Só com o ícone, o botão não diria a ação ("Chamar no" + ícone). Comparativos em
+`08-icones-desktop.webp` e `09-icones-celular.webp`.
+
 ## Decisões
 
 1. **O botão principal é verde em todos os fundos.** Saiu a variante grafite usada nos fundos
@@ -102,6 +118,8 @@ no fundo escuro, no claro e nas paletas dos cases, sem variante por fundo.
 | `05-seletores-celular.webp` | celular: assunto marcado, abas das frentes e atalhos de Soluções |
 | `06-cabecalho-case-claro.webp` | topo do case Toricelli, antes e depois |
 | `07-link-de-case-no-capitulo.webp` | "Ver o case" no capítulo Chef Bruno, antes e depois |
+| `08-icones-desktop.webp` | ícones dos canais: rodapé, lista do Contato, botões de WhatsApp em Placas e no formulário |
+| `09-icones-celular.webp` | ícones dos canais no celular: lista do Contato, menu e rodapé |
 
 O "antes" foi capturado do build em produção e o "depois" do build local, com o mesmo script: hover
 com o mouse e foco por teclado (`:focus-visible` conferido).

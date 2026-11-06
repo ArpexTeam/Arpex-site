@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PlaqueStory from "@/components/plaque/plaque-story";
 import { Button } from "@/components/ui/button";
+import { WhatsAppIcon } from "@/components/ui/contact-icons";
 import { plaqueCustomization, plaqueUses } from "@/data/plaque";
 import { contactHref } from "@/data/contact";
 import { waLink } from "@/data/social-links";
@@ -129,6 +130,7 @@ export default function PlacasPage() {
               rel="noopener noreferrer"
               variant="secondary"
             >
+              <WhatsAppIcon />
               Chamar no WhatsApp
             </Button>
           </div>

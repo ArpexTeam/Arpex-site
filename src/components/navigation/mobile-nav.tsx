@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { isActivePath, navLinks } from "./nav-links";
 import { CONTACT_EMAIL, waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
+import { MailIcon, WhatsAppIcon } from "@/components/ui/contact-icons";
 
 type MobileNavProps = {
   open: boolean;
@@ -106,9 +107,17 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
           rel="noopener noreferrer"
           className="btn btn-secondary w-full"
         >
-          WhatsApp {WHATSAPP_DISPLAY}
+          <WhatsAppIcon />
+          <span className="sr-only">WhatsApp: </span>
+          {WHATSAPP_DISPLAY}
         </a>
-        <p className="pt-2 text-center text-sm text-fg-muted">{CONTACT_EMAIL}</p>
+        <p className="pt-2 text-center text-sm">
+          <a href={`mailto:${CONTACT_EMAIL}`} className="nav-link inline-flex min-h-11 items-center gap-2 px-1 text-fg-muted">
+            <MailIcon />
+            <span className="sr-only">E-mail: </span>
+            {CONTACT_EMAIL}
+          </a>
+        </p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/contact/contact-form";
 import FaqAccordion from "@/components/contact/faq-accordion";
+import { InstagramIcon, MailIcon, WhatsAppIcon } from "@/components/ui/contact-icons";
 import { CONTACT_EMAIL, INSTAGRAM_HANDLE, INSTAGRAM_URL, waLink, WHATSAPP_DISPLAY } from "@/data/social-links";
 
 export const metadata: Metadata = {
@@ -33,8 +34,11 @@ export default function ContatoPage() {
           </div>
           <div className="lg:col-span-5 lg:row-start-2">
             <dl className="space-y-0">
-              <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-rule py-4">
-                <dt className="font-label pt-0.5 text-fg-muted">WhatsApp</dt>
+              <div className="grid grid-cols-[1.5rem_1fr] items-center gap-4 border-t border-rule py-4">
+                <dt className="text-fg-muted">
+                  <WhatsAppIcon className="h-5 w-5" />
+                  <span className="sr-only">WhatsApp</span>
+                </dt>
                 <dd>
                   <a
                     href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
@@ -46,16 +50,22 @@ export default function ContatoPage() {
                   </a>
                 </dd>
               </div>
-              <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-rule py-4">
-                <dt className="font-label pt-0.5 text-fg-muted">E-mail</dt>
+              <div className="grid grid-cols-[1.5rem_1fr] items-center gap-4 border-t border-rule py-4">
+                <dt className="text-fg-muted">
+                  <MailIcon className="h-5 w-5" />
+                  <span className="sr-only">E-mail</span>
+                </dt>
                 <dd>
                   <a href={`mailto:${CONTACT_EMAIL}`} className="link-inline break-all">
                     {CONTACT_EMAIL}
                   </a>
                 </dd>
               </div>
-              <div className="grid grid-cols-[6.5rem_1fr] gap-4 border-y border-rule py-4">
-                <dt className="font-label pt-0.5 text-fg-muted">Instagram</dt>
+              <div className="grid grid-cols-[1.5rem_1fr] items-center gap-4 border-y border-rule py-4">
+                <dt className="text-fg-muted">
+                  <InstagramIcon className="h-5 w-5" />
+                  <span className="sr-only">Instagram</span>
+                </dt>
                 <dd>
                   <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="link-inline">
                     {INSTAGRAM_HANDLE}
