@@ -134,6 +134,23 @@ Tudo em `src/styles/controls.css`. Ver `05-estados-desktop.webp`, `06-toque-celu
 - **WhatsApp ao lado do principal:** em Placas, no encerramento da home e no menu do celular,
   virou botão secundário.
 
+## Perguntas frequentes (Contato)
+
+Ver `09-perguntas-abrir-e-fechar.webp` (quadro a quadro). O código está em
+`src/components/contact/faq-accordion.tsx`.
+
+- **Abrir:** a altura cresce em 560 ms, com partida suave e assentamento longo. A resposta
+  aparece 120 ms depois, descendo 6 px.
+- **Fechar:** a resposta some primeiro (220 ms), e a altura recolhe em 440 ms.
+- **Ícone:** a barra vertical do + gira e deita sobre a horizontal, formando o −, no mesmo
+  ritmo da altura. No fechamento, ela volta logo no início.
+- **Clique no meio da animação:** o movimento se inverte a partir da altura em que está, sem
+  salto.
+- **Base nativa:** a lista continua em `details`/`summary`. Teclado (Enter e Espaço), leitor de
+  tela e a busca do navegador funcionam, e sem JavaScript as perguntas abrem normalmente. O
+  JavaScript só anima.
+- **Movimento reduzido:** abre e fecha na hora, sem animação.
+
 ## Verificações
 
 Rodadas no build de produção local, com o WhatsApp interceptado: nenhuma mensagem real foi
@@ -143,6 +160,7 @@ enviada.
 |---|---|
 | `tsc --noEmit`, `eslint src`, `next build` | sem erros; 21 rotas |
 | Testes funcionais | 74 de 74 |
+| Perguntas frequentes | abrir, fechar, inverter no meio, teclado, movimento reduzido, sem JavaScript e toque no celular; sem erros de página |
 | Foco de teclado (9 rotas) | 177 elementos a 1920 px e 131 a 390 px, todos com contorno visível |
 | Toque (iPhone 13, sem hover) | todos os controles respondem à pressão; nada fica preso; sem erros de página |
 | Estouro horizontal (9 tamanhos, de 360 a 1920 px) | nenhum. A luz atrás da placa estourava a 360, 390, 768 e 1024 px; as duas seções agora cortam o excesso |

@@ -11,7 +11,7 @@ npm run build && npm start
 
 ## Onde está cada coisa
 
-- `src/data/` — conteúdo: soluções em três frentes (`solutions.ts`), projetos (`projects.ts`), método, placa (`plaque.ts`, parâmetros do modelo 3D), CRM, contato (opções e mensagens do WhatsApp), FAQ.
+- `src/data/` — conteúdo: soluções em três frentes (`solutions.ts`), projetos (`projects.ts`), método, placa (`plaque.ts`, posição do NFC e do QR na foto), CRM, contato (opções e mensagens do WhatsApp), FAQ.
 - `src/components/hero` · `plaque` — cenas WebGL (`*-scene.ts`, importadas sob demanda) e seus posters HTML. A cena da placa usa a foto real recortada (`src/assets/plaque/placa-real.webp`, pontos de NFC e QR em `src/data/plaque.ts`).
 - `src/lib/three/stage.ts` — ciclo de vida comum das cenas 3D (DPR, pausa fora da tela, perda de contexto, descarte).
 - `src/styles/tokens.css` · `motion.css` — tipografia (Instrument Sans, uma família só), escala, superfícies e regras das cenas sticky. A condição do modo completo precisa ser igual à de `src/lib/motion/queries.ts`; `--hero-copy-max` espelha a posição da tela principal em `src/components/hero/hero-layout.ts`.
