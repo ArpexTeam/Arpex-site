@@ -3,7 +3,8 @@
    Cada tipo de ação tem um hover próprio, sempre de cor, borda, fundo ou de
    um detalhe interno (a seta, o sublinhado): nenhum controle muda de tamanho
    ou de posição.
-   - principal: a área da seta fica verde e a seta avança 3px;
+   - principal: um preenchimento na cor de destaque desliza da esquerda para
+     a direita (e sai pela direita);
    - secundário: borda mais forte e preenchimento discreto;
    - link e menu: um sublinhado fino se revela da esquerda para a direita;
    - abas: realce suave sob o ponteiro; a linha da aba ativa não sai.
@@ -18,9 +19,11 @@
   --radius-choice: 6px; /* seletores, abas, itens do menu e rótulos de ação */
   /* forma de pílula: só etiquetas curtas de status ou categoria */
 
-  --dur-control: 200ms; /* cor, fundo, borda e a seta */
+  --dur-control: 200ms; /* cor, fundo e borda */
   --dur-reveal: 240ms; /* sublinhado que se revela */
+  --dur-fill: 460ms; /* preenchimento do botão principal */
   --ease-control: cubic-bezier(0.2, 0, 0, 1);
+  --ease-fill: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* intensidade de linhas e preenchimentos, em % da cor do texto */
   --control-line: 30%;
@@ -43,10 +46,14 @@
 
   /* Preenchido na cor do texto da superfície: marfim com texto escuro no
      fundo escuro, grafite com texto claro no fundo claro. Compacto, com a
-     largura do rótulo e, na ponta direita, a área reservada da seta. Só nos
-     pontos de decisão. */
+     largura do rótulo. Só nos pontos de decisão. No hover, a cor de destaque
+     da superfície (verde da marca no escuro, verde profundo no claro, a cor
+     do projeto nos cases) preenche o botão da esquerda para a direita; o
+     texto não muda de cor e continua legível sobre ela. */
   .btn {
     position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     min-height: 2.875rem;
     align-items: center;
@@ -67,10 +74,16 @@
     transition-duration: var(--dur-control);
     transition-timing-function: var(--ease-control);
   }
-  .btn:has(> .btn-cap) {
-    gap: 0.875rem;
-    padding-left: 1.125rem;
-    padding-right: 0.3125rem;
+  .btn:not(.btn-secondary)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: var(--btn-fill, var(--accent, var(--color-signal)));
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform var(--dur-fill) var(--ease-fill);
   }
   .btn:focus-visible {
     outline: 2px solid var(--accent, var(--color-signal));
@@ -84,19 +97,6 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-  }
-  /* área da seta: um tom abaixo do botão em repouso; verde no hover */
-  .btn-cap {
-    display: inline-grid;
-    width: 2.25rem;
-    height: 2.25rem;
-    flex-shrink: 0;
-    place-items: center;
-    border-radius: calc(var(--radius-control) - 3px);
-    background-color: color-mix(in srgb, var(--fg-inverse) 9%, transparent);
-    transition-property: color, background-color;
-    transition-duration: var(--dur-control);
-    transition-timing-function: var(--ease-control);
   }
 
   /* ---------------- Botão secundário ---------------- */
@@ -310,7 +310,6 @@
     outline-offset: -2px;
   }
 
-  /* Seta das ações: só a do botão principal se move (dentro da área verde). */
   .btn-arrow {
     transition: transform var(--dur-control) var(--ease-control);
   }
@@ -320,12 +319,11 @@
    (hover → pressionado → atual/selecionado). */
 @layer components {
   @media (hover: hover) and (pointer: fine) {
-    .btn:hover .btn-cap {
-      background-color: var(--color-signal);
-      color: var(--color-ink);
-    }
-    .btn:hover .btn-cap .btn-arrow {
-      transform: translateX(3px);
+    /* entra pela esquerda; ao sair, a origem passa para a direita e o
+       preenchimento recolhe por lá */
+    .btn:not(.btn-secondary):hover::before {
+      transform: scaleX(1);
+      transform-origin: left center;
     }
     .btn-secondary:hover,
     .icon-btn:hover {
@@ -376,6 +374,9 @@
   .btn:active {
     background-color: color-mix(in srgb, var(--fg) 80%, var(--fg-inverse));
   }
+  .btn:not(.btn-secondary):active::before {
+    background-color: color-mix(in srgb, var(--btn-fill, var(--accent, var(--color-signal))) 86%, #000);
+  }
   .btn-secondary:active,
   .nav-link:active,
   .icon-btn:active,
@@ -422,15 +423,23 @@
     opacity: 1;
   }
 
-  /* movimento reduzido: a seta não anda e o sublinhado aparece de uma vez */
+  /* movimento reduzido: o preenchimento aparece por esmaecimento, sem
+     deslizar, e o sublinhado aparece de uma vez */
   @media (prefers-reduced-motion: reduce) {
-    .btn-arrow,
+    .btn:not(.btn-secondary)::before,
+    .btn:not(.btn-secondary):hover::before {
+      transform: none;
+      opacity: 0;
+      transition: opacity var(--dur-control) linear;
+    }
     .link-label,
     .link:not(:has(.link-label)) {
       transition: none;
     }
-    .btn:hover .btn-cap .btn-arrow {
-      transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+    .btn:not(.btn-secondary):hover::before {
+      opacity: 1;
     }
   }
 }

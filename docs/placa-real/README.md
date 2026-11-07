@@ -108,11 +108,12 @@ sombra fica para trás. Entrada, deslocamento e sombra ficam em elementos separa
 
 ## Hover de cada ação
 
-Tudo em `src/styles/controls.css`. Ver `05-estados-desktop.webp` e `06-toque-celular.webp`.
+Tudo em `src/styles/controls.css`. Ver `05-estados-desktop.webp`, `06-toque-celular.webp` e
+`08-preenchimento-do-botao.webp` (o preenchimento quadro a quadro, entrando e saindo).
 
 | Controle | Repouso | Hover (ponteiro fino) | Pressionado (toque e clique) | Foco (teclado) |
 |---|---|---|---|---|
-| Botão principal | marfim compacto, com a área da seta reservada na ponta direita (um tom abaixo) | a área da seta fica verde e a seta avança 3 px; rótulo, medida e posição do botão não mudam | o tom do botão escurece | contorno de 2 px afastado 3 px |
+| Botão principal | marfim compacto (grafite nos fundos claros) | a cor de destaque da seção preenche o botão da esquerda para a direita em 460 ms e, ao sair, recolhe pela direita. Fundo escuro: verde da marca. Fundo claro: verde profundo. Cases: a cor do projeto. O texto não muda de cor; rótulo, medida e posição não mudam | o tom escurece | contorno de 2 px afastado 3 px |
 | Botão secundário (WhatsApp ao lado do principal) | contorno fino a 30% da cor do texto, sem preenchimento | contorno a 58% e preenchimento a 6%, na cor da seção | preenchimento a 11% | contorno de 2 px |
 | Link de ação ("Ver soluções", "Ver o case") | texto e seta | sublinhado de 1 px que se revela da esquerda para a direita (240 ms) | sublinhado pleno | contorno de 2 px |
 | Link dentro do texto | sublinhado a 38%, sempre visível | o sublinhado pleno se revela por cima | sublinhado pleno | contorno colado |
@@ -121,12 +122,15 @@ Tudo em `src/styles/controls.css`. Ver `05-estados-desktop.webp` e `06-toque-cel
 | Abas | texto esmaecido | realce suave do fundo (6%); a linha da aba ativa continua visível | fundo a 11% | contorno interno |
 
 **Regras gerais:**
-- **Durações:** cor, fundo, borda e seta em 200 ms.
+- **Durações:** cor, fundo e borda em 200 ms; o preenchimento do botão principal em 460 ms, com
+  entrada e saída suaves.
 - **Ponteiro:** o hover só existe com ponteiro fino (`(hover: hover) and (pointer: fine)`). No
   toque, a resposta é a troca breve de tom ao pressionar, sem nada preso depois.
-- **Movimento reduzido:** a seta não anda e o sublinhado aparece de uma vez.
-- **Botões principais:** todos ganharam a área da seta, inclusive "Abrir no WhatsApp" no
-  formulário de contato.
+- **Movimento reduzido:** o preenchimento do botão aparece por esmaecimento, sem deslizar, e o
+  sublinhado aparece de uma vez.
+- **Botões principais:** todos usam o mesmo preenchimento, inclusive "Abrir no WhatsApp" no
+  formulário de contato. Uma primeira versão reservava uma área verde para a seta no hover; ela
+  foi trocada pelo preenchimento depois da revisão.
 - **WhatsApp ao lado do principal:** em Placas, no encerramento da home e no menu do celular,
   virou botão secundário.
 

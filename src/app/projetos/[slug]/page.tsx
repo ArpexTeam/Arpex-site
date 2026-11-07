@@ -84,6 +84,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     "--fg-muted": palette.muted,
     "--rule": palette.dark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.12)",
     "--accent": palette.accent,
+    // paleta com destaque igual ao texto: o preenchimento do botão usa um tom intermediário
+    "--btn-fill": palette.accent === palette.fg ? `color-mix(in srgb, ${palette.fg} 72%, ${palette.bg})` : palette.accent,
     "--fg-inverse": palette.bg,
     background: palette.bg,
     color: palette.fg,
