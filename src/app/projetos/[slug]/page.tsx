@@ -95,7 +95,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
           <TransitionLink href="/projetos" className="link link-muted link-action text-sm">
             <Arrow className="h-3.5 w-3.5 rotate-180" />
-            Todos os projetos
+            <span className="link-label">Todos os projetos</span>
           </TransitionLink>
 
           <div className="mt-10 grid gap-8 md:grid-cols-12 md:gap-x-6">

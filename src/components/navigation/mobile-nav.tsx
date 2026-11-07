@@ -105,17 +105,21 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
           href={waLink("Olá! Vim pelo site da ArpeX e quero conversar sobre o meu negócio.")}
           target="_blank"
           rel="noopener noreferrer"
-          className="link link-action w-full justify-center text-fg"
+          className="btn btn-secondary w-full"
         >
-          <WhatsAppIcon />
-          <span className="sr-only">WhatsApp: </span>
-          {WHATSAPP_DISPLAY}
+          <span className="btn-label">
+            <WhatsAppIcon />
+            <span className="sr-only">WhatsApp: </span>
+            {WHATSAPP_DISPLAY}
+          </span>
         </a>
         <p className="pt-2 text-center text-sm">
           <a href={`mailto:${CONTACT_EMAIL}`} className="nav-link inline-flex min-h-11 items-center gap-2 px-1 text-fg-muted">
             <MailIcon />
-            <span className="sr-only">E-mail: </span>
-            {CONTACT_EMAIL}
+            <span className="link-label">
+              <span className="sr-only">E-mail: </span>
+              {CONTACT_EMAIL}
+            </span>
           </a>
         </p>
       </div>

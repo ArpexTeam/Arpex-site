@@ -1,5 +1,6 @@
-// Regenera public/placas/placa-demonstracao.webp a partir da própria cena 3D
-// (estado final), depois de alterar src/data/plaque.ts.
+// Regenera src/assets/plaque/celular-demonstracao.webp (o celular da cena da
+// placa, no estado final, com a página de avaliação de demonstração) a partir
+// da própria cena 3D. Rode depois de mudar a tela do celular (plaque-art.ts).
 //
 // Requer Playwright (não é dependência do projeto):
 //   npm i -D playwright@1.64.1 && npx playwright install chromium
@@ -10,7 +11,7 @@ import sharp from "sharp";
 import { fileURLToPath } from "node:url";
 
 const base = process.argv[2] ?? "http://localhost:3000";
-const out = fileURLToPath(new URL("../public/placas/placa-demonstracao.webp", import.meta.url));
+const out = fileURLToPath(new URL("../src/assets/plaque/celular-demonstracao.webp", import.meta.url));
 
 const browser = await chromium.launch({
   headless: true,
@@ -30,11 +31,33 @@ for (let i = 1; i <= 20; i++) {
   await page.waitForTimeout(120);
 }
 await page.waitForTimeout(4000);
-await page.addStyleTag({ content: '[data-scene="plaque"] .relative.z-10, header { visibility: hidden !important; }' });
+// só a cena: sem texto, rótulos e cabeçalho
+await page.addStyleTag({
+  content: '[data-scene="plaque"] .relative.z-10, [data-scene="plaque"] [data-label-demo], [data-scene="plaque"] [data-label-produto], header { visibility: hidden !important; }',
+});
 await page.waitForTimeout(500);
 
-const shot = await page.screenshot({ clip: { x: 600, y: 110, width: 720, height: 720 }, timeout: 180000 });
-// recorte justo da composição (placa + celular), proporção 1320×920
-await sharp(shot).extract({ left: 60, top: 220, width: 1320, height: 920 }).webp({ quality: 84 }).toFile(out);
-console.log("poster atualizado:", out);
+const shot = await page.screenshot({ timeout: 180000 });
+const { data, info } = await sharp(shot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+
+// caixa do celular: pixels claramente diferentes do fundo na metade direita
+const [br, bg, bb] = [data[0], data[1], data[2]];
+let x0 = info.width, y0 = info.height, x1 = 0, y1 = 0;
+for (let y = 0; y < info.height; y++) {
+  for (let x = Math.round(info.width * 0.72); x < info.width; x++) {
+    const i = (y * info.width + x) * 3;
+    if (Math.abs(data[i] - br) + Math.abs(data[i + 1] - bg) + Math.abs(data[i + 2] - bb) > 90) {
+      x0 = Math.min(x0, x);
+      x1 = Math.max(x1, x);
+      y0 = Math.min(y0, y);
+      y1 = Math.max(y1, y);
+    }
+  }
+}
+const pad = 24;
+await sharp(shot)
+  .extract({ left: x0 - pad, top: y0 - pad, width: x1 - x0 + pad * 2, height: y1 - y0 + pad * 2 })
+  .webp({ quality: 86 })
+  .toFile(out);
+console.log("celular atualizado:", out, x1 - x0, y1 - y0);
 await browser.close();

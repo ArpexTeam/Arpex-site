@@ -101,7 +101,7 @@ export default function SobrePage() {
           <ul className="border-t border-rule md:col-span-8">
             {related.map((r) => (
               <li key={r.name} className="grid gap-1 border-b border-rule py-5 sm:grid-cols-[13rem_1fr] sm:items-baseline sm:gap-6">
-                <Link href={r.href} className="link font-heading w-fit text-[length:var(--text-h3)] text-fg">
+                <Link href={r.href} className="link link-inline font-heading w-fit text-[length:var(--text-h3)]">
                   {r.name}
                 </Link>
                 <span className="text-pretty text-fg-muted">Observe {r.look}</span>

@@ -26,19 +26,19 @@ export default function Footer() {
           <ul className="mt-5 space-y-3 text-[15px]">
             <li>
               <Link href="/" className={linkCls}>
-                Início
+                <span className="link-label">Início</span>
               </Link>
             </li>
             {navLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className={linkCls}>
-                  {l.label}
+                  <span className="link-label">{l.label}</span>
                 </Link>
               </li>
             ))}
             <li>
               <Link href="/contato" className={linkCls}>
-                Contato
+                <span className="link-label">Contato</span>
               </Link>
             </li>
           </ul>
@@ -55,22 +55,28 @@ export default function Footer() {
                 className={channelCls}
               >
                 <WhatsAppIcon />
-                <span className="sr-only">WhatsApp: </span>
-                {WHATSAPP_DISPLAY}
+                <span className="link-label">
+                  <span className="sr-only">WhatsApp: </span>
+                  {WHATSAPP_DISPLAY}
+                </span>
               </a>
             </li>
             <li>
               <a href={`mailto:${CONTACT_EMAIL}`} className={channelCls}>
                 <MailIcon />
-                <span className="sr-only">E-mail: </span>
-                {CONTACT_EMAIL}
+                <span className="link-label">
+                  <span className="sr-only">E-mail: </span>
+                  {CONTACT_EMAIL}
+                </span>
               </a>
             </li>
             <li>
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={channelCls}>
                 <InstagramIcon />
-                <span className="sr-only">Instagram: </span>
-                {INSTAGRAM_HANDLE}
+                <span className="link-label">
+                  <span className="sr-only">Instagram: </span>
+                  {INSTAGRAM_HANDLE}
+                </span>
               </a>
             </li>
           </ul>

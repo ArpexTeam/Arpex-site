@@ -73,8 +73,9 @@
   .scene-section[data-scene="hero"] {
     height: 205svh;
   }
+  /* dois momentos: o produto (a foto da placa) e a demonstração do celular */
   .scene-section[data-scene="plaque"] {
-    height: 300svh;
+    height: 360svh;
   }
   .scene-section[data-scene="crm"] {
     height: 270svh;
@@ -192,6 +193,21 @@
 @keyframes caret {
   50% {
     opacity: 0;
+  }
+}
+
+/* Placa real (abertura de Placas): entra de trás com uma inclinação curta,
+   que a foto sustenta; a sombra é um elemento à parte. */
+@keyframes plate-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 44px, 0) rotateX(6deg) rotateY(-10deg) scale(0.95);
+  }
+}
+@keyframes plate-shadow-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
   }
 }
 

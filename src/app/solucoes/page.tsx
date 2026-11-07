@@ -65,7 +65,7 @@ export default function SolucoesPage() {
                 <a href={`#${s.slug}`} className="nav-link inline-flex min-h-12 items-baseline gap-2 px-2 pt-[0.85rem] text-[length:var(--text-body)] font-medium">
                   {/* no celular só os nomes, para o índice caber numa linha */}
                   <span className="font-label hidden text-accent sm:inline">{s.index}</span>
-                  {s.name}
+                  <span className="link-label">{s.name}</span>
                 </a>
               </li>
             ))}
@@ -96,7 +96,7 @@ export default function SolucoesPage() {
                 <h2 id={`${s.slug}-title`} className="font-title flex items-baseline gap-3 text-[length:var(--text-h2)] text-fg">
                   {/* no celular só os nomes, para o índice caber numa linha */}
                   <span className="font-label hidden text-accent sm:inline">{s.index}</span>
-                  {s.name}
+                  <span className="link-label">{s.name}</span>
                 </h2>
                 <p className="font-heading mt-4 text-balance text-[length:var(--text-h3)] text-fg">{s.promise}</p>
                 <p className="mt-3 max-w-[50ch] text-pretty leading-relaxed text-fg-muted">{s.need}</p>

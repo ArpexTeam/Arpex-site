@@ -3,9 +3,11 @@ import { cn } from "@/lib/cn";
 
 // Forma, cores e estados ficam em src/styles/controls.css.
 const styles = {
-  // preenchido na cor do texto da superfície; só nos pontos de decisão
+  // preenchido na cor do texto da superfície, com a área da seta; só nos pontos de decisão
   primary: "btn",
-  // ação em texto, com sublinhado fino sempre visível
+  // contorno fino: a alternativa ao lado do principal (outro canal, como o WhatsApp)
+  secondary: "btn btn-secondary",
+  // ação em texto: o sublinhado se revela no hover
   link: "link link-action text-fg",
 } as const;
 
@@ -13,7 +15,7 @@ type BaseProps = {
   children: React.ReactNode;
   variant?: keyof typeof styles;
   className?: string;
-  /** seta → que avança 2px no hover */
+  /** seta → depois do rótulo (secundário e link; o principal sempre tem a sua área) */
   arrow?: boolean;
 };
 
@@ -43,12 +45,20 @@ export function Arrow({ className }: { className?: string }) {
 export function Button(props: ButtonProps): React.ReactElement {
   const { children, variant = "primary", className, arrow } = props;
   const cls = cn(styles[variant], className);
-  const content = (
-    <>
-      {children}
-      {arrow && <Arrow />}
-    </>
-  );
+  const content =
+    variant === "primary" ? (
+      <>
+        <span className="btn-label">{children}</span>
+        <span aria-hidden className="btn-cap">
+          <Arrow />
+        </span>
+      </>
+    ) : (
+      <>
+        <span className={variant === "link" ? "link-label" : "btn-label"}>{children}</span>
+        {arrow && <Arrow />}
+      </>
+    );
 
   if (typeof props.href === "string") {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

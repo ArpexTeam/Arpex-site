@@ -136,7 +136,7 @@ export default function Closing() {
             href={waLink("Olá! Vim pelo site da ArpeX e quero entender o próximo passo do meu negócio.")}
             target="_blank"
             rel="noopener noreferrer"
-            variant="link"
+            variant="secondary"
           >
             <WhatsAppIcon />
             Chamar no WhatsApp

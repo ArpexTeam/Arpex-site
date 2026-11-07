@@ -44,7 +44,7 @@ export default function SelectedProjects() {
             No arquivo também: {others.map((p) => p.title).join(", ")}.
           </p>
           <Link href="/projetos" className="link link-action">
-            Ver todos os projetos
+            <span className="link-label">Ver todos os projetos</span>
             <Arrow />
           </Link>
         </div>

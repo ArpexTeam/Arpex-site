@@ -24,7 +24,7 @@ const byKind = (p: Project, kind: ProjectMedia["kind"]) => p.gallery.filter((m) 
 function CaseLink({ project, children }: { project: Project; children: React.ReactNode }) {
   return (
     <TransitionLink href={`/projetos/${project.slug}`} className="link link-action">
-      {children}
+      <span className="link-label">{children}</span>
       <Arrow />
     </TransitionLink>
   );

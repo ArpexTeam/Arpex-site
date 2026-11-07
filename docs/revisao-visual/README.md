@@ -1,5 +1,8 @@
 # Revisão visual do site institucional
 
+> Atualizado pela rodada [foto real das placas](../placa-real/README.md): a placa passou a usar fotos reais,
+> o botão principal ganhou a área da seta e o secundário voltou ao lado do principal (WhatsApp).
+
 Esta rodada parte da versão em produção (commit `4875660`). O site não foi refeito: rotas, cenas
 Three.js, animações, versões em movimento reduzido e sem WebGL, contatos e o número do WhatsApp
 foram mantidos. A aplicação ArpeX CRM não foi alterada. Mudou só a apresentação dela no site.

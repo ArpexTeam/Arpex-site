@@ -1,7 +1,7 @@
 /**
- * Artes desenhadas em canvas para a cena da placa. Tudo é demonstração:
- * a arte da placa diz "Sua marca" e a tela do celular é identificada como
- * demonstração, com estrelas vazias — nenhuma avaliação é simulada.
+ * Telas do celular desenhadas em canvas para a cena da placa. São
+ * demonstração: a tela é identificada como tal, com estrelas vazias —
+ * nenhuma avaliação é simulada. A placa da cena é a foto real.
  */
 
 export type ArtFonts = { display: string; sans: string; mono: string };
@@ -53,82 +53,6 @@ export async function loadImage(src: string) {
   img.src = src;
   await img.decode();
   return img;
-}
-
-/** Arte impressa da placa (proporção 1 : 1.42). */
-export function drawPlaqueArt(qr: HTMLImageElement, fonts: ArtFonts) {
-  const W = 1024;
-  const H = 1454;
-  const c = document.createElement("canvas");
-  c.width = W;
-  c.height = H;
-  const ctx = c.getContext("2d")!;
-
-  ctx.fillStyle = "#f3f1eb";
-  ctx.fillRect(0, 0, W, H);
-
-  // faixa superior: marca do cliente (placeholder)
-  ctx.fillStyle = "#0f1311";
-  ctx.beginPath();
-  ctx.arc(140, 150, 46, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#00cf77";
-  ctx.font = `600 34px ${fonts.display}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("SM", 140, 152);
-  ctx.textAlign = "left";
-  ctx.fillStyle = "#0f1311";
-  ctx.font = `600 44px ${fonts.display}`;
-  ctx.fillText("Sua marca", 214, 138);
-  ctx.fillStyle = "#5a605b";
-  ctx.font = `500 24px ${fonts.sans}`;
-  ctx.fillText("logotipo e cores da sua empresa", 214, 182);
-
-  ctx.fillStyle = "#0f1311";
-  ctx.font = `700 92px ${fonts.display}`;
-  ctx.fillText("Gostou do", 96, 336);
-  ctx.fillText("atendimento?", 96, 432);
-  ctx.fillStyle = "#3d433f";
-  ctx.font = `500 36px ${fonts.sans}`;
-  ctx.fillText("Avalie a sua experiência.", 98, 508);
-
-  // QR em painel branco
-  const qx = 96;
-  const qy = 600;
-  const qs = 470;
-  ctx.fillStyle = "#ffffff";
-  roundRect(ctx, qx, qy, qs, qs, 28);
-  ctx.fill();
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(qr, qx + 26, qy + 26, qs - 52, qs - 52);
-  ctx.imageSmoothingEnabled = true;
-
-  // zona NFC
-  nfcIcon(ctx, 760, 760, 150, "#0f1311");
-  ctx.fillStyle = "#0f1311";
-  ctx.font = `600 34px ${fonts.display}`;
-  ctx.fillText("Aproxime", 650, 900);
-  ctx.fillText("o celular", 650, 942);
-  ctx.fillStyle = "#5a605b";
-  ctx.font = `500 26px ${fonts.sans}`;
-  ctx.fillText("ou escaneie o código", 650, 990);
-
-  ctx.strokeStyle = "rgba(15,19,17,0.18)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(96, 1170);
-  ctx.lineTo(W - 96, 1170);
-  ctx.stroke();
-
-  ctx.fillStyle = "#0f1311";
-  ctx.font = `600 40px ${fonts.display}`;
-  ctx.fillText("Aproxime. Acesse. Avalie.", 96, 1250);
-  ctx.fillStyle = "#5a605b";
-  ctx.font = `500 22px ${fonts.mono}`;
-  ctx.fillText("ARTE DE DEMONSTRAÇÃO · ARPEX", 96, 1330);
-
-  return c;
 }
 
 /** Tela do celular: 0 = aguardando aproximação · 1 = página de avaliação (demonstração). */

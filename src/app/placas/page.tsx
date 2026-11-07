@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import PlaqueStory from "@/components/plaque/plaque-story";
+import PlaqueIntroPhoto from "@/components/plaque/plaque-intro-photo";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/contact-icons";
 import { PLAQUE_BG, plaqueCustomization, plaqueFaq, plaqueHire, plaqueUses } from "@/data/plaque";
 import { contactHref } from "@/data/contact";
 import { waLink } from "@/data/social-links";
+import placaMao from "@/assets/plaque/placa-mao.webp";
+import placaFrontal from "@/assets/plaque/placa-frontal.webp";
 
 export const metadata: Metadata = {
   title: "Placa de avaliação com QR Code e NFC",
@@ -18,16 +21,18 @@ export const metadata: Metadata = {
 const WA_PLACA = "Olá! Quero uma placa de avaliação com QR Code e NFC para minha empresa.";
 
 /**
- * A placa como produto físico, em quatro momentos: o produto (a placa em
- * foco), a demonstração (a cena 3D, com o celular entrando só quando precisa),
- * a personalização e a contratação, com compatibilidade e dúvidas no fim.
- * Sem fotos reais aprovadas, as imagens são renders identificados.
+ * A placa como produto físico, em quatro momentos: o produto (a foto real,
+ * recortada, entrando em foco), a demonstração (a cena com o celular, que só
+ * entra quando precisa), o detalhe com a mão para dar a escala e a
+ * contratação, com compatibilidade e dúvidas no fim.
+ * O QR das placas fotografadas leva a destinos reais: o site não convida a
+ * escanear as fotos como teste.
  */
 export default function PlacasPage() {
   return (
     <main>
       {/* 1. Produto */}
-      <section aria-labelledby="produto-title" className="surface-ink" style={{ background: PLAQUE_BG }}>
+      <section aria-labelledby="produto-title" className="surface-ink overflow-x-clip" style={{ background: PLAQUE_BG }}>
         <div className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-[var(--gutter)] pb-16 pt-[calc(var(--header-height)+40px)] md:grid-cols-12 md:gap-x-6 md:pb-20 md:pt-[calc(var(--header-height)+56px)]">
           <div className="md:col-span-6 lg:col-span-5">
             <p className="font-kicker text-signal">Presença · produto físico</p>
@@ -39,24 +44,15 @@ export default function PlacasPage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Button href={contactHref("placas")}>Solicitar uma placa</Button>
-              <Button href={waLink(WA_PLACA)} target="_blank" rel="noopener noreferrer" variant="link">
+              <Button href={waLink(WA_PLACA)} target="_blank" rel="noopener noreferrer" variant="secondary">
                 <WhatsAppIcon />
                 Chamar no WhatsApp
               </Button>
             </div>
           </div>
-          <figure className="md:col-span-6 lg:col-span-6 lg:col-start-7">
-            <div className="relative mx-auto aspect-[1355/1543] w-full max-w-[460px]">
-              <Image
-                src="/placas/placa-render-frente.webp"
-                alt="Placa de acrílico com a arte de demonstração: “Gostou do atendimento?”, QR Code e o símbolo de aproximação NFC"
-                fill
-                priority
-                sizes="(min-width: 768px) 460px, 92vw"
-                className="object-contain"
-              />
-            </div>
-            <figcaption className="mt-3 text-center text-[length:var(--text-small)] text-fg-muted">Render de demonstração, com arte ilustrativa.</figcaption>
+          <figure className="py-6 md:col-span-6 lg:col-span-6 lg:col-start-7">
+            <PlaqueIntroPhoto />
+            <figcaption className="mt-10 text-center text-[length:var(--text-small)] text-fg-muted">Foto real da placa, em acrílico e sem base.</figcaption>
           </figure>
         </div>
       </section>
@@ -64,22 +60,30 @@ export default function PlacasPage() {
       {/* 2. Demonstração: a cena 3D com as três legendas */}
       <PlaqueStory variant="page" />
 
-      {/* 3. Personalização */}
+      {/* 3. Detalhe e personalização: as fotos com a mão dão a escala */}
       <section aria-labelledby="personalizacao-title" className="surface-paper py-16 md:py-24">
         <div className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
-          <figure className="md:col-span-5">
-            <div className="relative mx-auto aspect-[1147/1737] w-full max-w-[360px] overflow-hidden rounded-[var(--radius-frame)]" style={{ background: PLAQUE_BG }}>
+          <div className="grid grid-cols-[1.15fr_1fr] items-end gap-4 md:col-span-7 md:gap-6">
+            <figure>
               <Image
-                src="/placas/placa-render-angulo.webp"
-                alt="A mesma placa vista de lado, mostrando a espessura do acrílico"
-                fill
-                sizes="(min-width: 768px) 360px, 80vw"
-                className="object-contain"
+                src={placaMao}
+                alt="Mão segurando a placa de avaliação, levemente inclinada, contra uma parede escura."
+                sizes="(min-width: 1440px) 420px, (min-width: 768px) 30vw, 52vw"
+                className="h-auto w-full rounded-[var(--radius-frame)]"
               />
-            </div>
-            <figcaption className="mt-3 text-center text-[length:var(--text-small)] text-fg-muted">Render de demonstração.</figcaption>
-          </figure>
-          <div className="md:col-span-6 md:col-start-7">
+              <figcaption className="mt-3 text-pretty text-[length:var(--text-small)] text-fg-muted">Na mão, para dar a escala.</figcaption>
+            </figure>
+            <figure>
+              <Image
+                src={placaFrontal}
+                alt="A placa de frente, segura pela ponta dos dedos: a chamada para avaliação, o ícone de aproximação (NFC) e o QR Code."
+                sizes="(min-width: 1440px) 360px, (min-width: 768px) 26vw, 44vw"
+                className="h-auto w-full rounded-[var(--radius-frame)]"
+              />
+              <figcaption className="mt-3 text-pretty text-[length:var(--text-small)] text-fg-muted">De frente: a chamada, a área de aproximação (NFC) e o QR Code.</figcaption>
+            </figure>
+          </div>
+          <div className="md:col-span-4 md:col-start-9">
             <h2 id="personalizacao-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg">
               A placa é da sua empresa.
             </h2>
@@ -123,7 +127,7 @@ export default function PlacasPage() {
           </ol>
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Button href={contactHref("placas")}>Solicitar uma placa</Button>
-            <Button href={waLink(WA_PLACA)} target="_blank" rel="noopener noreferrer" variant="link">
+            <Button href={waLink(WA_PLACA)} target="_blank" rel="noopener noreferrer" variant="secondary">
               <WhatsAppIcon />
               Chamar no WhatsApp
             </Button>

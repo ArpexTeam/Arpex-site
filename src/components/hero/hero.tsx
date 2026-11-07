@@ -313,7 +313,9 @@ export default function Hero() {
               className="link link-muted flex items-center gap-3 text-sm"
             >
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-signal" />
-              Projeto em destaque: {featured.title} · {featured.client}
+              <span className="link-label">
+                Projeto em destaque: {featured.title} · {featured.client}
+              </span>
             </TransitionLink>
             <span aria-hidden className="only-full font-label text-fg-muted">
               Role para ver o projeto
@@ -338,7 +340,7 @@ export default function Hero() {
               href={`/projetos/${featured.slug}`}
               className="link link-action text-fg"
             >
-              Abrir o case
+              <span className="link-label">Abrir o case</span>
               <Arrow />
             </TransitionLink>
           </div>

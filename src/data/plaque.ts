@@ -1,29 +1,25 @@
-import { SITE_URL } from "./social-links";
-
 /**
  * Placa de avaliação com QR Code e NFC — acrílico, sem base.
  *
- * Medidas, acabamento e fotos reais ainda não foram recebidos: o modelo 3D
- * usa as proporções abaixo como parâmetro provisório e NENHUMA medida é
- * exibida no texto. Ao receber as medidas reais, troque apenas `model`.
+ * A cena e as páginas usam a foto real: o recorte em
+ * src/assets/plaque/placa-real.webp saiu da foto das duas placas sobre a mesa
+ * (só a placa preta, sem fundo e sem a sombra da mesa). As medidas ainda não
+ * foram confirmadas: NENHUMA medida é exibida no texto.
+ *
+ * Os pontos abaixo estão em fração do recorte (0–1, a partir do canto
+ * superior esquerdo) e posicionam na cena o sinal de NFC e o destaque do QR.
  */
-export const plaqueModel = {
-  /** proporção largura × altura (unidades da cena, não centímetros) */
-  width: 1.0,
-  height: 1.42,
-  thickness: 0.06,
-  cornerRadius: 0.07,
-  /** face em que a arte está impressa — confirmar com a produção */
-  printSide: "back" as "front" | "back",
-  measuresConfirmed: false,
-  photosAvailable: false,
+export const plaquePhoto = {
+  /** giro da foto original, em graus (anti-horário); a cena o desfaz */
+  tiltDeg: 1.8,
+  /** ícone "Aproxime seu celular" */
+  nfc: { x: 0.167, y: 0.755 },
+  /** moldura do QR Code */
+  qr: { x: 0.761, y: 0.717, size: 0.32 },
 };
 
 /** Fundo da cena e dos renders da placa (a página Placas abre no mesmo tom). */
 export const PLAQUE_BG = "#0d110f";
-
-/** Destino do QR de demonstração: a própria página de placas da ArpeX. */
-export const plaqueDemoQrTarget = `${SITE_URL}/placas?origem=qr-demonstracao`;
 
 export const plaqueSteps = [
   {
@@ -75,7 +71,7 @@ export const plaqueFaq = [
 export const plaquePending = [
   "Medidas reais da placa",
   "Espessura e acabamento do acrílico",
-  "Fotos frontal, lateral e de detalhe; fotos instaladas em clientes",
+  "Fotos em resolução original (as recebidas têm 1152 × 1536) e fotos instaladas em clientes",
+  "Destino do QR das placas fotografadas: hoje uma leva a um estabelecimento real e a outra aguarda configuração",
   "Prazo de produção, formas de entrega e preço",
-  "Face de impressão da arte (frente ou verso)",
 ];

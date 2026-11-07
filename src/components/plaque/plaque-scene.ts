@@ -1,33 +1,40 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { createStage, disposeObject, roundedRectShape, visibleHeightAt } from "@/lib/three/stage";
-import { plaqueModel } from "@/data/plaque";
-import { drawPhoneScreen, drawPlaqueArt, loadImage, type ArtFonts } from "./plaque-art";
+import { plaquePhoto } from "@/data/plaque";
+import { drawPhoneScreen, loadImage, type ArtFonts } from "./plaque-art";
 
 /**
- * Placa de acrílico (sem base) com arte impressa, QR e NFC; um celular se
- * aproxima, o sinal NFC aparece e a tela abre a página de avaliação de
- * demonstração. Proporções vêm de plaqueModel (parametrizado).
+ * A placa é a foto real, recortada: um plano com a imagem, uma sombra própria
+ * e um brilho que passa pelo acrílico. A foto só registra a frente da peça,
+ * então o giro fica curto (até ~10° no eixo vertical e ~4° no horizontal).
+ *
+ * Dois momentos na mesma rolagem:
+ * 1. o produto (0–0.44): a placa entra de trás, assenta de frente e fica em foco;
+ * 2. a demonstração (0.44–1): a placa abre espaço, o celular se aproxima, o
+ *    sinal NFC aparece e a tela abre a página de avaliação de demonstração.
  */
 
 type V3 = [number, number, number];
 type Key = { p: number; pos: V3; rot: V3 };
 
 const PLAQUE_KEYS: Key[] = [
-  { p: 0, pos: [0.22, -0.03, 0.85], rot: [0.1, 0.88, 0.04] },
-  { p: 0.2, pos: [0.05, 0, 0.4], rot: [0.05, 0.45, 0.02] },
-  { p: 0.38, pos: [0, 0, 0], rot: [0.02, -0.3, 0] },
-  { p: 0.48, pos: [-0.12, 0, 0], rot: [0, 0.06, 0] },
-  { p: 0.7, pos: [-0.42, 0.02, 0], rot: [0, 0.22, 0] },
-  { p: 1, pos: [-0.6, 0, 0], rot: [0, 0.16, 0] },
+  { p: 0, pos: [0.28, -0.3, -1.1], rot: [0.07, -0.17, 0.02] },
+  { p: 0.14, pos: [0.1, -0.08, -0.35], rot: [0.035, -0.09, 0.008] },
+  { p: 0.3, pos: [0, 0, 0], rot: [0, 0, 0] },
+  { p: 0.42, pos: [0, 0.02, 0], rot: [0, 0.03, 0] },
+  { p: 0.54, pos: [-0.36, 0, -0.05], rot: [0, 0.12, 0] },
+  { p: 0.72, pos: [-0.46, 0.02, -0.05], rot: [0, 0.15, 0] },
+  { p: 1, pos: [-0.64, 0, -0.05], rot: [0, 0.13, 0] },
 ];
 
+// o celular encosta na área de NFC da placa (canto inferior esquerdo da arte)
 const PHONE_KEYS: Key[] = [
   { p: 0, pos: [2.8, -1.4, 0.6], rot: [0.25, -0.7, 0.35] },
   { p: 0.46, pos: [2.4, -1.1, 0.6], rot: [0.2, -0.6, 0.3] },
-  { p: 0.58, pos: [-0.02, -0.26, 0.36], rot: [-0.32, -0.45, 0.22] },
-  { p: 0.68, pos: [-0.04, -0.24, 0.26], rot: [-0.3, -0.42, 0.2] },
-  { p: 0.82, pos: [0.62, 0, 0.32], rot: [0, -0.14, 0] },
+  { p: 0.6, pos: [-0.62, -0.62, 0.34], rot: [-0.3, -0.35, 0.22] },
+  { p: 0.7, pos: [-0.64, -0.6, 0.24], rot: [-0.28, -0.33, 0.2] },
+  { p: 0.84, pos: [0.62, 0, 0.32], rot: [0, -0.14, 0] },
   { p: 1, pos: [0.6, 0, 0.3], rot: [0, -0.18, 0] },
 ];
 
@@ -45,6 +52,73 @@ function sample(keys: Key[], p: number) {
   return { pos: mix(a.pos, b.pos), rot: mix(a.rot, b.rot) };
 }
 
+function canvasTexture(c: HTMLCanvasElement) {
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/** Sombra macia da placa (desenhada só pela sombra do canvas, que funciona em todos os navegadores). */
+function drawShadow() {
+  const S = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const ctx = c.getContext("2d")!;
+  ctx.shadowColor = "rgba(0,0,0,1)";
+  ctx.shadowBlur = 34;
+  ctx.shadowOffsetX = S * 4;
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  ctx.roundRect(S * 0.2 - S * 4, S * 0.2, S * 0.6, S * 0.6, 14);
+  ctx.fill();
+  return c;
+}
+
+/** Luz difusa atrás da placa: dá contraste ao topo preto sobre o fundo escuro. */
+function drawSpot() {
+  const S = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+  g.addColorStop(0, "rgba(210,232,220,0.16)");
+  g.addColorStop(0.55, "rgba(210,232,220,0.05)");
+  g.addColorStop(1, "rgba(210,232,220,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, S, S);
+  return c;
+}
+
+/** Faixa de brilho do acrílico (desliza conforme a placa gira). */
+function drawSheen() {
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 8;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createLinearGradient(0, 0, 512, 0);
+  g.addColorStop(0, "rgba(255,255,255,0)");
+  g.addColorStop(0.44, "rgba(255,255,255,0)");
+  g.addColorStop(0.5, "rgba(255,255,255,1)");
+  g.addColorStop(0.56, "rgba(255,255,255,0)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 512, 8);
+  return c;
+}
+
+/** Máscara da placa (branco onde a foto é opaca), para o brilho não sair da peça. */
+function drawMask(img: HTMLImageElement) {
+  const c = document.createElement("canvas");
+  c.width = img.naturalWidth;
+  c.height = img.naturalHeight;
+  const ctx = c.getContext("2d")!;
+  ctx.drawImage(img, 0, 0);
+  ctx.globalCompositeOperation = "source-in";
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, c.width, c.height);
+  return c;
+}
+
 export type PlaqueSceneApi = {
   setProgress: (p: number) => void;
   dispose: () => void;
@@ -52,18 +126,15 @@ export type PlaqueSceneApi = {
 
 export async function mountPlaqueScene(
   container: HTMLElement,
-  opts: { qrSrc: string; fonts: ArtFonts; focusX: number; background: string; onReady: () => void; onContextLost: () => void }
+  opts: { photoSrc: string; fonts: ArtFonts; focusX: number; background: string; onReady: () => void; onContextLost: () => void }
 ): Promise<PlaqueSceneApi> {
   await document.fonts.ready;
-  const qr = await loadImage(opts.qrSrc);
-  const artCanvas = drawPlaqueArt(qr, opts.fonts);
+  const photo = await loadImage(opts.photoSrc);
   const screenIdle = drawPhoneScreen(0, opts.fonts);
   const screenReview = drawPhoneScreen(1, opts.fonts);
 
   let target = 0;
   let progress = 0;
-  let lowQuality = false;
-  let acrylicRef: THREE.MeshPhysicalMaterial | null = null;
 
   const stage = createStage(
     container,
@@ -73,6 +144,7 @@ export async function mountPlaqueScene(
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 40);
       camera.position.set(0, 0, 6);
 
+      // o ambiente só reflete no corpo do celular; a foto não recebe luz
       const pmrem = new THREE.PMREMGenerator(renderer);
       const envRT = pmrem.fromScene(new RoomEnvironment(), 0.03);
       scene.environment = envRT.texture;
@@ -86,77 +158,85 @@ export async function mountPlaqueScene(
 
       const root = new THREE.Group();
       scene.add(root);
+      const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
-      // --- Placa
-      const { width, height, thickness, cornerRadius, printSide } = plaqueModel;
-      const plaque = new THREE.Group();
-      const bevel = Math.min(0.012, thickness * 0.2);
-      const bodyGeo = new THREE.ExtrudeGeometry(roundedRectShape(width, height, cornerRadius), {
-        depth: thickness - bevel * 2,
-        bevelEnabled: true,
-        bevelThickness: bevel,
-        bevelSize: bevel,
-        bevelSegments: 3,
-        curveSegments: 16,
-      });
-      bodyGeo.translate(0, 0, -(thickness - bevel * 2) / 2);
-      const acrylic = new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        metalness: 0,
-        roughness: 0,
-        transmission: lowQuality ? 0 : 1,
-        thickness: thickness * 0.5,
-        ior: 1.49,
-        clearcoat: 0.5,
-        clearcoatRoughness: 0.04,
-        specularIntensity: 0.6,
-        envMapIntensity: 0.55,
-        transparent: lowQuality,
-        opacity: lowQuality ? 0.3 : 1,
-      });
-      acrylicRef = acrylic;
-      // laterais polidas: acrílico mostra a borda clara, levemente esverdeada
-      const edge = new THREE.MeshStandardMaterial({
-        color: 0xd9efe5,
-        metalness: 0,
-        roughness: 0.14,
-        envMapIntensity: 1.1,
-        transparent: true,
-        opacity: 0.92,
-      });
-      const body = new THREE.Mesh(bodyGeo, [acrylic, edge]);
-
-      const artTex = new THREE.CanvasTexture(artCanvas);
-      artTex.colorSpace = THREE.SRGBColorSpace;
-      artTex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-      const inset = 0.035;
-      const print = new THREE.Mesh(
-        new THREE.PlaneGeometry(width - inset * 2, height - inset * 2),
-        new THREE.MeshBasicMaterial({ map: artTex, toneMapped: false })
+      // --- Luz de fundo e sombra: elementos separados da placa
+      const spot = new THREE.Mesh(
+        new THREE.PlaneGeometry(4, 4),
+        new THREE.MeshBasicMaterial({ map: canvasTexture(drawSpot()), transparent: true, depthWrite: false, toneMapped: false })
       );
-      print.position.z = printSide === "back" ? -thickness / 2 + bevel + 0.002 : thickness / 2 + 0.002;
-      plaque.add(print, body);
+      spot.position.z = -1.6;
+      root.add(spot);
 
-      // Sinal NFC: anéis na zona do ícone da arte (coordenadas da arte → placa)
-      const nfcLocal = new THREE.Vector3((760 / 1024 - 0.5) * width - 0.04, (0.5 - 760 / 1454) * height, thickness / 2 + 0.01);
+      const aspect = photo.naturalHeight / photo.naturalWidth;
+      const W = 1;
+      const H = W * aspect;
+      const shadow = new THREE.Mesh(
+        new THREE.PlaneGeometry(W * 1.7, H * 1.7),
+        new THREE.MeshBasicMaterial({ map: canvasTexture(drawShadow()), transparent: true, depthWrite: false, toneMapped: false })
+      );
+      root.add(shadow);
+
+      // --- Placa: a foto recortada, com alfa pré-multiplicado (contorno sem franja)
+      const plaque = new THREE.Group();
+      const art = new THREE.Group();
+      // a foto original tem um leve giro; a cena o desfaz
+      art.rotation.z = THREE.MathUtils.degToRad(-plaquePhoto.tiltDeg);
+      plaque.add(art);
+
+      const photoTex = new THREE.Texture(photo);
+      photoTex.colorSpace = THREE.SRGBColorSpace;
+      photoTex.anisotropy = maxAniso;
+      photoTex.premultiplyAlpha = true;
+      photoTex.generateMipmaps = true;
+      photoTex.minFilter = THREE.LinearMipmapLinearFilter;
+      photoTex.needsUpdate = true;
+      const photoMat = new THREE.MeshBasicMaterial({ map: photoTex, transparent: true, premultipliedAlpha: true, toneMapped: false });
+      const plane = new THREE.PlaneGeometry(W, H);
+      art.add(new THREE.Mesh(plane, photoMat));
+
+      const sheenTex = canvasTexture(drawSheen());
+      sheenTex.wrapS = THREE.ClampToEdgeWrapping;
+      sheenTex.repeat.set(0.6, 1);
+      sheenTex.center.set(0.5, 0.5);
+      sheenTex.rotation = -0.5;
+      const maskTex = new THREE.CanvasTexture(drawMask(photo));
+      const sheenMat = new THREE.MeshBasicMaterial({
+        map: sheenTex,
+        alphaMap: maskTex,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        toneMapped: false,
+      });
+      const sheen = new THREE.Mesh(plane, sheenMat);
+      sheen.position.z = 0.002;
+      art.add(sheen);
+
+      // pontos da arte (fração do recorte) → coordenadas do plano
+      const at = (u: number, v: number, z: number) => new THREE.Vector3((u - 0.5) * W, (0.5 - v) * H, z);
+
+      // Sinal NFC sobre o ícone "Aproxime seu celular"
+      const nfcLocal = at(plaquePhoto.nfc.x, plaquePhoto.nfc.y, 0.01);
       const rings = Array.from({ length: 3 }, () => {
         const m = new THREE.Mesh(
-          new THREE.RingGeometry(0.1, 0.112, 64),
+          new THREE.RingGeometry(0.08, 0.09, 64),
           new THREE.MeshBasicMaterial({ color: 0x00cf77, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })
         );
         m.position.copy(nfcLocal);
-        plaque.add(m);
+        art.add(m);
         return m;
       });
 
-      // Destaque do QR como alternativa de acesso
-      const qrSize = (470 / 1024) * width;
+      // Destaque do QR Code como alternativa de acesso
+      const qrSize = plaquePhoto.qr.size * W;
       const qrOutline = new THREE.Mesh(
-        new THREE.EdgesGeometry(new THREE.ShapeGeometry(roundedRectShape(qrSize + 0.05, qrSize + 0.05, 0.035), 8)),
+        new THREE.EdgesGeometry(new THREE.ShapeGeometry(roundedRectShape(qrSize + 0.03, qrSize + 0.03, 0.03), 8)),
         new THREE.LineBasicMaterial({ color: 0x00cf77, transparent: true, opacity: 0, toneMapped: false })
       );
-      qrOutline.position.set(((96 + 235) / 1024 - 0.5) * width, (0.5 - (600 + 235) / 1454) * height, thickness / 2 + 0.006);
-      plaque.add(qrOutline);
+      qrOutline.position.copy(at(plaquePhoto.qr.x, plaquePhoto.qr.y, 0.006));
+      art.add(qrOutline);
       root.add(plaque);
 
       // --- Celular
@@ -174,18 +254,16 @@ export async function mountPlaqueScene(
       });
       phoneGeo.translate(0, 0, -pd / 2);
       const phoneBody = new THREE.Mesh(phoneGeo, new THREE.MeshStandardMaterial({ color: 0x121614, metalness: 0.65, roughness: 0.32 }));
-      const texIdle = new THREE.CanvasTexture(screenIdle);
-      const texReview = new THREE.CanvasTexture(screenReview);
-      for (const t of [texIdle, texReview]) {
-        t.colorSpace = THREE.SRGBColorSpace;
-        t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-      }
+      const texIdle = canvasTexture(screenIdle);
+      const texReview = canvasTexture(screenReview);
+      texIdle.anisotropy = texReview.anisotropy = maxAniso;
       const screenGeo = new THREE.PlaneGeometry(pw - 0.08, ph - 0.08);
       const screenA = new THREE.Mesh(screenGeo, new THREE.MeshBasicMaterial({ map: texIdle, toneMapped: false }));
       const screenB = new THREE.Mesh(screenGeo, new THREE.MeshBasicMaterial({ map: texReview, toneMapped: false, transparent: true, opacity: 0 }));
       screenA.position.z = pd / 2 + 0.02;
       screenB.position.z = pd / 2 + 0.021;
       phone.add(phoneBody, screenA, screenB);
+      phone.renderOrder = 2;
       root.add(phone);
 
       function layout(elapsed: number) {
@@ -197,28 +275,46 @@ export async function mountPlaqueScene(
         const fit = Math.min(1, (visW * 0.62) / 2.2, visH / 2.4);
         root.scale.setScalar(fit);
 
+        // 1. produto: entra de trás e cresce; 2. demonstração: volta ao tamanho da composição
+        const reveal = ease(range(progress, 0, 0.16));
+        const size = 1.3 - 0.3 * ease(range(progress, 0.42, 0.54));
         const pk = sample(PLAQUE_KEYS, progress);
         const settle = range(progress, 0.9, 1);
         const float = Math.sin(elapsed * 0.8) * 0.012 * settle;
         plaque.position.set(pk.pos[0], pk.pos[1] + float, pk.pos[2]);
         plaque.rotation.set(pk.rot[0], pk.rot[1], pk.rot[2]);
+        plaque.scale.setScalar(size);
+        photoMat.opacity = 0.25 + 0.75 * reveal;
+
+        // sombra: mesma posição, um pouco atrás e abaixo; mais aberta quando a placa está longe
+        const depth = clamp01(-pk.pos[2] / 1.1);
+        shadow.position.set(pk.pos[0] + 0.05 * size, pk.pos[1] - 0.09 * size + float * 0.4, pk.pos[2] - 0.18);
+        shadow.rotation.set(pk.rot[0] * 0.5, pk.rot[1] * 0.5, 0);
+        shadow.scale.setScalar(size * (1 + depth * 0.25));
+        (shadow.material as THREE.MeshBasicMaterial).opacity = (0.7 - depth * 0.35) * reveal;
+        spot.position.x = pk.pos[0] * 0.8;
+
+        // brilho: atravessa a placa na entrada e depois acompanha o giro
+        const sweep = range(progress, 0.06, 0.3);
+        sheenTex.offset.x = 0.75 - sweep * 1.35 - pk.rot[1] * 1.6;
+        sheenMat.opacity = 0.16 * Math.sin(Math.PI * sweep) + 0.06 * Math.abs(pk.rot[1]) / 0.17;
 
         const fk = sample(PHONE_KEYS, progress);
         phone.position.set(fk.pos[0], fk.pos[1] - float * 0.6, fk.pos[2]);
         phone.rotation.set(fk.rot[0], fk.rot[1], fk.rot[2]);
-        phone.visible = progress > 0.4;
+        phone.visible = progress > 0.44;
 
-        (screenB.material as THREE.MeshBasicMaterial).opacity = ease(range(progress, 0.66, 0.76));
+        (screenB.material as THREE.MeshBasicMaterial).opacity = ease(range(progress, 0.68, 0.78));
 
-        const nfc = range(progress, 0.52, 0.58) * (1 - range(progress, 0.72, 0.78));
+        const nfc = range(progress, 0.55, 0.61) * (1 - range(progress, 0.74, 0.8));
         rings.forEach((r, i) => {
           const t = (elapsed * 0.9 + i / 3) % 1;
-          r.scale.setScalar(0.6 + t * 2.4);
+          r.scale.setScalar(0.6 + t * 2.2);
           (r.material as THREE.MeshBasicMaterial).opacity = nfc * (1 - t) * 0.9;
           r.visible = nfc > 0.001;
         });
 
-        const qrOn = range(progress, 0.78, 0.84) * (1 - range(progress, 0.95, 1)) * (0.65 + 0.35 * Math.sin(elapsed * 3));
+        const qrOn = range(progress, 0.8, 0.86) * (1 - range(progress, 0.95, 1)) * (0.65 + 0.35 * Math.sin(elapsed * 3));
         (qrOutline.material as THREE.LineBasicMaterial).opacity = qrOn;
       }
 
@@ -244,16 +340,6 @@ export async function mountPlaqueScene(
       maxDpr: 1.5,
       onFirstFrame: opts.onReady,
       onContextLost: opts.onContextLost,
-      onLowQuality: () => {
-        // sem passe de transmissão: acrílico translúcido simples
-        lowQuality = true;
-        if (acrylicRef) {
-          acrylicRef.transmission = 0;
-          acrylicRef.transparent = true;
-          acrylicRef.opacity = 0.3;
-          acrylicRef.needsUpdate = true;
-        }
-      },
     }
   );
 

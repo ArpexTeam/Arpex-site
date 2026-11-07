@@ -66,7 +66,7 @@ export default function Header() {
                       aria-current={active ? "page" : undefined}
                       className="nav-link relative inline-flex h-10 items-center px-4 text-[14px] font-medium"
                     >
-                      {link.label}
+                      <span className="link-label">{link.label}</span>
                       <span
                         aria-hidden
                         className={cn(
@@ -88,7 +88,7 @@ export default function Header() {
               aria-current={isActivePath(pathname, "/contato") ? "page" : undefined}
               className="nav-link relative hidden h-10 items-center gap-1.5 px-3 text-[14px] font-medium sm:inline-flex"
             >
-              Contato
+              <span className="link-label">Contato</span>
               <Arrow className="h-3.5 w-3.5" />
               <span
                 aria-hidden

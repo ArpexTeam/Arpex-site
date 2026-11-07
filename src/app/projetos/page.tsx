@@ -21,7 +21,7 @@ export const metadata: Metadata = {
  */
 function PortfolioItem({ project, feature, priority }: { project: Project; feature?: boolean; priority?: boolean }) {
   return (
-    <TransitionLink href={`/projetos/${project.slug}`} className="focus-ring group/item block rounded-[var(--radius-frame)]">
+    <TransitionLink href={`/projetos/${project.slug}`} data-link-host className="focus-ring group/item block rounded-[var(--radius-frame)]">
       {project.cover && (
         <div className="frame relative aspect-[16/10]" style={{ viewTransitionName: `case-${project.slug}` }}>
           <Image
@@ -42,7 +42,7 @@ function PortfolioItem({ project, feature, priority }: { project: Project; featu
         {project.context && <p className="mt-2 max-w-[52ch] text-pretty leading-relaxed text-fg-muted">{project.context}</p>}
         {/* aparência de link; o alvo é o item inteiro */}
         <span className="link link-action mt-2 text-fg">
-          Ver o case
+          <span className="link-label">Ver o case</span>
           <Arrow />
         </span>
       </div>

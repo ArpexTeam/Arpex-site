@@ -9,6 +9,7 @@ import { buildContactMessage, contactInterests, isContactInterest, type ContactI
 import { getProjectBySlug } from "@/data/projects";
 import { CONTACT_EMAIL, waLink } from "@/data/social-links";
 import { WhatsAppIcon } from "@/components/ui/contact-icons";
+import { Button } from "@/components/ui/button";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Diga como podemos chamar você."),
@@ -139,13 +140,10 @@ export default function ContactForm() {
         <p className="max-w-[40ch] text-[length:var(--text-small)] leading-relaxed text-fg-muted">
           O botão abre o WhatsApp com a mensagem pronta. Você revisa e envia de lá.
         </p>
-        <button
-          type="submit"
-          className="btn shrink-0 whitespace-nowrap"
-        >
+        <Button type="submit" className="shrink-0 whitespace-nowrap">
           <WhatsAppIcon />
           Abrir no WhatsApp
-        </button>
+        </Button>
       </div>
 
       <div role="status" aria-live="polite" className="text-sm">

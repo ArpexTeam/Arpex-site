@@ -1,24 +1,30 @@
-/* Controles: botão, link, navegação, seletor, abas e campos.
+/* Controles: botões, link, navegação, seletor, abas e campos.
    Raio, cores e transições ficam aqui; os componentes só escolhem a classe.
-   Uma resposta por tipo de interação, sempre de cor, borda ou fundo: nenhum
-   controle muda de tamanho ou de posição.
+   Cada tipo de ação tem um hover próprio, sempre de cor, borda, fundo ou de
+   um detalhe interno (a seta, o sublinhado): nenhum controle muda de tamanho
+   ou de posição.
+   - principal: a área da seta fica verde e a seta avança 3px;
+   - secundário: borda mais forte e preenchimento discreto;
+   - link e menu: um sublinhado fino se revela da esquerda para a direita;
+   - abas: realce suave sob o ponteiro; a linha da aba ativa não sai.
    Linhas e preenchimentos saem da cor do texto da superfície (--fg), então o
    mesmo controle serve no fundo escuro, no claro e nas paletas dos cases.
-   O verde fica para indicadores pequenos (página atual, aba ativa) e foco.
-   Hover só com ponteiro (como o hover: do Tailwind 4); no toque, a resposta é
-   o :active, que entra sem transição e volta com a transição normal. */
+   Hover só com ponteiro fino; no toque, a resposta é o :active (uma troca de
+   tom que entra sem transição). Com movimento reduzido, a seta e o
+   sublinhado aparecem sem deslocamento. */
 
 :root {
   --radius-control: 8px; /* botões, campos e o botão do menu */
   --radius-choice: 6px; /* seletores, abas, itens do menu e rótulos de ação */
   /* forma de pílula: só etiquetas curtas de status ou categoria */
 
-  --dur-control: 160ms; /* cor, fundo e borda */
+  --dur-control: 200ms; /* cor, fundo, borda e a seta */
+  --dur-reveal: 240ms; /* sublinhado que se revela */
   --ease-control: cubic-bezier(0.2, 0, 0, 1);
 
   /* intensidade de linhas e preenchimentos, em % da cor do texto */
-  --control-line: 28%;
-  --control-line-strong: 60%;
+  --control-line: 30%;
+  --control-line-strong: 58%;
   --control-fill-hover: 6%;
   --control-fill-press: 11%;
   --control-fill-selected: 8%;
@@ -37,7 +43,8 @@
 
   /* Preenchido na cor do texto da superfície: marfim com texto escuro no
      fundo escuro, grafite com texto claro no fundo claro. Compacto, com a
-     largura do rótulo. Só nos pontos de decisão. */
+     largura do rótulo e, na ponta direita, a área reservada da seta. Só nos
+     pontos de decisão. */
   .btn {
     position: relative;
     display: inline-flex;
@@ -56,9 +63,14 @@
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    transition-property: color, background-color;
+    transition-property: color, background-color, box-shadow;
     transition-duration: var(--dur-control);
     transition-timing-function: var(--ease-control);
+  }
+  .btn:has(> .btn-cap) {
+    gap: 0.875rem;
+    padding-left: 1.125rem;
+    padding-right: 0.3125rem;
   }
   .btn:focus-visible {
     outline: 2px solid var(--accent, var(--color-signal));
@@ -68,22 +80,62 @@
     pointer-events: none;
     opacity: 0.6;
   }
+  .btn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  /* área da seta: um tom abaixo do botão em repouso; verde no hover */
+  .btn-cap {
+    display: inline-grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: calc(var(--radius-control) - 3px);
+    background-color: color-mix(in srgb, var(--fg-inverse) 9%, transparent);
+    transition-property: color, background-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+
+  /* ---------------- Botão secundário ---------------- */
+
+  /* Contorno fino na cor do texto, sem preenchimento. A borda é uma sombra
+     interna, então ficar mais forte não muda a medida. */
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--fg);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) var(--control-line), transparent);
+  }
 
   /* ---------------- Link ---------------- */
 
-  /* Sublinhado fino e afastado, sempre visível (também no toque); o hover e
-     a pressão o deixam pleno. */
+  /* O sublinhado é desenhado no rótulo (.link-label) ou, sem rótulo, no
+     próprio link: uma linha que se revela da esquerda para a direita e, nos
+     links dentro de parágrafos, uma linha de base visível em repouso. */
   .link {
     border-radius: 2px;
-    text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.3em;
-    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-decoration: none;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    transition-property: color, text-decoration-color;
+    transition-property: color;
     transition-duration: var(--dur-control);
     transition-timing-function: var(--ease-control);
+  }
+  .link-label,
+  .link:not(:has(.link-label)) {
+    background-image:
+      linear-gradient(currentColor, currentColor),
+      linear-gradient(color-mix(in srgb, currentColor 38%, transparent), color-mix(in srgb, currentColor 38%, transparent));
+    background-repeat: no-repeat;
+    background-position:
+      0 100%,
+      0 100%;
+    background-size:
+      0% 1px,
+      var(--link-rest, 0%) 1px;
+    transition: background-size var(--dur-reveal) var(--ease-control);
   }
   .link:focus-visible {
     outline: 2px solid var(--accent, var(--color-signal));
@@ -101,8 +153,10 @@
   .link-muted {
     color: var(--fg-muted);
   }
-  /* no meio da frase: cor do texto e contorno de foco colado */
+  /* no meio da frase: cor do texto, linha de base sempre visível e contorno
+     de foco colado */
   .link-inline {
+    --link-rest: 100%;
     color: var(--fg);
   }
   .link-inline:focus-visible {
@@ -111,8 +165,8 @@
 
   /* ---------------- Navegação ---------------- */
 
-  /* Hover: o texto clareia. Página atual: texto pleno e o ponto verde do
-     cabeçalho, que o hover nunca mostra. */
+  /* Hover: o texto clareia e o sublinhado se revela. Página atual: texto
+     pleno e o ponto verde do cabeçalho, sem sublinhado. */
   .nav-link {
     border-radius: var(--radius-choice);
     color: color-mix(in srgb, var(--fg) 64%, transparent);
@@ -127,18 +181,18 @@
     outline-offset: 2px;
   }
 
-  /* botão quadrado do menu no celular */
+  /* botão quadrado do menu no celular: a resposta do secundário */
   .icon-btn {
     display: inline-grid;
     width: 2.75rem;
     height: 2.75rem;
     place-items: center;
-    border: 1px solid color-mix(in srgb, var(--fg) var(--control-line), transparent);
     border-radius: var(--radius-control);
     color: var(--fg);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) var(--control-line), transparent);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    transition-property: background-color, border-color;
+    transition-property: background-color, box-shadow;
     transition-duration: var(--dur-control);
     transition-timing-function: var(--ease-control);
   }
@@ -176,9 +230,9 @@
 
   /* ---------------- Seletor ---------------- */
 
-  /* Assuntos do formulário e atalhos. Hover: fundo suave. Selecionado:
-     marcador ✓ preenchido e borda mais forte, que continuam visíveis quando o
-     ponteiro passa em outra opção. Foco do teclado: contorno separado. */
+  /* Assuntos do formulário. Hover: fundo suave. Selecionado: marcador ✓
+     preenchido e borda mais forte, que continuam visíveis quando o ponteiro
+     passa em outra opção. Foco do teclado: contorno separado. */
   .choice {
     position: relative;
     display: inline-flex;
@@ -223,7 +277,7 @@
   /* ---------------- Abas ---------------- */
 
   /* Faixa horizontal: texto, área de toque de 44px e uma linha fina na cor de
-     destaque sob a aba ativa. O hover só clareia o fundo e o texto. */
+     destaque sob a aba ativa. O hover só realça o fundo e o texto. */
   .tab {
     position: relative;
     display: inline-flex;
@@ -256,7 +310,7 @@
     outline-offset: -2px;
   }
 
-  /* Seta das ações: avança 2px no hover (o controle não se move). */
+  /* Seta das ações: só a do botão principal se move (dentro da área verde). */
   .btn-arrow {
     transition: transform var(--dur-control) var(--ease-control);
   }
@@ -265,12 +319,27 @@
 /* Estados, depois das bases. Mesma especificidade: a ordem decide
    (hover → pressionado → atual/selecionado). */
 @layer components {
-  @media (hover: hover) {
-    .btn:hover {
-      background-color: color-mix(in srgb, var(--fg) 86%, var(--fg-inverse));
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover .btn-cap {
+      background-color: var(--color-signal);
+      color: var(--color-ink);
     }
-    .link:hover {
-      text-decoration-color: currentColor;
+    .btn:hover .btn-cap .btn-arrow {
+      transform: translateX(3px);
+    }
+    .btn-secondary:hover,
+    .icon-btn:hover {
+      background-color: color-mix(in srgb, var(--fg) var(--control-fill-hover), transparent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) var(--control-line-strong), transparent);
+    }
+
+    .link:hover .link-label,
+    .link:hover:not(:has(.link-label)),
+    .nav-link:hover .link-label,
+    [data-link-host]:hover .link-label {
+      background-size:
+        100% 1px,
+        var(--link-rest, 0%) 1px;
     }
     .link-muted:hover {
       color: var(--fg);
@@ -278,7 +347,7 @@
     .nav-link:hover {
       color: color-mix(in srgb, var(--fg) 92%, transparent);
     }
-    .icon-btn:hover,
+
     .choice:hover,
     .tab:hover {
       background-color: color-mix(in srgb, var(--fg) var(--control-fill-hover), transparent);
@@ -292,13 +361,12 @@
     .choice:hover .choice-mark {
       border-color: currentColor;
     }
-    :is(.btn, .link):hover .btn-arrow {
-      transform: translateX(2px);
-    }
   }
 
+  /* toque e clique: troca breve de tom, sem transição na entrada */
   .btn:active,
   .link:active,
+  .link:active .link-label,
   .nav-link:active,
   .icon-btn:active,
   .choice:active,
@@ -306,24 +374,33 @@
     transition-duration: 0ms;
   }
   .btn:active {
-    background-color: color-mix(in srgb, var(--fg) 74%, var(--fg-inverse));
+    background-color: color-mix(in srgb, var(--fg) 80%, var(--fg-inverse));
   }
-  .link:active {
-    text-decoration-color: currentColor;
-  }
-  .link-muted:active,
-  .nav-link:active {
-    color: var(--fg);
-  }
+  .btn-secondary:active,
   .nav-link:active,
   .icon-btn:active,
   .choice:active,
   .tab:active {
     background-color: color-mix(in srgb, var(--fg) var(--control-fill-press), transparent);
   }
+  .link:active .link-label,
+  .link:active:not(:has(.link-label)) {
+    background-size:
+      100% 1px,
+      var(--link-rest, 0%) 1px;
+  }
+  .link-muted:active,
+  .nav-link:active {
+    color: var(--fg);
+  }
 
   .nav-link[aria-current="page"] {
     color: var(--fg);
+  }
+  .nav-link[aria-current="page"] .link-label {
+    background-size:
+      0% 1px,
+      0% 1px;
   }
 
   .choice:has(:checked) {
@@ -343,5 +420,17 @@
   }
   .tab[aria-selected="true"]::after {
     opacity: 1;
+  }
+
+  /* movimento reduzido: a seta não anda e o sublinhado aparece de uma vez */
+  @media (prefers-reduced-motion: reduce) {
+    .btn-arrow,
+    .link-label,
+    .link:not(:has(.link-label)) {
+      transition: none;
+    }
+    .btn:hover .btn-cap .btn-arrow {
+      transform: none;
+    }
   }
 }
