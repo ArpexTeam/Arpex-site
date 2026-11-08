@@ -24,11 +24,6 @@ export default function Footer() {
         <nav aria-label="Rodapé" className="md:col-span-3">
           <p className="font-label text-fg-muted">Navegação</p>
           <ul className="mt-5 space-y-3 text-[15px]">
-            <li>
-              <Link href="/" className={linkCls}>
-                <span className="link-label">Início</span>
-              </Link>
-            </li>
             {navLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className={linkCls}>

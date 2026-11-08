@@ -1,5 +1,6 @@
 // /ecossistema mantém o endereço; o rótulo diz o que a página mostra.
 export const navLinks = [
+  { label: "Home", href: "/" },
   { label: "Soluções", href: "/solucoes" },
   { label: "Projetos", href: "/projetos" },
   { label: "Placas", href: "/placas" },
