@@ -228,6 +228,16 @@
     outline-offset: 2px;
   }
 
+  /* Lista aberta do <select>: o navegador pode abri-la sobre branco, e as
+     opções herdariam o texto claro da superfície. Fundo e texto explícitos. */
+  select.field option {
+    background-color: var(--fg-inverse);
+    color: var(--fg);
+  }
+  select.field option:disabled {
+    color: var(--fg-muted);
+  }
+
   /* ---------------- Seletor ---------------- */
 
   /* Assuntos do formulário. Hover: fundo suave. Selecionado: marcador ✓

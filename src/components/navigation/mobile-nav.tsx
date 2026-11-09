@@ -82,7 +82,7 @@ export default function MobileNav({ open, onClose, returnFocusRef }: MobileNavPr
                   href={link.href}
                   onClick={onClose}
                   aria-current={active ? "page" : undefined}
-                  className={cn("nav-link flex items-baseline gap-4 rounded-none py-4 font-display text-[2rem]", active ? "text-signal" : "text-fg")}
+                  className={cn("nav-link flex items-baseline gap-4 rounded-none py-4 font-heading text-[1.25rem] font-medium", active ? "text-signal" : "text-fg")}
                 >
                   <span className="font-label w-6 text-fg-muted">{String(i + 1).padStart(2, "0")}</span>
                   {link.label}
