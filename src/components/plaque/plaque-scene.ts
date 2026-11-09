@@ -126,7 +126,17 @@ export type PlaqueSceneApi = {
 
 export async function mountPlaqueScene(
   container: HTMLElement,
-  opts: { photoSrc: string; fonts: ArtFonts; focusX: number; background: string; onReady: () => void; onContextLost: () => void }
+  opts: {
+    photoSrc: string;
+    fonts: ArtFonts;
+    focusX: number;
+    /** quadro do celular (quase quadrado): a composição ocupa quase toda a largura */
+    compact?: boolean;
+    background: string;
+    onReady: () => void;
+    onContextLost: () => void;
+    onTooSlow?: () => void;
+  }
 ): Promise<PlaqueSceneApi> {
   await document.fonts.ready;
   const photo = await loadImage(opts.photoSrc);
@@ -269,11 +279,14 @@ export async function mountPlaqueScene(
       function layout(elapsed: number) {
         const visH = visibleHeightAt(camera, camera.position.z);
         const visW = visH * camera.aspect;
-        // centro da composição deslocado para a direita do texto HTML
-        root.position.x = (opts.focusX - 0.5) * visW;
-        // telas estreitas: a composição encolhe para caber
-        const fit = Math.min(1, (visW * 0.62) / 2.2, visH / 2.4);
+        // telas estreitas: a composição encolhe para caber; no quadro compacto
+        // (placa e celular lado a lado) ocupa quase toda a largura
+        const fit = opts.compact ? Math.min((visW * 0.96) / 2.15, visH / 1.6) : Math.min(1, (visW * 0.62) / 2.2, visH / 2.4);
         root.scale.setScalar(fit);
+        // centro da composição deslocado para a direita do texto HTML; no quadro
+        // compacto, recentralizada enquanto o celular encosta no NFC (os dois à esquerda)
+        const recenter = opts.compact ? 0.42 * range(progress, 0.46, 0.6) * (1 - range(progress, 0.7, 0.86)) : 0;
+        root.position.x = (opts.focusX - 0.5) * visW + recenter * fit;
 
         // 1. produto: entra de trás e cresce; 2. demonstração: volta ao tamanho da composição
         const reveal = ease(range(progress, 0, 0.16));
@@ -314,7 +327,8 @@ export async function mountPlaqueScene(
           r.visible = nfc > 0.001;
         });
 
-        const qrOn = range(progress, 0.8, 0.86) * (1 - range(progress, 0.95, 1)) * (0.65 + 0.35 * Math.sin(elapsed * 3));
+        // o QR Code acende junto com o NFC, como a alternativa para quem não aproxima
+        const qrOn = range(progress, 0.57, 0.62) * (1 - range(progress, 0.72, 0.78)) * (0.65 + 0.35 * Math.sin(elapsed * 3));
         (qrOutline.material as THREE.LineBasicMaterial).opacity = qrOn;
       }
 
@@ -340,6 +354,7 @@ export async function mountPlaqueScene(
       maxDpr: 1.5,
       onFirstFrame: opts.onReady,
       onContextLost: opts.onContextLost,
+      onTooSlow: opts.onTooSlow,
     }
   );
 

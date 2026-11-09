@@ -92,6 +92,9 @@
    de texto das cenas se compactam para caber em 100svh. */
 @custom-variant scene-short (@media (min-width: 1024px) and (min-height: 620px) and (max-height: 780px) and (prefers-reduced-motion: no-preference));
 
+/* Celular deitado: pouca altura, então texto e demonstração ficam lado a lado. */
+@custom-variant landscape-phone (@media (orientation: landscape) and (max-height: 540px) and (max-width: 1023.98px));
+
 /* Largura máxima do texto da abertura: termina antes da borda esquerda da
    tela principal, que fica em (0.535 − 0.065 × wide) da largura
    (heroPoses, src/components/hero/hero-layout.ts). "wide" sai da proporção
@@ -121,6 +124,20 @@
 @media (min-aspect-ratio: 67/40) {
   :root {
     --hero-wide: 1;
+  }
+}
+
+/* Entrada discreta de conteúdo secundário (MotionProvider): só com movimento,
+   só abaixo da dobra; sem JavaScript nada é escondido. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-wait {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  .reveal-in {
+    transition:
+      opacity 560ms var(--ease-out),
+      transform 680ms var(--ease-out);
   }
 }
 
@@ -190,6 +207,22 @@
   }
 }
 
+/* Tempo até o próximo estado de uma demonstração automática. */
+@keyframes fill-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes qr-glow {
+  50% {
+    opacity: 0.55;
+  }
+}
+
 @keyframes caret {
   50% {
     opacity: 0;
@@ -208,6 +241,30 @@
   from {
     opacity: 0;
     transform: scale(0.8);
+  }
+}
+
+/* Troca de painel: entra do lado da aba escolhida (--swap-x), com um leve assentamento. */
+@keyframes panel-swap {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--swap-x, 0px), 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Troca de tela numa demonstração: chega do lado escolhido, girando de leve em perspectiva. */
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) translateX(var(--swap-x, 0)) rotateY(var(--swap-ry, 0deg)) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

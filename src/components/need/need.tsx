@@ -21,7 +21,7 @@ export default function Need() {
 
         <ul className="md:col-span-6 md:col-start-7">
           {situations.map((s) => (
-            <li key={s.title} className="border-t border-rule py-5 last:border-b md:py-6">
+            <li key={s.title} data-reveal className="border-t border-rule py-5 last:border-b md:py-6">
               <p className="font-heading text-[length:var(--text-h3)] text-fg">{s.title}</p>
               <p className="mt-1.5 text-pretty leading-relaxed text-fg-muted">{s.text}</p>
             </li>

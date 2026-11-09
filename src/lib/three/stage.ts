@@ -2,7 +2,8 @@ import * as THREE from "three";
 
 /**
  * Ciclo de vida comum das cenas WebGL do site:
- * - DPR limitado e adaptado pela medição real do tempo de quadro;
+ * - DPR limitado e adaptado pela medição real do tempo de quadro; se mesmo na
+ *   resolução mínima a cena seguir pesada, onTooSlow devolve a vez ao HTML;
  * - render só com o canvas visível e a aba ativa;
  * - perda/restauração de contexto;
  * - resize por ResizeObserver (inclui mudança de orientação);
@@ -27,6 +28,8 @@ export type StageOptions = {
   onFirstFrame?: () => void;
   /** chamado uma vez se a medição derrubar a resolução */
   onLowQuality?: () => void;
+  /** chamado uma vez se, já na resolução mínima, os quadros seguirem lentos */
+  onTooSlow?: () => void;
 };
 
 export type Stage = {
@@ -96,10 +99,14 @@ export function createStage(
   let lost = false;
   let disposed = false;
 
-  // Medição de tempo de quadro para adaptar a resolução.
+  // Medição de tempo de quadro para adaptar a resolução. Só quadros em
+  // sequência contam: o primeiro depois de uma pausa traz o tempo parado.
   let sampleSum = 0;
   let sampleCount = 0;
   let lowQuality = false;
+  let slowChecked = false;
+  let chained = false;
+  const SAMPLES = 90;
 
   function size() {
     const w = Math.max(1, container.clientWidth);
@@ -121,28 +128,42 @@ export function createStage(
     if (!firstFrame) {
       firstFrame = true;
       options.onFirstFrame?.();
-    } else if (sampleCount < 90) {
+    } else if (chained && !slowChecked) {
       sampleSum += dt * 1000;
       sampleCount++;
-      if (sampleCount === 90) {
+      if (sampleCount === SAMPLES) {
         const avg = sampleSum / sampleCount;
+        sampleSum = 0;
+        sampleCount = 0;
         if ((avg > budget || cost > budget) && dpr > minDpr) {
           dpr = minDpr;
           lowQuality = true;
           renderer.setPixelRatio(dpr);
           size();
           options.onLowQuality?.();
+        } else {
+          // segunda medição (ou a primeira já na resolução mínima): abaixo de ~24 qps, desiste
+          slowChecked = true;
+          if (avg > budget * 2) options.onTooSlow?.();
         }
       }
     }
 
     const wasDirty = dirty;
     dirty = false;
-    if (keepGoing !== false || wasDirty) schedule();
+    if (keepGoing !== false || wasDirty) {
+      raf = requestAnimationFrame(frame);
+      chained = true;
+    } else {
+      chained = false;
+    }
   }
 
   function schedule() {
-    if (!raf && !disposed) raf = requestAnimationFrame(frame);
+    if (!raf && !disposed) {
+      chained = false;
+      raf = requestAnimationFrame(frame);
+    }
   }
 
   const io = new IntersectionObserver(

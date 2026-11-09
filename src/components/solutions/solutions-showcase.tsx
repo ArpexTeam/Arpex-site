@@ -8,20 +8,29 @@ import SolutionDemoView from "./solution-demos";
 
 /**
  * Presença, atendimento e operação como abas horizontais (padrão WAI-ARIA,
- * ativação automática): clique, toque, setas, Home/End. Cada painel mostra o
- * exemplo, uma frase de benefício e o caminho para a página Soluções; as
- * listas de entregas ficam lá.
+ * ativação automática): clique, toque, setas, Home/End. Cada painel explica
+ * antes de demonstrar: a necessidade em linguagem simples, o exemplo, um
+ * complemento curto e o caminho para a página Soluções. No computador o
+ * exemplo fica à esquerda e o texto à direita, na mesma ordem de leitura.
  * Os três painéis ocupam a mesma célula da grade: a seção tem a altura do
- * maior e não salta na troca.
+ * maior e não salta na troca. Texto e exemplo entram juntos, vindos do lado
+ * da aba escolhida.
  */
 export default function SolutionsShowcase() {
   const [active, setActive] = useState(0);
+  const [dir, setDir] = useState(1);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const uid = useId();
 
+  function select(i: number) {
+    if (i === active) return;
+    setDir(i > active ? 1 : -1);
+    setActive(i);
+  }
+
   function focusTab(i: number) {
     const n = (i + solutions.length) % solutions.length;
-    setActive(n);
+    select(n);
     tabRefs.current[n]?.focus();
   }
 
@@ -40,15 +49,15 @@ export default function SolutionsShowcase() {
   }
 
   return (
-    <section id="solucoes" aria-labelledby="solucoes-title" className="surface-mineral relative py-20 md:py-28">
+    <section id="solucoes" aria-labelledby="solucoes-title" className="surface-mineral relative scroll-mt-[var(--header-height)] py-16 md:py-28">
       <div className="mx-auto w-full max-w-[1440px] px-[var(--gutter)]">
         <h2 id="solucoes-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg">
           Presença, atendimento e operação.
         </h2>
         <p className="mt-3 text-[length:var(--text-lead)] leading-[1.5] text-fg-muted">Comece pela necessidade do seu negócio.</p>
 
-        {/* abas logo acima do painel, alinhadas à esquerda */}
-        <div role="tablist" aria-label="Frentes de solução" className="mt-10 flex gap-1 border-b border-rule md:mt-12">
+        {/* abas logo acima do painel; no celular dividem a largura em partes iguais */}
+        <div role="tablist" aria-label="Frentes de solução" className="mt-8 flex gap-1 border-b border-rule md:mt-12">
           {solutions.map((s, i) => (
             <button
               key={s.slug}
@@ -61,18 +70,23 @@ export default function SolutionsShowcase() {
               aria-selected={i === active}
               aria-controls={`${uid}-panel-${i}`}
               tabIndex={i === active ? 0 : -1}
-              onClick={() => setActive(i)}
+              onClick={() => select(i)}
               onKeyDown={(e) => onKeyDown(e, i)}
-              className="tab"
+              className="tab flex-1 justify-center md:flex-none"
             >
               {s.name}
             </button>
           ))}
         </div>
 
-        <div className="mt-8 grid [grid-template-areas:'painel'] md:mt-10">
+        <div className="mt-6 grid [grid-template-areas:'painel'] md:mt-10">
           {solutions.map((s, i) => {
             const selected = i === active;
+            const enter = (delay: number) =>
+              selected
+                ? ({ animationDelay: `${delay}ms`, "--swap-x": `${dir * 22}px` } as React.CSSProperties)
+                : undefined;
+            const enterCls = selected && "motion-safe:animate-[panel-swap_440ms_cubic-bezier(0.22,1,0.36,1)_both]";
             return (
               <div
                 key={s.slug}
@@ -81,17 +95,25 @@ export default function SolutionsShowcase() {
                 aria-labelledby={`${uid}-tab-${i}`}
                 inert={!selected}
                 className={cn(
-                  "grid gap-8 [grid-area:painel] lg:grid-cols-12 lg:items-start lg:gap-x-10",
-                  selected ? "visible motion-safe:animate-[panel-in_360ms_cubic-bezier(0.22,1,0.36,1)]" : "invisible"
+                  "grid content-start gap-5 [grid-area:painel] lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-10 lg:gap-y-0",
+                  selected ? "visible" : "invisible"
                 )}
               >
-                {/* o exemplo primeiro; a explicação fica junto dele */}
-                <div className="lg:col-span-7">
+                {/* 1. a necessidade, antes do exemplo */}
+                <p
+                  className={cn("font-heading text-balance text-[length:var(--text-h3)] text-fg lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:pt-14", enterCls)}
+                  style={enter(0)}
+                >
+                  {s.promise}
+                </p>
+                {/* 2. o exemplo */}
+                <div className={cn("lg:col-span-7 lg:col-start-1 lg:row-span-2 lg:row-start-1", enterCls)} style={enter(70)}>
                   <SolutionDemoView demo={s.demo} active={selected} />
                 </div>
-                <div className="lg:col-span-4 lg:col-start-9 lg:pt-14">
-                  <p className="font-heading text-balance text-[length:var(--text-h3)] text-fg">{s.promise}</p>
-                  <Button href={`/solucoes#${s.slug}`} variant="link" arrow className="mt-4">
+                {/* 3. complemento curto e 4. caminho para aprofundar */}
+                <div className={cn("lg:col-span-4 lg:col-start-9 lg:row-start-2 lg:pt-4", enterCls)} style={enter(140)}>
+                  <p className="max-w-[46ch] text-pretty leading-relaxed text-fg-muted">{s.homeNote}</p>
+                  <Button href={`/solucoes#${s.slug}`} variant="link" arrow className="mt-2">
                     Conhecer {s.name}
                   </Button>
                 </div>

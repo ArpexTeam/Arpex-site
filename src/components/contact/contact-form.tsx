@@ -15,19 +15,24 @@ const schema = z.object({
   name: z.string().trim().min(2, "Diga como podemos chamar você."),
   company: z.string().trim().max(80).optional(),
   interest: z.enum(contactInterests.map((i) => i.value) as [ContactInterest, ...ContactInterest[]], {
-    message: "Escolha um assunto.",
+    message: "Escolha uma solução.",
   }),
   details: z.string().trim().max(800, "Use até 800 caracteres.").optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
+type Mode = "entender" | "especifico";
 
-const fieldCls = "field";
+// folga acima (cabeçalho) e abaixo (teclado virtual) quando o campo recebe foco
+const fieldCls = "field scroll-mt-28 scroll-mb-6";
 
 /**
- * Formulário curto: nome, assunto e, se quiser, empresa e detalhes.
- * Abre o WhatsApp com a mensagem pronta — nada é enviado sem a pessoa tocar
- * em "enviar" no próprio WhatsApp.
+ * Formulário curto: por onde começar, nome e, se quiser, empresa e detalhes.
+ * "Quero entender por onde começar" já vem marcado; quem sabe o que precisa
+ * escolhe a solução numa lista compacta, que só aparece nesse caso. O
+ * interesse que chega pelo link de origem (?interesse=placas) já vem
+ * escolhido. Abre o WhatsApp com a mensagem pronta — nada é enviado sem a
+ * pessoa tocar em "enviar" no próprio WhatsApp.
  */
 export default function ContactForm() {
   // Lido no cliente (não useSearchParams): o formulário sai pronto no HTML
@@ -35,24 +40,38 @@ export default function ContactForm() {
   const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const project = projectSlug ? getProjectBySlug(projectSlug) : undefined;
   const [opened, setOpened] = useState<string | null>(null);
+  const [mode, setMode] = useState<Mode>("entender");
 
   const {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    defaultValues: { interest: "entender" },
   });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const interest = params.get("interesse");
     const slug = params.get("projeto");
-    if (isContactInterest(interest)) setValue("interest", interest);
-    else if (slug && getProjectBySlug(slug)) setValue("interest", "outro");
+    if (isContactInterest(interest) && interest !== "entender") {
+      setMode("especifico");
+      setValue("interest", interest);
+    } else if (slug && getProjectBySlug(slug)) {
+      setMode("especifico");
+      setValue("interest", "outro");
+    }
     setProjectSlug(slug);
   }, [setValue]);
+
+  function chooseMode(next: Mode) {
+    setMode(next);
+    if (next === "entender") setValue("interest", "entender");
+    else if (getValues("interest") === "entender") setValue("interest", "" as ContactInterest);
+  }
 
   function onSubmit(data: FormValues) {
     const text = buildContactMessage({ ...data, project: project?.title });
@@ -63,35 +82,62 @@ export default function ContactForm() {
   }
 
   const mailBody = opened ?? "";
-  // quem ainda não sabe o que precisa tem a primeira opção; quem já sabe escolhe uma das outras
   const [understand, ...specific] = contactInterests;
 
   // disponível: anel vazio · selecionado: preenchido, com ✓ · foco: contorno verde
-  const chip = (i: (typeof contactInterests)[number], className?: string) => (
-    <label key={i.value} className={cn("choice", className)}>
-      <input type="radio" value={i.value} className="sr-only" {...register("interest")} />
+  const option = (value: Mode, label: React.ReactNode, className?: string) => (
+    <label className={cn("choice", className)}>
+      <input type="radio" name="start-mode" value={value} checked={mode === value} onChange={() => chooseMode(value)} className="sr-only" />
       <span aria-hidden className="choice-mark">
         <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M2.5 6.2 5 8.5l4.5-5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
-      {i.label}
+      {label}
     </label>
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-10">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8 sm:space-y-10">
       <fieldset>
-        <legend className="font-heading text-[length:var(--text-h3)] text-fg">Sobre o que quer conversar?</legend>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {chip(understand, "w-full justify-center font-semibold sm:w-auto")}
-          <p className="w-full pt-3 text-[length:var(--text-small)] text-fg-muted">Ou escolha uma solução específica:</p>
-          {specific.map((i) => chip(i))}
+        <legend className="font-heading text-[length:var(--text-h3)] text-fg">Por onde quer começar?</legend>
+        <div className="mt-4 grid gap-2 sm:grid-cols-[1.4fr_1fr]">
+          {option("entender", <span className="font-semibold">{understand.label}</span>, "min-h-12")}
+          {option("especifico", "Já sei o que preciso", "min-h-12")}
         </div>
-        {errors.interest && (
-          <p role="alert" className="mt-3 text-sm text-[#ff8a7a]">
-            {errors.interest.message}
-          </p>
+
+        {mode === "especifico" && (
+          <div className="mt-4 motion-safe:animate-[panel-in_320ms_cubic-bezier(0.22,1,0.36,1)]">
+            <label htmlFor="interest" className="mb-2 block font-semibold text-fg">
+              Qual solução?
+            </label>
+            <div className="relative">
+              <select
+                id="interest"
+                className={cn(fieldCls, "appearance-none pr-11")}
+                aria-invalid={!!errors.interest}
+                aria-describedby={errors.interest ? "interest-error" : undefined}
+                {...register("interest")}
+              >
+                <option value="" disabled>
+                  Escolha uma opção
+                </option>
+                {specific.map((i) => (
+                  <option key={i.value} value={i.value}>
+                    {i.label}
+                  </option>
+                ))}
+              </select>
+              <svg aria-hidden viewBox="0 0 16 16" className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-muted" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="m4 6 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            {errors.interest && (
+              <p id="interest-error" role="alert" className="mt-2 text-sm text-[#ff8a7a]">
+                {errors.interest.message}
+              </p>
+            )}
+          </div>
         )}
       </fieldset>
 
@@ -106,7 +152,16 @@ export default function ContactForm() {
           <label htmlFor="name" className="mb-2 block font-semibold text-fg">
             Seu nome
           </label>
-          <input id="name" autoComplete="name" className={fieldCls} aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} {...register("name")} />
+          <input
+            id="name"
+            autoComplete="name"
+            autoCapitalize="words"
+            enterKeyHint="next"
+            className={fieldCls}
+            aria-invalid={!!errors.name}
+            aria-describedby={errors.name ? "name-error" : undefined}
+            {...register("name")}
+          />
           {errors.name && (
             <p id="name-error" className="mt-2 text-sm text-[#ff8a7a]">
               {errors.name.message}
@@ -117,7 +172,7 @@ export default function ContactForm() {
           <label htmlFor="company" className="mb-2 block font-semibold text-fg">
             Empresa <span className="font-normal text-fg-muted">(opcional)</span>
           </label>
-          <input id="company" autoComplete="organization" className={fieldCls} {...register("company")} />
+          <input id="company" autoComplete="organization" enterKeyHint="next" className={fieldCls} {...register("company")} />
         </div>
       </div>
 
@@ -136,7 +191,7 @@ export default function ContactForm() {
         {errors.details && <p className="mt-2 text-sm text-[#ff8a7a]">{errors.details.message}</p>}
       </div>
 
-      <div className="flex flex-col items-start gap-4 border-t border-rule pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col items-stretch gap-4 border-t border-rule pt-6 sm:flex-row sm:items-center sm:justify-between sm:pt-8">
         <p className="max-w-[40ch] text-[length:var(--text-small)] leading-relaxed text-fg-muted">
           O botão abre o WhatsApp com a mensagem pronta. Você revisa e envia de lá.
         </p>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import PageIntro from "@/components/layout/page-intro";
 import SolutionDemoView from "@/components/solutions/solution-demos";
@@ -8,8 +7,6 @@ import { solutions } from "@/data/solutions";
 import { contactHref } from "@/data/contact";
 import { getProjectBySlug, type Project } from "@/data/projects";
 import { cn } from "@/lib/cn";
-import florLanding from "@/assets/projects/flor-de-maria-vip/landing.webp";
-import crmModoFoco from "@/assets/projects/arpex-crm/modo-foco.webp";
 
 export const metadata: Metadata = {
   title: "Soluções",
@@ -18,7 +15,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/solucoes" },
 };
 
-/** Evidência visual de cada frente (a home usa as demonstrações das abas). */
+/**
+ * Evidência visual de cada frente, diferente da home (que usa o site do Chef
+ * Bruno, a fila de retornos e a mesma automação): o checklist de entrega, o
+ * modo foco do CRM e a automação de uma floricultura, como exemplo. Cada uma
+ * anda quando aparece na tela.
+ */
 function FrontVisual({ slug }: { slug: string }) {
   if (slug === "presenca") {
     return (
@@ -34,18 +36,7 @@ function FrontVisual({ slug }: { slug: string }) {
       </>
     );
   }
-  const v =
-    slug === "atendimento"
-      ? { src: crmModoFoco, alt: "Modo foco do ArpeX CRM com mensagem pronta para o WhatsApp (dados de demonstração)", caption: "ArpeX CRM · tela real, dados de demonstração" }
-      : { src: florLanding, alt: "Página de apresentação do sistema Flor de Maria VIP", caption: "Sistema Flor de Maria VIP · página de apresentação" };
-  return (
-    <figure>
-      <div className="frame relative aspect-[16/10]">
-        <Image src={v.src} alt={v.alt} fill sizes="(min-width: 768px) 46vw, 92vw" className="object-cover object-top" />
-      </div>
-      <figcaption className="font-label mt-3 text-fg-muted">{v.caption}</figcaption>
-    </figure>
-  );
+  return <SolutionDemoView demo={slug === "atendimento" ? "focus" : "flow"} active />;
 }
 
 /**
@@ -102,7 +93,7 @@ export default function SolucoesPage() {
                 <p className="mt-3 max-w-[50ch] text-pretty leading-relaxed text-fg-muted">{s.need}</p>
               </header>
 
-              <div className={cn("md:col-span-6 md:row-span-3 md:row-start-1 md:self-start", light ? "md:col-start-1" : "md:col-start-7")}>
+              <div data-reveal className={cn("md:col-span-6 md:row-span-3 md:row-start-1 md:self-start", light ? "md:col-start-1" : "md:col-start-7")}>
                 <FrontVisual slug={s.slug} />
                 <p className="mt-3 text-[length:var(--text-small)] text-fg-muted">
                   Veja em:{" "}
@@ -118,7 +109,7 @@ export default function SolucoesPage() {
                 </p>
               </div>
 
-              <div className={cn("md:col-span-5 md:row-start-2", light && "md:col-start-8")}>
+              <div data-reveal className={cn("md:col-span-5 md:row-start-2", light && "md:col-start-8")}>
                 <h3 className="font-kicker text-accent">O que entregamos</h3>
                 <ul className="mt-3 border-t border-rule">
                   {s.delivery.map((d) => (

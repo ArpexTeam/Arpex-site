@@ -313,6 +313,25 @@
   .btn-arrow {
     transition: transform var(--dur-control) var(--ease-control);
   }
+
+  /* ---------------- Etapa de demonstração ---------------- */
+
+  /* Número e nome da etapa, com contorno fino: é um controle, não um rótulo.
+     A etapa atual fica preenchida e com o número na cor de destaque. */
+  .step-btn {
+    border: 1px solid color-mix(in srgb, var(--fg) var(--control-line), transparent);
+    color: var(--fg-muted);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: color, background-color, border-color;
+    transition-duration: var(--dur-control);
+    transition-timing-function: var(--ease-control);
+  }
+  .step-btn:focus-visible {
+    outline: 2px solid var(--accent, var(--color-signal));
+    outline-offset: 2px;
+  }
 }
 
 /* Estados, depois das bases. Mesma especificidade: a ordem decide
@@ -347,10 +366,12 @@
     }
 
     .choice:hover,
+    .step-btn:hover,
     .tab:hover {
       background-color: color-mix(in srgb, var(--fg) var(--control-fill-hover), transparent);
     }
-    .tab:hover {
+    .tab:hover,
+    .step-btn:hover {
       color: var(--fg);
     }
     .field:hover:not(:focus) {
@@ -368,6 +389,7 @@
   .nav-link:active,
   .icon-btn:active,
   .choice:active,
+  .step-btn:active,
   .tab:active {
     transition-duration: 0ms;
   }
@@ -381,6 +403,7 @@
   .nav-link:active,
   .icon-btn:active,
   .choice:active,
+  .step-btn:active,
   .tab:active {
     background-color: color-mix(in srgb, var(--fg) var(--control-fill-press), transparent);
   }
@@ -418,6 +441,14 @@
 
   .tab[aria-selected="true"] {
     color: var(--fg);
+  }
+  .step-btn.is-current {
+    border-color: color-mix(in srgb, var(--fg) var(--control-line-strong), transparent);
+    background-color: color-mix(in srgb, var(--fg) var(--control-fill-selected), transparent);
+    color: var(--fg);
+  }
+  .step-btn.is-current .font-label {
+    color: var(--accent, var(--color-signal));
   }
   .tab[aria-selected="true"]::after {
     opacity: 1;

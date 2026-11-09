@@ -89,7 +89,7 @@ export default function Closing() {
   }, []);
 
   return (
-    <section ref={ref} aria-labelledby="encerramento-title" className="surface-ink relative overflow-hidden py-28 md:py-44">
+    <section ref={ref} aria-labelledby="encerramento-title" className="surface-ink relative overflow-hidden py-20 md:py-44">
       {/* a "janela" da abertura, agora vazia, esperando o próximo projeto */}
       <div
         ref={frameRef}

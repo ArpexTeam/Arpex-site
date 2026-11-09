@@ -11,6 +11,7 @@ import { cn } from "@/lib/cn";
 import { PLAQUE_BG, plaqueSteps } from "@/data/plaque";
 import { contactHref } from "@/data/contact";
 import PlaqueCutout from "./plaque-cutout";
+import PlaqueDemo from "./plaque-demo";
 import placaReal from "@/assets/plaque/placa-real.webp";
 import celularDemo from "@/assets/plaque/celular-demonstracao.webp";
 import type { PlaqueSceneApi } from "./plaque-scene";
@@ -21,9 +22,6 @@ const DEMO_AT = 0.44;
 const STEP_AT = [0.5, 0.68, 0.84];
 // na página Placas o produto já abriu a página: a cena começa com a placa em foco
 const PAGE_START = 0.3;
-
-const PHONE_ALT =
-  "Celular com uma página de avaliação de demonstração: nome da empresa, cinco estrelas vazias, campo de comentário e o botão Publicar avaliação.";
 
 type Props = {
   /** na página /placas a cena é a demonstração: outro título, sem os botões */
@@ -185,7 +183,7 @@ export default function PlaqueStory({ variant = "home" }: Props) {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto grid h-full w-full max-w-[1440px] gap-x-12 gap-y-10 px-[var(--gutter)] py-24 lg:grid-cols-12 lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-y-0 lg:py-0 lg:pt-[var(--header-height)]">
+        <div className="relative z-10 mx-auto grid h-full w-full max-w-[1440px] gap-x-12 gap-y-8 px-[var(--gutter)] py-16 md:py-24 lg:grid-cols-12 lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-y-0 lg:py-0 lg:pt-[var(--header-height)] landscape-phone:grid-cols-2 landscape-phone:gap-y-6">
           {/* em 1024px a placa entra perto da coluna: a largura fica abaixo de 1/3 da tela */}
           <div className="lg:col-span-5 lg:row-start-2 lg:max-w-[32vw] xl:max-w-none">
             <p ref={monoRef} className="font-kicker text-signal">
@@ -205,17 +203,16 @@ export default function PlaqueStory({ variant = "home" }: Props) {
             </p>
           </div>
 
-          {/* Fluxo normal (celular, tablet, movimento reduzido): o produto, em foto real,
-              logo depois do texto. Na página Placas ele já abriu a página. */}
-          {variant === "home" && (
-            <figure className="only-flow lg:col-span-6 lg:col-start-7 lg:row-start-2 lg:self-end">
-              <PlaqueCutout glow sizes="(min-width: 1024px) 340px, 72vw" className="mx-auto w-[min(72vw,340px)]" />
-              <figcaption className="mt-6 text-center text-[13px] text-fg-muted">Foto real da placa.</figcaption>
-            </figure>
-          )}
+          {/* Celular, tablet e movimento reduzido: placa e celular na mesma
+              demonstração, em três estados, logo depois do texto. */}
+          <PlaqueDemo
+            enabled={!fullMode}
+            className="only-flow lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-2 landscape-phone:row-span-2 landscape-phone:col-start-2 landscape-phone:row-start-1"
+          />
 
           <div className="lg:col-span-5 lg:row-start-3 lg:max-w-[32vw] xl:max-w-none">
-            <ol className="mt-8 lg:mt-6" data-mode={fullMode ? "full" : "flow"}>
+            {/* as etapas acompanham a cena completa; na compacta elas são os controles da demonstração */}
+            <ol className="only-full mt-8 lg:mt-6" data-mode={fullMode ? "full" : "flow"}>
               {plaqueSteps.map((s, i) => {
                 const active = !fullMode || i === step;
                 return (
@@ -245,7 +242,7 @@ export default function PlaqueStory({ variant = "home" }: Props) {
             </ol>
 
             {variant === "home" && (
-              <div data-plaque-cta className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-6 scene-short:mt-4">
+              <div data-plaque-cta className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-6 scene-short:mt-4">
                 <Button href={contactHref("placas")}>Solicitar uma placa</Button>
                 <Button href="/placas" variant="link" arrow>
                   Conhecer a placa
@@ -257,11 +254,6 @@ export default function PlaqueStory({ variant = "home" }: Props) {
             </p>
           </div>
 
-          {/* Fluxo normal: a demonstração, separada do produto, ao lado das etapas. */}
-          <figure className="only-flow lg:col-span-6 lg:col-start-7 lg:row-start-3">
-            <Image src={celularDemo} alt={PHONE_ALT} sizes="(min-width: 1024px) 200px, 46vw" className="mx-auto h-auto w-[min(46vw,200px)]" />
-            <figcaption className="mt-4 text-center text-[13px] text-fg-muted">Tela de demonstração da página de avaliação.</figcaption>
-          </figure>
         </div>
       </div>
     </section>

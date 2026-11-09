@@ -67,7 +67,7 @@ export default function SobrePage() {
       {/* "Como trabalhamos" uma vez, ligado a material concreto */}
       <Method surface="surface-paper">
         <div className="mt-14 grid gap-10 border-t border-rule pt-10 md:mt-20 md:grid-cols-12 md:gap-x-6">
-          <figure className="md:col-span-6">
+          <figure data-reveal className="md:col-span-6">
             <div className="flex items-end gap-4">
               <div className="frame relative aspect-[390/760] w-[34%] shrink-0">
                 <Image src={crmMobile} alt="Tela Hoje do ArpeX CRM no celular, com 390 pixels de largura" fill sizes="(min-width: 768px) 14vw, 32vw" className="object-cover object-top" />
@@ -81,7 +81,7 @@ export default function SobrePage() {
               computador antes da entrega.
             </figcaption>
           </figure>
-          <figure className="md:col-span-4 md:col-start-9">
+          <figure data-reveal className="md:col-span-4 md:col-start-9">
             <div className="frame relative mx-auto aspect-[3/4] max-w-[320px] bg-white md:mx-0">
               <Image src={cartaoQr} alt="Cartão com QR Code criado para o Chef Bruno Sushi" fill sizes="(min-width: 768px) 24vw, 80vw" className="object-cover" />
             </div>
@@ -100,7 +100,7 @@ export default function SobrePage() {
           </h2>
           <ul className="border-t border-rule md:col-span-8">
             {related.map((r) => (
-              <li key={r.name} className="grid gap-1 border-b border-rule py-5 sm:grid-cols-[13rem_1fr] sm:items-baseline sm:gap-6">
+              <li key={r.name} data-reveal className="grid gap-1 border-b border-rule py-5 sm:grid-cols-[13rem_1fr] sm:items-baseline sm:gap-6">
                 <Link href={r.href} className="link link-inline font-heading w-fit text-[length:var(--text-h3)]">
                   {r.name}
                 </Link>

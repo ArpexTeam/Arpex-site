@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap/gsap";
-import { FULL_SCENE_QUERY, FINE_HOVER_QUERY, matches, supportsWebGL2 } from "@/lib/motion/queries";
+import { COMPACT_SCENE_QUERY, FULL_SCENE_QUERY, FINE_HOVER_QUERY, matches, supportsWebGL2 } from "@/lib/motion/queries";
 import { useMotionPreference } from "@/components/motion/motion-provider";
 import TransitionLink from "@/components/motion/transition-link";
 import { Arrow, Button } from "@/components/ui/button";
@@ -13,7 +13,9 @@ import { contactHref } from "@/data/contact";
 import chefInicio from "@/assets/projects/chef-bruno/inicio.webp";
 import luxInicio from "@/assets/projects/lux-bar/inicio.webp";
 import torMobile from "@/assets/projects/carta-toricelli/mobile.webp";
-import chefMobile from "@/assets/projects/chef-bruno/mobile.webp";
+import torGarrafa from "@/assets/projects/carta-toricelli/garrafa.webp";
+import luxMobile from "@/assets/projects/lux-bar/mobile.webp";
+import honMobile from "@/assets/projects/honoratto-tattoo/mobile.webp";
 import { heroFinalWidth, heroPoses, HERO_FINAL_FY } from "./hero-layout";
 import type { HeroSceneApi } from "./hero-scene";
 
@@ -128,6 +130,25 @@ export default function Hero() {
         gsap.from(words, { yPercent: 108, duration: 0.85, ease: "expo.out", delay: 0.05, stagger: (i: number) => rows.indexOf(tops[i]) * 0.07 });
         gsap.from(reveal, { autoAlpha: 0, y: 14, duration: 0.6, ease: "power3.out", stagger: 0.06, delay: 0.3 });
         gsap.from(cardIntro, { autoAlpha: 0, x: 56, duration: 0.9, ease: "expo.out", stagger: 0.08, delay: 0.12 });
+      });
+
+      // Celular e tablet: a composição compacta entra em profundidade (os sites ao
+      // fundo abrem em leque, a carta sobe e a garrafa sai da tela) e, com a
+      // rolagem, se reenquadra. A seção não é fixada: a página rola normalmente.
+      mm.add(COMPACT_SCENE_QUERY, () => {
+        const q = gsap.utils.selector(sectionRef);
+        gsap.from(q("[data-hc-glow]"), { autoAlpha: 0, scale: 0.6, duration: 1.4, ease: "power2.out", delay: 0.2 });
+        gsap.from(q("[data-hc-enter=front]"), { y: 80, rotationX: 24, autoAlpha: 0, transformPerspective: 900, duration: 1.1, ease: "expo.out", delay: 0.2 });
+        gsap.from(q("[data-hc-enter=left]"), { xPercent: 72, rotationY: -34, autoAlpha: 0, transformPerspective: 900, duration: 1.2, ease: "expo.out", delay: 0.45 });
+        gsap.from(q("[data-hc-enter=right]"), { xPercent: -72, rotationY: 34, autoAlpha: 0, transformPerspective: 900, duration: 1.2, ease: "expo.out", delay: 0.45 });
+        gsap.from(q("[data-hc-enter=bottle]"), { yPercent: 40, xPercent: -46, scale: 0.55, rotation: -16, autoAlpha: 0, duration: 1.3, ease: "expo.out", delay: 0.9 });
+        gsap.from(q("[data-hc-caption]"), { autoAlpha: 0, y: 10, duration: 0.6, ease: "power3.out", delay: 1.3 });
+
+        const scrollTrigger = { trigger: sectionRef.current, start: "top top", end: "bottom top", scrub: 0.5 };
+        gsap.to(q("[data-hc-scroll=front]"), { yPercent: -5, rotationY: 16, transformPerspective: 900, ease: "none", scrollTrigger });
+        gsap.to(q("[data-hc-scroll=left]"), { xPercent: -22, yPercent: 10, ease: "none", scrollTrigger });
+        gsap.to(q("[data-hc-scroll=right]"), { xPercent: 22, yPercent: 6, ease: "none", scrollTrigger });
+        gsap.to(q("[data-hc-scroll=bottle]"), { yPercent: -42, xPercent: 10, rotation: 14, ease: "none", scrollTrigger });
       });
 
       // Passagem ligada à rolagem: a janela se alinha e se expande no projeto em destaque.
@@ -251,14 +272,14 @@ export default function Hero() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col px-[var(--gutter)] pt-[calc(var(--header-height)+40px)] lg:min-h-[100svh] lg:justify-center lg:pt-[var(--header-height)]">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col px-[var(--gutter)] pt-[calc(var(--header-height)+32px)] lg:min-h-[100svh] lg:justify-center lg:pt-[var(--header-height)] landscape-phone:grid landscape-phone:grid-cols-[1.15fr_1fr] landscape-phone:items-center landscape-phone:gap-8 landscape-phone:pt-[calc(var(--header-height)+16px)]">
           {/* título e texto terminam antes da tela principal (--hero-copy-max);
               os botões ficam abaixo dela e usam a largura natural */}
           <div ref={copyRef} className="max-w-[640px] lg:max-w-none">
             <p data-hero-reveal className="font-kicker text-signal">
               Estruturação digital sob medida
             </p>
-            <h1 id="hero-title" className="font-display mt-5 text-balance text-[length:var(--text-hero)] text-fg lg:max-w-[var(--hero-copy-max)]">
+            <h1 id="hero-title" className="font-display mt-4 text-balance text-[length:var(--text-hero)] text-fg lg:mt-5 lg:max-w-[var(--hero-copy-max)] landscape-phone:text-[2.375rem]">
               {titleWords.map((word, i) => (
                 <span key={i}>
                   <span className="word-mask">
@@ -271,10 +292,10 @@ export default function Hero() {
                 </span>
               ))}
             </h1>
-            <p data-hero-reveal className="mt-6 max-w-[34em] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg/85 lg:max-w-[min(34em,var(--hero-copy-max))]">
+            <p data-hero-reveal className="mt-4 max-w-[34em] text-pretty text-[length:var(--text-lead)] leading-[1.5] text-fg/85 sm:mt-6 lg:max-w-[min(34em,var(--hero-copy-max))]">
               Criamos sites, automações e sistemas sob medida para empresas em crescimento.
             </p>
-            <div data-hero-reveal className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
+            <div data-hero-reveal className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-3 sm:mt-8">
               <Button href={contactHref("entender")}>Falar com a ArpeX</Button>
               <Button href="#solucoes" variant="link" arrow>
                 Ver soluções
@@ -282,26 +303,68 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Celular e tablet: uma superfície principal, texto já legível acima. */}
-          <div className="relative mt-14 mb-16 lg:hidden">
-            <div className="relative mx-auto flex max-w-[560px] items-end justify-center gap-0 [perspective:1200px] md:max-w-[720px]">
-              <div className="frame relative -mr-10 hidden aspect-[390/844] w-[34%] translate-y-[-10%] [transform:rotateY(18deg)] opacity-70 brightness-[0.6] sm:block">
-                <Image src={chefMobile} alt="" sizes="(min-width: 1024px) 1px, 30vw" className="absolute inset-0 h-full w-full object-cover object-top" />
+          {/* Celular e tablet: composição compacta logo abaixo da proposta. A carta
+              Toricelli à frente, dois sites ao fundo e a garrafa 3D saindo da tela.
+              Sem JavaScript ou com movimento reduzido, a mesma composição, parada. */}
+          <div className="relative mt-10 mb-12 sm:mt-12 lg:hidden landscape-phone:my-0">
+            <div
+              data-hc-stage
+              className="relative mx-auto aspect-square w-[min(100%,58svh,560px)] [perspective:1100px] landscape-phone:w-[min(100%,74svh)]"
+            >
+              <span
+                data-hc-glow
+                aria-hidden
+                className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(closest-side,rgba(0,207,119,0.2),rgba(0,207,119,0.05)_60%,transparent)]"
+              />
+              <div data-hc-scroll="left" className="absolute left-[2%] top-[15%] w-[29%]">
+                <div data-hc-enter="left">
+                  <div className="frame relative aspect-[390/844] rounded-[20px] ring-[3px] ring-black/70 [transform:rotateY(32deg)_rotateZ(-3deg)]">
+                    <Image src={honMobile} alt="" sizes="(min-width: 1024px) 1px, 30vw" className="absolute inset-0 h-full w-full object-cover object-top brightness-[0.55]" />
+                  </div>
+                </div>
               </div>
-              <div className="frame relative z-10 aspect-[390/844] w-[62%] max-w-[320px] rounded-[var(--radius-device)] [transform:rotateY(-14deg)_rotateX(6deg)] sm:w-[44%]">
-                <Image
-                  src={torMobile}
-                  alt="Carta de vinhos Toricelli no celular, com a garrafa em 3D"
-                  priority
-                  sizes="(min-width: 1024px) 1px, (min-width: 640px) 44vw, 62vw"
-                  className="absolute inset-0 h-full w-full object-cover object-top"
-                />
-                <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/12 to-transparent motion-safe:animate-[sweep_6s_ease-in-out_infinite]" />
+              <div data-hc-scroll="right" className="absolute right-[2%] top-[8%] w-[29%]">
+                <div data-hc-enter="right">
+                  <div className="frame relative aspect-[390/844] rounded-[20px] ring-[3px] ring-black/70 [transform:rotateY(-32deg)_rotateZ(3deg)]">
+                    <Image src={luxMobile} alt="" sizes="(min-width: 1024px) 1px, 30vw" className="absolute inset-0 h-full w-full object-cover object-top brightness-[0.55]" />
+                  </div>
+                </div>
+              </div>
+              <div data-hc-scroll="front" className="absolute left-[29%] top-[2%] w-[42%]">
+                <div data-hc-enter="front">
+                  <div className="frame relative aspect-[390/844] rounded-[24px] ring-[4px] ring-black/80 [transform:rotateY(-10deg)_rotateX(4deg)]">
+                    <Image
+                      src={torMobile}
+                      alt="Carta de vinhos Toricelli no celular: a seleção da adega com a garrafa em 3D"
+                      priority
+                      sizes="(min-width: 1024px) 1px, (min-width: 640px) 240px, 42vw"
+                      className="absolute inset-0 h-full w-full object-cover object-top"
+                    />
+                    <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/12 to-transparent motion-safe:animate-[sweep_6s_ease-in-out_infinite]" />
+                  </div>
+                </div>
+              </div>
+              <div data-hc-scroll="bottle" className="pointer-events-none absolute left-[56%] top-[43%] w-[30%]">
+                <div data-hc-enter="bottle">
+                  <Image
+                    src={torGarrafa}
+                    alt=""
+                    sizes="(min-width: 1024px) 1px, (min-width: 640px) 170px, 30vw"
+                    className="h-auto w-full rotate-[6deg] drop-shadow-[0_26px_30px_rgba(0,0,0,0.6)]"
+                  />
+                </div>
               </div>
             </div>
-            <p className="mt-6 text-center text-sm text-fg-muted">
-              Projeto em destaque: {featured.title} · {featured.client}
-            </p>
+            <TransitionLink
+              data-hc-caption
+              href={`/projetos/${featured.slug}`}
+              className="link link-muted mx-auto mt-3 flex w-fit items-center gap-3 text-sm"
+            >
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-signal" />
+              <span className="link-label">
+                Em destaque: {featured.title} · {featured.client}
+              </span>
+            </TransitionLink>
           </div>
 
           <div

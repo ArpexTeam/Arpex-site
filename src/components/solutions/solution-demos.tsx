@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
+import { useInView } from "@/lib/motion/use-in-view";
 import type { SolutionDemo } from "@/data/solutions";
+import { crmStory, followupsDemo } from "@/data/crm";
+import ScreenPan from "@/components/ui/screen-pan";
 import chefPagina from "@/assets/projects/chef-bruno/pagina.webp";
 import chefCartaoQr from "@/assets/projects/chef-bruno/cartao-qr.webp";
-import crmHoje from "@/assets/projects/arpex-crm/hoje.webp";
 
 /** Barra de navegador mínima, só para enquadrar capturas de página. */
 function BrowserBar({ url }: { url: string }) {
@@ -23,7 +25,7 @@ function BrowserBar({ url }: { url: string }) {
 }
 
 function Caption({ children }: { children: React.ReactNode }) {
-  return <p className="font-label mt-4 text-fg-muted">{children}</p>;
+  return <p className="font-label mt-3 text-fg-muted">{children}</p>;
 }
 
 /** Página real rolando dentro do quadro (demonstração isolada, sem iframe). */
@@ -43,21 +45,26 @@ function PageDemo({ active }: { active: boolean }) {
   );
 }
 
-/** Tela real do CRM com o foco percorrendo a próxima ação e a fila. */
-function InterfaceDemo({ active }: { active: boolean }) {
+/** Fila de retornos do CRM: o quadro se aproxima da linha mais atrasada. */
+function FollowupsDemo({ active }: { active: boolean }) {
+  const alt = "Fila de retornos do ArpeX CRM: contatos atrasados, com etapa, temperatura e próxima ação (dados de demonstração)";
   return (
     <figure>
-      <div className="frame relative aspect-[4/3]">
-        <Image src={crmHoje} alt="Tela Hoje do ArpeX CRM com a próxima oportunidade e a fila do dia (dados de demonstração)" fill sizes="(min-width: 1024px) 46vw, 92vw" className="object-cover object-left-top" />
-        <span
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute rounded-xl ring-2 ring-signal shadow-[0_0_0_9999px_rgba(11,14,12,0.38)] transition-all duration-500",
-            active ? "opacity-100" : "opacity-0"
-          )}
-          style={{ left: "20.6%", top: "16.8%", width: "77.6%", height: "20.4%" }}
-        />
-      </div>
+      <ScreenPan spec={followupsDemo.compact} aspect={4 / 3} live={active} alt={alt} sizes="(min-width: 768px) 1px, 175vw" className="md:hidden" />
+      <ScreenPan spec={followupsDemo.wide} aspect={4 / 3} live={active} alt={alt} sizes="(min-width: 1024px) 70vw, (min-width: 768px) 115vw, 1px" className="hidden md:block" />
+      <Caption>Tela real do ArpeX CRM · dados de demonstração</Caption>
+    </figure>
+  );
+}
+
+/** Modo foco do CRM: o quadro desce até a mensagem pronta e o botão do WhatsApp. */
+function FocusDemo({ active }: { active: boolean }) {
+  const focus = crmStory[1];
+  const alt = "Modo foco do ArpeX CRM com a mensagem pronta para o WhatsApp (dados de demonstração)";
+  return (
+    <figure>
+      <ScreenPan spec={focus.compact} aspect={4 / 5} live={active} alt={alt} sizes="(min-width: 768px) 1px, 90vw" className="mx-auto w-[min(100%,340px)] md:hidden" />
+      <ScreenPan spec={focus.wide} aspect={1.6} live={active} alt={alt} sizes="(min-width: 768px) 70vw, 1px" className="hidden md:block" />
       <Caption>Tela real do ArpeX CRM · dados de demonstração</Caption>
     </figure>
   );
@@ -70,10 +77,11 @@ const flowSteps = [
   { t: "O pedido acontece a tempo", d: "A floricultura não perde a data" },
 ];
 
+/** Automação como aplicação possível: o exemplo é de uma floricultura, a lógica serve a outras rotinas. */
 function FlowDemo({ active }: { active: boolean }) {
   return (
     <figure>
-      <div className="frame relative aspect-[4/3] bg-[#121613] p-6 sm:p-10">
+      <div className="frame relative aspect-[4/3] bg-[#121613] p-5 sm:p-10">
         <ol className="relative flex h-full flex-col justify-between">
           <span aria-hidden className="absolute bottom-6 left-[11px] top-6 w-px bg-white/12" />
           <span
@@ -97,14 +105,14 @@ function FlowDemo({ active }: { active: boolean }) {
                 {i + 1}
               </span>
               <div>
-                <p className="font-heading text-[1.15rem] text-ivory sm:text-[1.35rem]">{s.t}</p>
-                <p className="mt-1 text-sm text-white/55">{s.d}</p>
+                <p className="font-heading text-[1.05rem] text-ivory sm:text-[1.35rem]">{s.t}</p>
+                <p className="mt-0.5 text-[13px] text-white/55 sm:mt-1 sm:text-sm">{s.d}</p>
               </div>
             </li>
           ))}
         </ol>
       </div>
-      <Caption>Fluxo do sistema Flor de Maria VIP</Caption>
+      <Caption>Exemplo de automação · sistema Flor de Maria VIP, de uma floricultura</Caption>
     </figure>
   );
 }
@@ -146,26 +154,32 @@ function LocalDemo({ active }: { active: boolean }) {
   );
 }
 
+/**
+ * `active`: a aba está selecionada (na página Soluções, sempre). A
+ * demonstração só anda quando também está na tela, e volta ao início quando
+ * sai: funciona igual ao avançar e ao voltar pela rolagem.
+ */
 export default function SolutionDemoView({ demo, active: selected }: { demo: SolutionDemo; active: boolean }) {
-  // o painel sai de display:none; um quadro de atraso deixa as transições rodarem
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref);
+  // o painel sai de invisible; um quadro de atraso deixa as transições rodarem
   const [active, setActive] = useState(false);
   useEffect(() => {
-    if (!selected) {
+    if (!selected || !inView) {
       setActive(false);
       return;
     }
     const id = requestAnimationFrame(() => requestAnimationFrame(() => setActive(true)));
     return () => cancelAnimationFrame(id);
-  }, [selected]);
+  }, [selected, inView]);
 
-  switch (demo) {
-    case "page":
-      return <PageDemo active={active} />;
-    case "interface":
-      return <InterfaceDemo active={active} />;
-    case "flow":
-      return <FlowDemo active={active} />;
-    case "local":
-      return <LocalDemo active={active} />;
-  }
+  return (
+    <div ref={ref}>
+      {demo === "page" && <PageDemo active={active} />}
+      {demo === "followups" && <FollowupsDemo active={active} />}
+      {demo === "focus" && <FocusDemo active={active} />}
+      {demo === "flow" && <FlowDemo active={active} />}
+      {demo === "local" && <LocalDemo active={active} />}
+    </div>
+  );
 }

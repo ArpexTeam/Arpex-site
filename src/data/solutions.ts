@@ -1,6 +1,6 @@
 import type { ContactInterest } from "./contact";
 
-export type SolutionDemo = "page" | "interface" | "flow" | "local";
+export type SolutionDemo = "page" | "followups" | "focus" | "flow" | "local";
 
 /**
  * Estruturação digital em três frentes: presença, atendimento e operação.
@@ -13,8 +13,10 @@ export type Solution = {
   legacyAnchors: string[];
   index: string;
   name: string;
-  /** benefício em uma frase (painel da home e abertura da frente) */
+  /** a necessidade em linguagem simples (painel da home e abertura da frente) */
   promise: string;
+  /** complemento curto, depois da demonstração da home */
+  homeNote: string;
   /** situação em que a frente faz sentido (página Soluções) */
   need: string;
   /** entregas possíveis (página Soluções) */
@@ -34,7 +36,8 @@ export const solutions: Solution[] = [
     legacyAnchors: ["presenca-digital", "presenca-local"],
     index: "01",
     name: "Presença",
-    promise: "Para sua empresa ser encontrada e se apresentar bem.",
+    promise: "Apresentar melhor a empresa e facilitar que ela seja encontrada.",
+    homeNote: "Site, Perfil da Empresa no Google, placa de avaliação e QR Code, conforme o que a empresa precisa.",
     need: "Seu cliente procura você no celular, compara opções e decide em poucos segundos se vale entrar em contato.",
     delivery: [
       "Sites e páginas comerciais, com WhatsApp e formulários conectados",
@@ -52,7 +55,8 @@ export const solutions: Solution[] = [
     legacyAnchors: [],
     index: "02",
     name: "Atendimento",
-    promise: "Para acompanhar oportunidades e facilitar a rotina.",
+    promise: "Acompanhar clientes, oportunidades e retornos.",
+    homeNote: "Cada contato com histórico e próxima ação. Mais abaixo, o ArpeX CRM mostra o dia a dia.",
     need: "Os pedidos e contatos chegam, mas acompanhar cada conversa até o fim está ficando difícil.",
     delivery: [
       "Contatos e oportunidades organizados, com histórico e próxima ação",
@@ -62,7 +66,7 @@ export const solutions: Solution[] = [
     ],
     start: "Começamos por como os pedidos chegam hoje e onde se perdem. Daí sai o caminho: o ArpeX CRM, um formulário ou uma automação.",
     examples: ["arpex-crm", "chef-bruno", "lux-bar"],
-    demo: "interface",
+    demo: "followups",
     interest: "crm",
     cta: "Quero organizar meu atendimento",
   },
@@ -71,7 +75,8 @@ export const solutions: Solution[] = [
     legacyAnchors: ["sistemas-e-produtos", "automacao-e-ia"],
     index: "03",
     name: "Operação",
-    promise: "Para reduzir trabalho repetitivo e ter mais controle.",
+    promise: "Reduzir tarefas repetitivas e organizar a rotina.",
+    homeNote: "A floricultura é um exemplo. A mesma automação serve a cadastros, controles e lembretes de outras rotinas.",
     need: "A rotina depende de planilhas, anotações e da memória de alguém, e as mesmas tarefas se repetem todo dia.",
     delivery: [
       "Sistema web sob medida, com login e permissões",

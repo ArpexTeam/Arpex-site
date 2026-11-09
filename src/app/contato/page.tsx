@@ -14,21 +14,21 @@ export const metadata: Metadata = {
 export default function ContatoPage() {
   return (
     <main className="surface-ink">
-      <section className="pt-[calc(var(--header-height)+72px)] pb-24 md:pt-[calc(var(--header-height)+112px)] md:pb-32">
-        <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-[var(--gutter)] lg:grid-cols-12 lg:gap-x-6">
+      <section className="pt-[calc(var(--header-height)+36px)] pb-20 md:pt-[calc(var(--header-height)+112px)] md:pb-32">
+        <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-[var(--gutter)] md:gap-12 lg:grid-cols-12 lg:gap-x-6">
           {/* ordem no celular: título → formulário → canais diretos */}
           <div className="lg:col-span-5 lg:row-start-1">
             <p className="font-kicker text-accent">Contato</p>
             <h1 className="font-display mt-4 max-w-[14ch] text-balance text-[length:var(--text-display)] text-fg">
               Vamos falar do seu negócio.
             </h1>
-            <p className="mt-6 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg">
+            <p className="mt-4 max-w-[46ch] text-pretty text-[length:var(--text-lead)] leading-[1.55] text-fg md:mt-6">
               Um site, uma placa ou a rotina que está pesando. Duas linhas bastam para começar.
             </p>
           </div>
 
           <div className="lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
-            <div className="rounded-[var(--radius-frame)] border border-rule bg-ink-2 p-6 sm:p-10">
+            <div className="rounded-[var(--radius-frame)] border border-rule bg-ink-2 p-5 sm:p-10">
               <ContactForm />
             </div>
           </div>

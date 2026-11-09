@@ -9,12 +9,28 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { crmStory } from "@/data/crm";
 import { contactHref } from "@/data/contact";
+import CrmStates from "./crm-states";
 
 const STEP_AT = [0, 0.37, 0.68];
 
+function Actions({ headingLevel, className }: { headingLevel: 1 | 2; className?: string }) {
+  return (
+    <div className={cn("flex flex-wrap items-center gap-x-5 gap-y-3", className)}>
+      <Button href={contactHref("crm")}>Conversar sobre o CRM</Button>
+      {headingLevel === 2 && (
+        <Button href="/ecossistema" variant="link" arrow>
+          Conhecer o CRM
+        </Button>
+      )}
+    </div>
+  );
+}
+
 /**
  * Sequência curta de uso com telas reais do produto. Movimentos simples
- * (perspectiva, escala, recorte) em CSS/GSAP — sem WebGL.
+ * (perspectiva, escala, recorte) em CSS/GSAP — sem WebGL. No computador, a
+ * pilha em perspectiva ligada à rolagem; no celular, no tablet e com
+ * movimento reduzido, uma tela por vez com controles (crm-states.tsx).
  */
 export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -98,7 +114,7 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
       className="scene-section surface-ink-2"
     >
       <div className="scene-stage">
-        <div className="mx-auto grid h-full w-full max-w-[1440px] items-center gap-12 px-[var(--gutter)] py-24 lg:grid-cols-12 lg:gap-x-10 lg:py-0 lg:pt-[var(--header-height)]">
+        <div className="mx-auto grid h-full w-full max-w-[1440px] items-center gap-8 px-[var(--gutter)] py-16 md:gap-12 md:py-24 lg:grid-cols-12 lg:gap-x-10 lg:py-0 lg:pt-[var(--header-height)]">
           <div className="lg:col-span-4">
             <p className="font-kicker text-signal">Atendimento · ArpeX CRM</p>
             <Title id="crm-title" className="font-title mt-4 text-balance text-[length:var(--text-h2)] text-fg">
@@ -109,7 +125,7 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
               lugar.
             </p>
 
-            <ol className="mt-6 hidden lg:block">
+            <ol className="only-full mt-6">
               {crmStory.map((s, i) => {
                 const on = !fullMode || i === step;
                 return (
@@ -133,20 +149,11 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
               })}
             </ol>
 
-            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 scene-short:mt-4">
-              <Button href={contactHref("crm")}>Conversar sobre o CRM</Button>
-              {headingLevel === 2 && (
-                <Button href="/ecossistema" variant="link" arrow>
-                  Conhecer o CRM
-                </Button>
-              )}
-            </div>
+            <Actions headingLevel={headingLevel} className="mt-7 hidden lg:flex scene-short:mt-4" />
           </div>
 
           {/* Modo completo: pilha em perspectiva. Fluxo normal: sequência vertical. */}
           <div className="relative lg:col-span-8">
-            {/* identificação discreta, junto das telas (uma vez por página) */}
-            <p className="only-flow mb-8 text-[length:var(--text-small)] text-fg-muted">Telas reais do ArpeX CRM, com dados de demonstração.</p>
             <div className="only-full relative aspect-[16/10] w-full [transform-style:preserve-3d]">
               {crmStory.map((s) => (
                 <div key={s.key} data-crm-screen className="frame absolute inset-0 will-change-transform">
@@ -167,34 +174,10 @@ export default function CrmStory({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
               ))}
             </div>
             <p className="only-full mt-6 text-[length:var(--text-small)] text-fg-muted">Telas reais do ArpeX CRM, com dados de demonstração.</p>
+            <CrmStates className="only-flow" />
+            {/* no celular e no tablet, as ações vêm depois da demonstração */}
+            <Actions headingLevel={headingLevel} className="mt-8 lg:hidden" />
 
-            <ol className="only-flow space-y-14">
-              {crmStory.map((s, i) => (
-                <li key={s.key}>
-                  <p className="flex items-baseline gap-3">
-                    <span className="font-label text-signal">0{i + 1}</span>
-                    <span className="font-heading text-[1.3rem] text-fg">{s.name}</span>
-                  </p>
-                  <p className="mt-1.5 max-w-[48ch] leading-relaxed text-fg-muted">{s.text}</p>
-                  <div className="mt-5">
-                    {s.mobile ? (
-                      <>
-                        <div className="frame relative mx-auto aspect-[390/600] max-w-[340px] md:hidden">
-                          <Image src={s.mobile} alt={`${s.name} — ArpeX CRM no celular (dados de demonstração)`} fill sizes="340px" className="object-cover object-top" />
-                        </div>
-                        <div className="frame relative hidden aspect-[16/10] md:block">
-                          <Image src={s.src} alt={`${s.name} — tela do ArpeX CRM (dados de demonstração)`} fill sizes="(min-width: 1024px) 62vw, 92vw" className="object-cover object-left-top" />
-                        </div>
-                      </>
-                    ) : (
-                      <div className="frame relative aspect-[16/10]">
-                        <Image src={s.src} alt={`${s.name} — tela do ArpeX CRM (dados de demonstração)`} fill sizes="(min-width: 1024px) 62vw, 92vw" className="object-cover object-left-top" />
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
           </div>
         </div>
       </div>

@@ -63,7 +63,7 @@ export default function PlacasPage() {
       {/* 3. Detalhe e personalização: as fotos com a mão dão a escala */}
       <section aria-labelledby="personalizacao-title" className="surface-paper py-16 md:py-24">
         <div className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-[var(--gutter)] md:grid-cols-12 md:gap-x-6">
-          <div className="grid grid-cols-[1.15fr_1fr] items-end gap-4 md:col-span-7 md:gap-6">
+          <div data-reveal className="grid grid-cols-[1.15fr_1fr] items-end gap-4 md:col-span-7 md:gap-6">
             <figure>
               <Image
                 src={placaMao}
@@ -83,7 +83,7 @@ export default function PlacasPage() {
               <figcaption className="mt-3 text-pretty text-[length:var(--text-small)] text-fg-muted">De frente: a chamada, a área de aproximação (NFC) e o QR Code.</figcaption>
             </figure>
           </div>
-          <div className="md:col-span-4 md:col-start-9">
+          <div data-reveal className="md:col-span-4 md:col-start-9">
             <h2 id="personalizacao-title" className="font-title text-balance text-[length:var(--text-h2)] text-fg">
               A placa é da sua empresa.
             </h2>
@@ -116,7 +116,7 @@ export default function PlacasPage() {
           </h2>
           <ol className="mt-8 grid gap-x-6 gap-y-6 md:grid-cols-3">
             {plaqueHire.map((s, i) => (
-              <li key={s.t} className="border-t border-rule pt-4">
+              <li key={s.t} data-reveal className="border-t border-rule pt-4">
                 <p className="flex items-baseline gap-3">
                   <span className="font-label text-signal">0{i + 1}</span>
                   <span className="font-heading text-fg">{s.t}</span>
